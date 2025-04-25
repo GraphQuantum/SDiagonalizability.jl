@@ -1,9 +1,9 @@
 name = "SDiagonalizability"
 uuid = "12271bdf-7740-497a-b7ef-3fbfedd57958"
-keywords = ["quantum computing", "graph theory", "linear algebra", "physics"]
+keywords = ["graph theory", "linear algebra", "dynamic programming", "quantum computing"]
 license = "MIT"
 authors = ["Luis M. B. Varona <lbvarona@mta.ca>", "Nathaniel Johnston <njohnston@mta.ca>"]
-description = "TODO:"
+description = "A dynamic algorithm to minimize the S-bandwidth of a graph."
 maintainers = ["Luis M. B. Varona <lbvarona@mta.ca>"]
 readme = "README.md"
 repository = "https://github.com/GraphQuantum/SDiagonalizability.jl"
