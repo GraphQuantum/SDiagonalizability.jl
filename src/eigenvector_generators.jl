@@ -17,7 +17,7 @@ independence between all generated vectors.
 # Examples
 Generate all potential kernel eigenvectors for an order `2` Laplacian matrix:
 ```jldoctest
-julia> collect(Vector{Int}, _potential_kernel_eigvecs(2))
+julia> collect(Vector{Int}, SDiagonalizability._potential_kernel_eigvecs(2))
 4-element Vector{Vector{Int64}}:
  [1, -1]
  [1, 0]
@@ -76,7 +76,7 @@ orthogonal eigenspaces and the all-ones vector is always in the kernel, every no
 # Examples
 Generate all potential non-kernel eigenvectors of an order `4` Laplacian matrix:
 ```jldoctest
-julia> collect(Vector{Int}, _potential_nonkernel_eigvecs(4))
+julia> collect(Vector{Int}, SDiagonalizability._potential_nonkernel_eigvecs(4))
 9-element Vector{Vector{Int64}}:
  [1, -1, 0, 0]
  [1, 0, -1, 0]
