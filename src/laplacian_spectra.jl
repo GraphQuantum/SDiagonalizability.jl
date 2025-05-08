@@ -12,6 +12,38 @@ struct LaplacianSpectra
     idxs_1neg::Dict{Int,Vector{Int}}
     bases_01neg::Dict{Int,Matrix{Int}}
     bases_1neg::Dict{Int,Matrix{Int}}
+
+    function LaplacianSpectra(laplacian_matrix::Symmetric{Int,Matrix{Int}})
+        return new(
+            laplacian_matrix,
+            Int[],
+            Dict{Int,Int}(),
+            Dict{Int,Matrix{Int}}(),
+            Dict{Int,Vector{Int}}(),
+            Dict{Int,Matrix{Int}}(),
+            Dict{Int,Matrix{Int}}(),
+        )
+    end
+
+    function LaplacianSpectra(
+        L::Symmetric{Int,Matrix{Int}},
+        eigvals_sorted::Vector{Int},
+        eigval_counts::Dict{Int,Int},
+        eigspaces_01neg::Dict{Int,Matrix{Int}},
+        idxs_1neg::Dict{Int,Vector{Int}},
+        bases_01neg::Dict{Int,Matrix{Int}},
+        bases_1neg::Dict{Int,Matrix{Int}},
+    )
+        return new(
+            L,
+            eigvals_sorted,
+            eigval_counts,
+            eigspaces_01neg,
+            idxs_1neg,
+            bases_01neg,
+            bases_1neg,
+        )
+    end
 end
 
 function is_laplacian_integral(L::Symmetric{Int,Matrix{Int}})
@@ -81,11 +113,12 @@ end
     return eigspaces_01neg, idxs_1neg, bases_01neg, bases_1neg
 end
 
-function _complete_graph_laplacian_spectra(eigvals::Tuple{Int,Int}, n::Int)
+function _complete_graph_laplacian_spectra(eigval_counts::OrderedDict{Int,Int})
     #= For every `n ≥ 2`, `Kₙ` (assuming uniform edge weights) has one zero eigenvalue with
     multiplicity 1 and one nonzero eigenvalue with multiplicity `n - 1`. (`n` is always
     guaranteed to be at least 2 in whatever context this helper function is called.) =#
-    val1, val2 = eigvals
+    n = sum(values(eigval_counts))
+    val1, val2 = keys(eigval_counts) # There are precisely two eigenvalues, so this is safe
     eigval_nonzero = val1 == 0 ? val2 : val1
 
     kernel_01neg = ones(Int, n, 1) # The all-ones vector spans the (one-dimensional) kernel
@@ -118,4 +151,18 @@ function _complete_graph_laplacian_spectra(eigvals::Tuple{Int,Int}, n::Int)
     bases_1neg = Dict(0 => null_basis_1neg, eigval_nonzero => nonnull_basis_1neg)
 
     return eigspaces_01neg, idxs_1neg, bases_01neg, bases_1neg
+end
+
+function _arbitrary_graph_laplacian_spectra(eigval_counts::OrderedDict{Int,Int})
+    # TODO: Implement
+end
+
+function laplacian_spectra(L::Symmetric{Int,Matrix{Int}})
+    isempty(L) && return _null_graph_laplacian_spectra()
+    iszero(L) && return _empty_graph_laplacian_spectra(size(L, 1))
+
+    res = is_laplacian_integral(L)
+    res.spectrum_integral || return LaplacianSpectra(L)
+
+    # TODO: Add cases for complete and arbitrary graphs
 end
