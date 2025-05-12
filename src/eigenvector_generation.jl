@@ -1,5 +1,11 @@
+# Copyright 2025 Luis M. B. Varona and Nathaniel Johnston
+#
+# Licensed under the MIT license <LICENSE or
+# http://opensource.org/licenses/MIT>. This file may not be copied, modified, or
+# distributed except according to those terms.
+
 """
-    _potential_kernel_eigvecs(n)
+    _pot_kernel_eigvecs_01neg(n)
 
 Return a lazy generator of potential kernel `{-1,0,1}`-eigenvectors of a Laplacian.
 
@@ -7,7 +13,7 @@ Each vector is normalized so that its first nonzero entry is `1`, enforcing pair
 independence between all generated vectors.
 
 # Arguments
-- `n::Int`: the order of the Laplacian matrix of some undirected graph for which to find
+- `n::Integer`: the order of the Laplacian matrix of some undirected graph for which to find
     potential kernel eigenvectors.
 
 # Returns
@@ -17,15 +23,14 @@ independence between all generated vectors.
 # Examples
 Generate all potential kernel eigenvectors for an order `2` Laplacian matrix:
 ```jldoctest
-julia> collect(Vector{Int}, SDiagonalizability._potential_kernel_eigvecs(2))
-4-element Vector{Vector{Int64}}:
- [1, -1]
- [1, 0]
- [1, 1]
- [0, 1]
+julia> hcat(_pot_kernel_eigvecs_01neg(3)...)
+3×13 Matrix{Int64}:
+  1   1   1   1  1  1   1  1  1   0  0  0  0
+ -1  -1  -1   0  0  0   1  1  1   1  1  1  0
+ -1   0   1  -1  0  1  -1  0  1  -1  0  1  1
 ```
 """
-function _potential_kernel_eigvecs(n::Int)
+function _pot_kernel_eigvecs_01neg(n::Integer)
     # Cache to avoid redundant recomputations of the `leading` vector
     leading_cache = Dict{Int,Vector{Int}}()
 
@@ -55,7 +60,7 @@ function _potential_kernel_eigvecs(n::Int)
 end
 
 """
-    _potential_nonkernel_eigvecs(n)
+    _pot_nonkernel_eigvecs_01neg(n)
 
 Return a lazy generator of potential non-kernel `{-1,0,1}`-eigenvectors of a Laplacian.
 
@@ -65,7 +70,7 @@ orthogonal eigenspaces and the all-ones vector is always in the kernel, every no
 `{-1,0,1}`-eigenvector must also have an equal number of `-1`'s and `1`'s.
 
 # Arguments
-- `n::Int`: the order of the Laplacian matrix of some undirected graph for which to find
+- `n::Integer`: the order of the Laplacian matrix of some undirected graph for which to find
     potential non-kernel eigenvectors.
 
 # Returns
@@ -76,20 +81,15 @@ orthogonal eigenspaces and the all-ones vector is always in the kernel, every no
 # Examples
 Generate all potential non-kernel eigenvectors of an order `4` Laplacian matrix:
 ```jldoctest
-julia> collect(Vector{Int}, SDiagonalizability._potential_nonkernel_eigvecs(4))
-9-element Vector{Vector{Int64}}:
- [1, -1, 0, 0]
- [1, 0, -1, 0]
- [1, 0, 0, -1]
- [1, -1, -1, 1]
- [1, -1, 1, -1]
- [1, 1, -1, -1]
- [0, 1, -1, 0]
- [0, 1, 0, -1]
- [0, 0, 1, -1]
+julia> hcat(_pot_nonkernel_eigvecs_01neg(4)...)
+4×9 Matrix{Int64}:
+  1   1   1   1   1   1   0   0   0
+ -1   0   0  -1  -1   1   1   1   0
+  0  -1   0  -1   1  -1  -1   0   1
+  0   0  -1   1  -1  -1   0  -1  -1
 ```
 """
-function _potential_nonkernel_eigvecs(n::Int)
+function _pot_nonkernel_eigvecs_01neg(n::Integer)
     # Caches to avoid redundant recomputations of the `leading` and `entries` vectors
     leading_cache = Dict{Int,Vector{Int}}()
     entries_cache = Dict{Int,Vector{Int}}()
