@@ -13,4 +13,4 @@
 
 Created by [Luis M. B. Varona](https://github.com/Luis-Varona), [Dr. Nathaniel Johnston](https://github.com/nathanieljohnston), and Dr. Sarah Plosker.
 
-Acknowledgements to [Benjamin Talbot](https://github.com/Benjamin-Talbot) and [Logan Pipes](https://github.com/logan-pipes) for their contributions to the algorithm.
+Insights from [Benjamin Talbot](https://github.com/Benjamin-Talbot), [Logan Pipes](https://github.com/logan-pipes), and [Dr. Liam Keliher](https://github.com/lkeliher) are gratefully acknowledged.
