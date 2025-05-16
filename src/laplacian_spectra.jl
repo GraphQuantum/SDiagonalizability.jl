@@ -27,18 +27,18 @@ struct _LaplacianSpectrum01Neg
     eigspaces_01neg::Union{Nothing,OrderedDict{Int,_Eigenspace01Neg}}
 end
 
-function Base.getproperty(spec::_LaplacianSpectrum01Neg, prop::Symbol)
-    if prop == :dimension || !(prop in fieldnames(_Eigenspace01Neg))
-        error("type $(typeof(spec)) has no field $prop")
+function Base.getproperty(obj::_LaplacianSpectrum01Neg, name::Symbol)
+    if name == :dimension || !(name in fieldnames(_Eigenspace01Neg))
+        error("type $(typeof(obj)) has no field $name")
     end
 
-    if prop != :eigspaces_01neg && prop in fieldnames(_LaplacianSpectrum01Neg)
-        value = getfield(spec, prop)
-    elseif spec.diagonalizable_01neg
-        eigspaces_01neg = getfield(spec, :eigspaces_01neg)
-        prop == :multiplicities && (prop = :dimension)
+    if name != :eigspaces_01neg && name in fieldnames(_LaplacianSpectrum01Neg)
+        value = getfield(obj, name)
+    elseif obj.diagonalizable_01neg
+        eigspaces_01neg = getfield(obj, :eigspaces_01neg)
+        name == :multiplicities && (name = :dimension)
         value = OrderedDict(
-            eigval => getfield(eigspace, prop) for (eigval, eigspace) in eigspaces_01neg
+            eigval => getfield(eigspace, name) for (eigval, eigspace) in eigspaces_01neg
         )
     else
         value = nothing
