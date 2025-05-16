@@ -22,7 +22,7 @@ independence between all generated vectors.
 
 # Examples
 Generate all potential kernel eigenvectors for an order `2` Laplacian matrix:
-```jldoctest
+```jldoctest; setup = :(using SDiagonalizability: _pot_kernel_eigvecs_01neg)
 julia> hcat(_pot_kernel_eigvecs_01neg(3)...)
 3×13 Matrix{Int64}:
   1   1   1   1  1  1   1  1  1   0  0  0  0
@@ -80,7 +80,7 @@ orthogonal eigenspaces and the all-ones vector is always in the kernel, every no
 
 # Examples
 Generate all potential non-kernel eigenvectors of an order `4` Laplacian matrix:
-```jldoctest
+```jldoctest; setup = :(using SDiagonalizability: _pot_nonkernel_eigvecs_01neg)
 julia> hcat(_pot_nonkernel_eigvecs_01neg(4)...)
 4×9 Matrix{Int64}:
   1   1   1   1   1   1   0   0   0
