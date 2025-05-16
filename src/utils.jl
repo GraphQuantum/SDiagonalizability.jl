@@ -11,6 +11,7 @@ const _LAPLACIAN_ERR_MSGS = Dict(
     "row_sums" => "Matrix has nonzero row sums; cannot be a Laplacian",
 )
 
+# TODO: Extend functionality to multi-argument functions
 struct NotImplementedError <: Exception
     f::Function
     concretetype::Type
