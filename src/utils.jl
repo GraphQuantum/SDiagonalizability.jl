@@ -19,11 +19,11 @@ struct NotImplementedError <: Exception
 
     function NotImplementedError(f::Function, concretetype::Type, abstracttype::Type)
         if !isconcretetype(concretetype)
-            throw(ArgumentError("$concretetype must be a concrete type"))
+            throw(ArgumentError("Expected a concrete type, got $concretetype"))
         end
 
         if !isabstracttype(abstracttype)
-            throw(ArgumentError("$abstracttype must be an abstract type"))
+            throw(ArgumentError("Expected an abstract type, got $abstracttype"))
         end
 
         if !(concretetype <: abstracttype)
@@ -34,10 +34,11 @@ struct NotImplementedError <: Exception
     end
 end
 
-function Base.show(io::IO, e::NotImplementedError)
-    # TODO: Implement
-    println(
-        "$(e.f) is not yet implemented for subtype $(e.concretetype) <: $(e.abstracttype)"
+function Base.showerror(io::IO, e::NotImplementedError)
+    print(
+        io,
+        """NotImplementedError with `$(e.concretetype)`:
+        The function `$(e.f)` is not yet implemented for this subtype of `$(e.abstracttype)`.""",
     )
 end
 
@@ -46,6 +47,19 @@ function assert_matrix_is_undirected_laplacian(L::AbstractMatrix{<:Integer})
     # Symmetricity implies the column sums (faster to compute) are equal to the row sums
     iszero(sum(L; dims=1)) || throw(DomainError(L, _LAPLACIAN_ERR_MSGS["row_sums"]))
     return nothing
+end
+
+# TODO: Again, add more docstrings
+
+#= This tolerance computation is adapted from NumPy's `numpy.linalg.matrix_rank`, but with
+an additional square root operation to provide even more robustness. (See
+`https://numpy.org/doc/2.1/reference/generated/numpy.linalg.matrix_rank.html`.) =#
+function rank_rtol(A::AbstractMatrix{<:Real})
+    return sqrt(maximum(size(A)) * eps())
+end
+
+function rank_rtol(A::AbstractMatrix{T}) where {T<:AbstractFloat}
+    return sqrt(maximum(size(A)) * Float64(eps(T)))
 end
 
 # TODO: Almost certainly add more utilities as we develop the rest of the library
