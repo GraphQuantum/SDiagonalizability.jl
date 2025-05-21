@@ -19,14 +19,11 @@ MolecularGraph = "6c89ec66-9cd8-5372-9f91-fabc50dd27fd"
 PrecompileTools = "aea7be01-6a6a-4083-8856-8a6e6704d82a"
 
 [compat]
-Combinatorics = "1.0.2"
+Combinatorics = ">=1.0.2, <2.0"
 DataStructures = ">=0.18.15, <1.0"
-ElasticArrays = "1.2.12"
+ElasticArrays = ">=1.2.11, <2.0"
 Graphs = "1.10"
-LinearAlgebra = "1.9"
-MolecularGraph = ">=0.15.0, <1.0"
+LinearAlgebra = "1.10"
+MolecularGraph = ">=0.16.0, <1.0"
 PrecompileTools = "1.2"
-julia = "1.9"
-
-[extras]
-JuliaFormatter = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
+julia = "1.10"

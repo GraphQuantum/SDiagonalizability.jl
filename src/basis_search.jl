@@ -47,7 +47,7 @@ function _find_basis_with_property(
     #= The current vertex degree and connected component of any root node (each
     `root_indices[1]` in the loop below) will always be 0 and 1 before the DFS begins. =#
     nodes = [_QOBasisSearchNodeData(1, 0)]
-    union_find = Dict{UInt8, Vector{UInt8}}(1 => [1])
+    union_find = Dict{UInt8,Vector{UInt8}}(1 => [1])
 
     for root_indices in combinations(1:num_columns, 2)
         basis_indices = _find_basis_indices(
@@ -85,7 +85,7 @@ function _find_basis_with_property(
         ortho_graph_compl_adjacency = .!iszero.(partial_basis' * partial_basis)
         ortho_graph_compl_adjacency[diagind(ortho_graph_compl_adjacency)] .= false
 
-        if all(sum(ortho_graph_compl_adjacency, dims=1) .<= 2k - 2)
+        if all(sum(ortho_graph_compl_adjacency; dims=1) .<= 2k - 2)
             H = Graph(column_rank) # Initialize the empty graph on `column_rank` vertices
 
             for i in 1:(k - 1), j in (i + 1):k
@@ -134,7 +134,7 @@ function _find_basis_indices(
     column_space::AbstractMatrix{Int},
     column_rank::Int,
     nodes::Vector{_QOBasisSearchNodeData},
-    union_find::Dict{UInt8, Vector{UInt8}},
+    union_find::Dict{UInt8,Vector{UInt8}},
     prop::_QuasiOrthogonality,
 )
     depth = length(curr_indices)
