@@ -27,18 +27,18 @@ struct _LaplacianSpectrum01Neg
     eigspaces_01neg::Union{Nothing,OrderedDict{Int,_Eigenspace01Neg}}
 end
 
-function Base.getproperty(spec::_LaplacianSpectrum01Neg, prop::Symbol)
-    if prop == :dimension || !(prop in fieldnames(_Eigenspace01Neg))
-        error("type $(typeof(spec)) has no field $prop")
+function Base.getproperty(obj::_LaplacianSpectrum01Neg, name::Symbol)
+    if name == :dimension || !(name in fieldnames(_Eigenspace01Neg))
+        error("type $(typeof(obj)) has no field $name")
     end
 
-    if prop != :eigspaces_01neg && prop in fieldnames(_LaplacianSpectrum01Neg)
-        value = getfield(spec, prop)
-    elseif spec.diagonalizable_01neg
-        eigspaces_01neg = getfield(spec, :eigspaces_01neg)
-        prop == :multiplicities && (prop = :dimension)
+    if name != :eigspaces_01neg && name in fieldnames(_LaplacianSpectrum01Neg)
+        value = getfield(obj, name)
+    elseif obj.diagonalizable_01neg
+        eigspaces_01neg = getfield(obj, :eigspaces_01neg)
+        name == :multiplicities && (name = :dimension)
         value = OrderedDict(
-            eigval => getfield(eigspace, prop) for (eigval, eigspace) in eigspaces_01neg
+            eigval => getfield(eigspace, name) for (eigval, eigspace) in eigspaces_01neg
         )
     else
         value = nothing
@@ -68,11 +68,7 @@ function _extract_independent_cols(E::AbstractMatrix{<:Integer})
     F = qr(E, ColumnNorm())
     pivots = F.p # The first `rank(E)` pivots correspond to independent columns of `E`
     ortho_coefs = diag(F.R) # Scaling factors of the columns of the `Q` matrix
-
-    #= The tolerance is taken from NumPy's `numpy.linalg.matrix_rank` function, which uses
-    singular values. It is easily adapted to scaling coefficients from a QR factorization.
-    (See `https://numpy.org/doc/2.1/reference/generated/numpy.linalg.matrix_rank.html`.) =#
-    tol = maximum(abs, ortho_coefs) * maximum(size(E)) * eps()
+    tol = rank_rtol(E) * maximum(abs, ortho_coefs)
     r = count(x -> abs(x) > tol, ortho_coefs) # The rank of `E` within floating-point error
     return E[:, pivots[1:r]] # A largest independent subset of the columns of `E`
 end

@@ -12,17 +12,20 @@ using LinearAlgebra
 using Combinatorics: combinations, multiset_permutations
 using DataStructures: OrderedDict, counter
 using ElasticArrays: ElasticMatrix
-using MolecularGraph: nodesubgraph_is_isomorphic
+using MolecularGraph: subgraph_monomorphisms
 
 using PrecompileTools: @setup_workload, @compile_workload
 
 include("utils.jl")
-include("laplacian_types.jl")
+include("factories/laplacian_types.jl")
+include("factories/orthogonality_properties.jl")
+
 include("eigenvector_generation.jl")
 include("laplacian_spectra.jl")
 include("basis_search.jl")
 include("s_bandwidth.jl")
 
-# TODO: Add exports
+export SpectrumIntegralResult, check_spectrum_integrality
+# TODO: Add exports from `s_bandwidth.jl`
 
 end
