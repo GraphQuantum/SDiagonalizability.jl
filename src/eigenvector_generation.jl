@@ -121,3 +121,7 @@ function _pot_nonkernel_eigvecs_01neg(n::Integer)
         )
     )
 end
+
+# TODO: Add comments here
+Base.eltype(::typeof(_pot_kernel_eigvecs_01neg(0))) = Vector{Int}
+Base.eltype(::typeof(_pot_nonkernel_eigvecs_01neg(0))) = Vector{Int}
