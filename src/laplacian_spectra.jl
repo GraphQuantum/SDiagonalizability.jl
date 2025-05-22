@@ -10,6 +10,18 @@ struct SpectrumIntegralResult
     matrix::Matrix{Int}
     spectrum_integral::Bool
     multiplicities::Union{Nothing,OrderedDict{Int,Int}}
+
+    function SpectrumIntegralResult(
+        matrix::Matrix{Int},
+        spectrum_integral::Bool,
+        multiplicities::Union{Nothing,OrderedDict{Int,Int}},
+    )
+        if spectrum_integral && !isnothing(multiplicities)
+            throw(ArgumentError("TODO: Write here"))
+        end
+
+        return new(matrix, spectrum_integral, multiplicities)
+    end
 end
 
 struct _Eigenspace01Neg
@@ -34,8 +46,14 @@ function Base.getproperty(obj::_LaplacianSpectrum01Neg, name::Symbol)
 
     if name != :eigspaces_01neg && name in fieldnames(_LaplacianSpectrum01Neg)
         value = getfield(obj, name)
-    elseif obj.diagonalizable_01neg
+    elseif getfield(obj, :diagonalizable_01neg)
         eigspaces_01neg = getfield(obj, :eigspaces_01neg)
+
+        #= For compiler inference during static analysis. We choose to assert rather than
+        throw an error because this struct is not part of the public API; hence, any failure
+        to meet this condition indicates a developer error. =#
+        @assert !isnothing(eigspaces_01neg)
+
         name == :multiplicities && (name = :dimension)
         value = OrderedDict(
             eigval => getfield(eigspace, name) for (eigval, eigspace) in eigspaces_01neg
@@ -50,7 +68,7 @@ end
 function check_spectrum_integrality(X::AbstractMatrix{<:Integer})
     X_copy = Matrix{Int}(X) # Avoid shared mutability and cast to `Matrix{Int}`
     eigvals_float = eigvals(X_copy)
-    eigvals_int = round.(Int, real.(eigvals_float))
+    eigvals_int = Int.(round.(real.(eigvals_float)))
     spectrum_integral = isapprox(eigvals_float, eigvals_int)
 
     # Sort first by ascending multiplicity then by ascending eigenvalue
@@ -64,12 +82,17 @@ function check_spectrum_integrality(X::AbstractMatrix{<:Integer})
 end
 
 function _extract_independent_cols(E::AbstractMatrix{<:Integer})
+    # Cast to a dense floating-point matrix to enable optimizations in `LinearAlgebra.qr`
+    E_float = Matrix{Float64}(E)
+
     # Factorize `E = QR` for some orthogonal matrix `Q` and upper triangular matrix `R`
-    F = qr(E, ColumnNorm())
+    F = qr(E_float, ColumnNorm())
     pivots = F.p # The first `rank(E)` pivots correspond to independent columns of `E`
     ortho_coefs = diag(F.R) # Scaling factors of the columns of the `Q` matrix
-    tol = rank_rtol(E) * maximum(abs, ortho_coefs)
+
+    tol = rank_rtol(E_float) * maximum(abs, ortho_coefs)
     r = count(x -> abs(x) > tol, ortho_coefs) # The rank of `E` within floating-point error
+
     return E[:, pivots[1:r]] # A largest independent subset of the columns of `E`
 end
 
@@ -219,15 +242,16 @@ function _typed_laplacian_spectra_01neg(TL::_ArbitraryGraphLaplacian)
     # The kernel is simpler and handled differently from the other eigenspaces
     if multiplicities[0] == 1 # The all-ones vector spans the kernel
         eigvecs_01neg[0] = ones(Int, n, 1)
-    else # Check all {-1,0,1}-vectors in ℝⁿ, unique up to span 
+    else # Check all {-1,0,1}-vectors in ℝⁿ, unique up to span
+        # TODO: Multithread
         eigvecs_01neg[0] = hcat(
             Iterators.filter(v -> iszero(L * v), _pot_kernel_eigvecs_01neg(n))...
         )
     end
 
-    # TODO: Multithread this; lazy evaluation means speed will become an issue before memory
+    # TODO: Multithread
     # Now fill up the remaining (non-kernel) eigenspaces
-    for v in _pot_kernel_eigvecs_01neg(n)
+    for v in _pot_nonkernel_eigvecs_01neg(n)
         for eigval in eigvals_nonzero
             if L * v == eigval * v
                 append!(eigvecs_01neg[eigval], v)
