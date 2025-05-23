@@ -6,10 +6,13 @@
 
 using SDiagonalizability
 using Documenter
+using DocumenterCitations
 
 DocMeta.setdocmeta!(
     SDiagonalizability, :DocTestSetup, :(using SDiagonalizability); recursive=true
 )
+
+bib = CitationBibliography(joinpath(@__DIR__, "src", "refs.bib"); style=:numeric)
 
 makedocs(;
     modules=[SDiagonalizability],
@@ -20,6 +23,7 @@ makedocs(;
         edit_link="main",
         assets=String[],
     ),
+    plugins=[bib],
     pages=["Home" => "index.md"],
 )
 

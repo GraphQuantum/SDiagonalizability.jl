@@ -7,7 +7,7 @@
 """
     _pot_kernel_eigvecs_01neg(n)
 
-Return a lazy generator of potential kernel `{-1,0,1}`-eigenvectors of a Laplacian.
+Lazily generate all potential kernel `{-1,0,1}`-eigenvectors of an order `n` Laplacian.
 
 Each vector is normalized so that its first nonzero entry is `1`, enforcing pairwise linear
 independence between all generated vectors.
@@ -22,13 +22,17 @@ independence between all generated vectors.
 
 # Examples
 Generate all potential kernel eigenvectors for an order `2` Laplacian matrix:
-```jldoctest; setup = :(using SDiagonalizability: _pot_kernel_eigvecs_01neg)
-julia> hcat(_pot_kernel_eigvecs_01neg(3)...)
+```jldoctest; setup = :(using SDiagonalizability)
+julia> hcat(SDiagonalizability._pot_kernel_eigvecs_01neg(3)...)
 3×13 Matrix{Int64}:
   1   1   1   1  1  1   1  1  1   0  0  0  0
  -1  -1  -1   0  0  0   1  1  1   1  1  1  0
  -1   0   1  -1  0  1  -1  0  1  -1  0  1  1
 ```
+
+# Notes
+The number of potential kernel eigenvectors (unique up to span) for an order `n` Laplacian
+matrix is given by `(3ⁿ - 1) / 2`. See also the relevant OEIS sequence [Slo25](@cite).
 """
 function _pot_kernel_eigvecs_01neg(n::Integer)
     # Cache to avoid redundant recomputations of the `leading` vector
@@ -45,7 +49,7 @@ function _pot_kernel_eigvecs_01neg(n::Integer)
             body,
         ) # Append the permuted entries to the leading [0, ..., 0, 1] vector
         for k in 1:n # Iterate over possible indices of first nonzero entry
-        # Iterate over permutations taken from the `r`th Cartesian power of {-1,0,1}
+        # Iterate over permutations taken from the `r`-th Cartesian power of {-1,0,1}
         for body in multiset_permutations(
             let r = n - k
                 entries = Vector{Int}(undef, 3r)
@@ -62,7 +66,7 @@ end
 """
     _pot_nonkernel_eigvecs_01neg(n)
 
-Return a lazy generator of potential non-kernel `{-1,0,1}`-eigenvectors of a Laplacian.
+Lazily generate all potential non-kernel `{-1,0,1}`-eigenvectors of an order `n` Laplacian.
 
 Each vector is normalized so that its first nonzero entry is `1`, enforcing pairwise linear
 independence between all generated vectors. Since all Laplacian matrices have pairwise
@@ -80,14 +84,19 @@ orthogonal eigenspaces and the all-ones vector is always in the kernel, every no
 
 # Examples
 Generate all potential non-kernel eigenvectors of an order `4` Laplacian matrix:
-```jldoctest; setup = :(using SDiagonalizability: _pot_nonkernel_eigvecs_01neg)
-julia> hcat(_pot_nonkernel_eigvecs_01neg(4)...)
+```jldoctest; setup = :(using SDiagonalizability)
+julia> hcat(SDiagonalizability._pot_nonkernel_eigvecs_01neg(4)...)
 4×9 Matrix{Int64}:
   1   1   1   1   1   1   0   0   0
  -1   0   0  -1  -1   1   1   1   0
   0  -1   0  -1   1  -1  -1   0   1
   0   0  -1   1  -1  -1   0  -1  -1
 ```
+
+# Notes
+The number of potential non-kernel eigenvectors (unique up to span) for an order `n`
+Laplacian matrix is, by non-trivial combinatorial arguments, equal to the number of humps in
+all Motzkin paths of length `n`. See also the relevant OEIS sequence [Deu25](@cite).
 """
 function _pot_nonkernel_eigvecs_01neg(n::Integer)
     # Caches to avoid redundant recomputations of the `leading` and `entries` vectors
@@ -122,6 +131,6 @@ function _pot_nonkernel_eigvecs_01neg(n::Integer)
     )
 end
 
-# TODO: Add comments here
+# Specify the return type of both eigenvector generators for type inference and stability
 Base.eltype(::typeof(_pot_kernel_eigvecs_01neg(0))) = Vector{Int}
 Base.eltype(::typeof(_pot_nonkernel_eigvecs_01neg(0))) = Vector{Int}

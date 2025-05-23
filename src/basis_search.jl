@@ -140,7 +140,7 @@ function _find_basis_indices(
     depth = length(curr_indices)
     num_columns = size(column_space, 2)
     partial_basis = view(column_space, :, curr_indices)
-    rtol = rank_rtol(partial_basis)
+    rtol = _rank_rtol(partial_basis)
 
     rank(partial_basis, rtol) < depth && return nothing
 
@@ -222,7 +222,7 @@ function _find_basis_indices(
     depth = length(curr_indices)
     num_columns = size(column_space, 2)
     partial_basis = view(column_space, :, curr_indices)
-    rtol = rank_rtol(partial_basis)
+    rtol = _rank_rtol(partial_basis)
 
     rank(partial_basis, rtol) < depth && return nothing
 

@@ -16,8 +16,13 @@ struct SpectrumIntegralResult
         spectrum_integral::Bool,
         multiplicities::Union{Nothing,OrderedDict{Int,Int}},
     )
-        if spectrum_integral && !isnothing(multiplicities)
-            throw(ArgumentError("TODO: Write here"))
+        if spectrum_integral && isnothing(multiplicities)
+            throw(
+                ArgumentError(
+                    "`multiplicities` is only nothing as a sentinel value " *
+                    "when `spectrum_integral` is false.",
+                ),
+            )
         end
 
         return new(matrix, spectrum_integral, multiplicities)
@@ -65,9 +70,101 @@ function Base.getproperty(obj::_LaplacianSpectrum01Neg, name::Symbol)
     return value
 end
 
-function check_spectrum_integrality(X::AbstractMatrix{<:Integer})
-    X_copy = Matrix{Int}(X) # Avoid shared mutability and cast to `Matrix{Int}`
-    eigvals_float = eigvals(X_copy)
+"""
+    check_spectrum_integrality(A)
+
+Check whether the eigenvalues of `A` are integers (up to floating-point error).
+
+If the eigenvalues are integers, then an eigenvalue-multiplicity map is also constructed.
+
+# Arguments
+- `A::AbstractMatrix{<:Integer}`: the matrix whose eigenvalues to check for integrality.
+
+# Returns
+- `::SpectrumIntegralResult`: a struct containing the following fields:
+    - `matrix::Matrix{Int}`: a (casted) copy of `A`, avoiding shared mutability.
+    - `spectrum_integral::Bool`: whether the eigenvalues of `A` are integers.
+    - `multiplicities::Union{Nothing,OrderedDict{Int,Int}}`: a map from eigenvalues to
+        multiplicities, sorted first by ascending multiplicity then by ascending eigenvalue.
+        (This field is `nothing` if the eigenvalues are not integers.)
+
+# Examples
+Confirm that the rotation matrix by `π/2` radians counterclockwise is not spectrum integral,
+since it has eigenvalues `±i` [Joy15; p. 1](@cite):
+```jldoctest; setup = :(using SDiagonalizability)
+julia> R = Int8.([0 -1; 1 0])
+2×2 Matrix{Int8}:
+ 0  -1
+ 1   0
+
+julia> res = check_spectrum_integrality(R);
+
+julia> res.matrix
+2×2 Matrix{Int64}:
+ 0  -1
+ 1   0
+
+julia> res.spectrum_integral
+false
+
+julia> res.multiplicities
+OrderedCollections.OrderedDict{Int64, Int64}()
+```
+
+Confirm that the adjacency matrix of the Petersen graph is spectrum integral, with correct
+eigenvalues and multiplicities of `{3: 1, -2: 4, 1: 5}` [Fox09; p. 2](@cite):
+```jldoctest; setup = :(using SDiagonalizability, Graphs)
+julia> G = smallgraph(:petersen)
+{10, 15} undirected simple Int64 graph
+
+julia> A = adjacency_matrix(G)
+10×10 SparseArrays.SparseMatrixCSC{Int64, Int64} with 30 stored entries:
+ ⋅  1  ⋅  ⋅  1  1  ⋅  ⋅  ⋅  ⋅
+ 1  ⋅  1  ⋅  ⋅  ⋅  1  ⋅  ⋅  ⋅
+ ⋅  1  ⋅  1  ⋅  ⋅  ⋅  1  ⋅  ⋅
+ ⋅  ⋅  1  ⋅  1  ⋅  ⋅  ⋅  1  ⋅
+ 1  ⋅  ⋅  1  ⋅  ⋅  ⋅  ⋅  ⋅  1
+ 1  ⋅  ⋅  ⋅  ⋅  ⋅  ⋅  1  1  ⋅
+ ⋅  1  ⋅  ⋅  ⋅  ⋅  ⋅  ⋅  1  1
+ ⋅  ⋅  1  ⋅  ⋅  1  ⋅  ⋅  ⋅  1
+ ⋅  ⋅  ⋅  1  ⋅  1  1  ⋅  ⋅  ⋅
+ ⋅  ⋅  ⋅  ⋅  1  ⋅  1  1  ⋅  ⋅
+
+julia> res = check_spectrum_integrality(A);
+
+julia> res.matrix
+10×10 Matrix{Int64}:
+ 0  1  0  0  1  1  0  0  0  0
+ 1  0  1  0  0  0  1  0  0  0
+ 0  1  0  1  0  0  0  1  0  0
+ 0  0  1  0  1  0  0  0  1  0
+ 1  0  0  1  0  0  0  0  0  1
+ 1  0  0  0  0  0  0  1  1  0
+ 0  1  0  0  0  0  0  0  1  1
+ 0  0  1  0  0  1  0  0  0  1
+ 0  0  0  1  0  1  1  0  0  0
+ 0  0  0  0  1  0  1  1  0  0
+
+julia> res.spectrum_integral
+true
+
+julia> res.multiplicities
+OrderedCollections.OrderedDict{Int64, Int64} with 3 entries:
+  3  => 1
+  -2 => 4
+  1  => 5
+```
+
+# Notes
+If an undirected graph with integer edge weights is `{-1,0,1}`-diagonalizable (or, more
+restrictively, `{-1,1}`-diagonalizable), then its Laplacian matrix has integer eigenvalues
+[JP25; p. 300](@cite). Hence, validating Laplacian integrality serves as a useful screening
+step in *SDiagonalizability.jl*'s principal *S*-bandwidth algorithm.
+"""
+function check_spectrum_integrality(A::AbstractMatrix{<:Integer})
+    A_copy = Matrix{Int}(A) # Avoid shared mutability and cast to `Matrix{Int}`
+
+    eigvals_float = eigvals(A_copy)
     eigvals_int = Int.(round.(real.(eigvals_float)))
     spectrum_integral = isapprox(eigvals_float, eigvals_int)
 
@@ -78,24 +175,80 @@ function check_spectrum_integrality(X::AbstractMatrix{<:Integer})
         multiplicities = OrderedDict{Int,Int}()
     end
 
-    SpectrumIntegralResult(X_copy, spectrum_integral, multiplicities)
+    SpectrumIntegralResult(A_copy, spectrum_integral, multiplicities)
 end
 
-function _extract_independent_cols(E::AbstractMatrix{<:Integer})
-    # Cast to a dense floating-point matrix to enable optimizations in `LinearAlgebra.qr`
-    E_float = Matrix{Float64}(E)
+"""
+    _extract_independent_cols(A)
 
-    # Factorize `E = QR` for some orthogonal matrix `Q` and upper triangular matrix `R`
-    F = qr(E_float, ColumnNorm())
-    pivots = F.p # The first `rank(E)` pivots correspond to independent columns of `E`
+Return a (not necessarily unique) independent spanning subset of the columns of `A`.
+
+Computing a QR decomposition of `A`, the scaling coefficients from the orthogonalization
+process are used to determine the rank (rather than recompute it with an SVD), while the
+pivots are used to extract a spanning set of independent columns.
+
+# Arguments
+- `A::AbstractMatrix{T<:Integer}`: the matrix whose independent columns to extract.
+
+# Returns
+- `::AbstractMatrix{T}`: a spanning set of independent columns of `A`.
+
+# Examples
+Observe how columns with greater Euclidean norms are given priority in the pivot ordering:
+```jldoctest; setup = :(using SDiagonalizability)
+julia> A = [3  0  0  0  2  1   5   0
+            0  3  0  0  2  1  -5   0
+            0  0  3  0  2  1   5   4
+            0  0  0  3  2  1   0  -4
+            0  0  0  0  0  0   0   0]
+5×8 Matrix{Int64}:
+ 3  0  0  0  2  1   5   0
+ 0  3  0  0  2  1  -5   0
+ 0  0  3  0  2  1   5   4
+ 0  0  0  3  2  1   0  -4
+ 0  0  0  0  0  0   0   0
+
+julia> SDiagonalizability._extract_independent_cols(A)
+5×4 Matrix{Int64}:
+  5   0  2  3
+ -5   0  2  0
+  5   4  2  0
+  0  -4  2  0
+  0   0  0  0
+```
+"""
+function _extract_independent_cols(A::AbstractMatrix{<:Integer})
+    # Cast to a dense floating-point matrix to enable optimizations in `LinearAlgebra.qr`
+    A_float = Matrix{Float64}(A)
+
+    # Factorize `A = QR` for some real unitary matrix `Q` and upper triangular matrix `R`
+    F = qr(A_float, ColumnNorm())
+    pivots = F.p # The first `rank(A)` pivots correspond to independent columns of `A`
     ortho_coefs = diag(F.R) # Scaling factors of the columns of the `Q` matrix
 
-    tol = rank_rtol(E_float) * maximum(abs, ortho_coefs)
-    r = count(x -> abs(x) > tol, ortho_coefs) # The rank of `E` within floating-point error
+    tol = _rank_rtol(A_float) * maximum(abs, ortho_coefs)
+    r = count(x -> abs(x) > tol, ortho_coefs) # The rank of `A` within floating-point error
 
-    return E[:, pivots[1:r]] # A largest independent subset of the columns of `E`
+    return A[:, pivots[1:r]] # An independent spanning subset of the columns of `A`
 end
 
+"""
+    _find_indices_1neg(eigvecs_01neg)
+
+Find the indices of `{-1,1}`-eigenvectors given a map of eigenspaces.
+
+More precisely, TODO: Write here
+
+# Arguments
+- `eigvecs_01neg::AbstractDict{Int,<:AbstractMatrix{Int}}`: a map from eigenvalues to
+    eigenspaces, TODO: Write here
+
+# Returns
+- `::AbstractDict{Int,BitVector}`: TODO: Write here
+
+# Examples
+TODO: Write here
+"""
 function _find_indices_1neg(eigvecs_01neg::AbstractDict{Int,<:AbstractMatrix{Int}})
     #= The order of the Laplacian matrix. Accessing the zero key is safe, as every
     undirected graph has a rank-deficient Laplacian. =#
