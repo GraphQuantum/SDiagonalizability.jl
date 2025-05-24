@@ -6,8 +6,10 @@
 
 # TODO: Add comments and docstrings to this file
 
+# TODO: When writing the docstring, make sure to include a `Subtypes` section
 abstract type _KOrthogonality end
 
+# TODO: When writing the docstrings, make sure to include a `Supertype Hierarchy` section
 struct _Orthogonality <: _KOrthogonality end
 struct _QuasiOrthogonality <: _KOrthogonality end
 struct _WeakOrthogonality <: _KOrthogonality

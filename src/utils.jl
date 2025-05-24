@@ -4,7 +4,8 @@
 # http://opensource.org/licenses/MIT>. This file may not be copied, modified, or
 # distributed except according to those terms.
 
-# TODO: Extend functionality to multi-argument functions
+# TODO: Extend functionality to multi-argument functions. Talk about "dispatch to [type] for
+# [parameter]" rather than the current error message.
 struct NotImplementedError <: Exception
     f::Function
     concretetype::Type
@@ -64,8 +65,8 @@ julia> L = [ 4  -1  -1  -1  -1;
  -1   0   0   1   0
  -1   0   0   0   1
 
-julia> SDiagonalizability._assert_matrix_is_undirected_laplacian(L)
-
+julia> isnothing(SDiagonalizability._assert_matrix_is_undirected_laplacian(L))
+true
 ```
 
 The adjacency matrix of the (undirected) cycle graph on `4` vertices is symmetric but has
@@ -87,19 +88,31 @@ Matrix has nonzero row sums; cannot be an (undirected) Laplacian
 [...]
 ```
 
-The out-degree Laplacian matrix of this random tournament digraph has zero row sums but is
-not symmetric, so it fails the check:
+Both the in-degree and out-degree Laplacian matrices of this random tournament digraph have
+zero row sums but are not symmetric, so they fail the check. (These are the two standard
+ways of extending the concept of the Laplacian to directed graphs [VL20; p. 196](@cite).)
 ```jldoctest; setup = :(using SDiagonalizability, Graphs)
 julia> G = random_tournament_digraph(3; seed=87)
 {3, 3} directed simple Int64 graph
 
-julia> L = laplacian_matrix(G; dir=:out)
+julia> L_in = laplacian_matrix(G; dir=:in)
+3×3 SparseArrays.SparseMatrixCSC{Int64, Int64} with 5 stored entries:
+  ⋅  ⋅   ⋅
+ -1  2  -1
+ -1  ⋅   1
+
+julia> SDiagonalizability._assert_matrix_is_undirected_laplacian(L_in)
+ERROR: DomainError with sparse([2, 3, 2, 2, 3], [1, 1, 2, 3, 3], [-1, -1, 2, -1, 1], 3, 3):
+Matrix is not symmetric; cannot be an (undirected) Laplacian
+[...]
+
+julia> L_out = laplacian_matrix(G; dir=:out)
 3×3 SparseArrays.SparseMatrixCSC{Int64, Int64} with 5 stored entries:
  2  -1  -1
  ⋅   ⋅   ⋅
  ⋅  -1   1
 
-julia> SDiagonalizability._assert_matrix_is_undirected_laplacian(L)
+julia> SDiagonalizability._assert_matrix_is_undirected_laplacian(L_out)
 ERROR: DomainError with sparse([1, 1, 3, 1, 3], [1, 2, 2, 3, 3], [2, -1, -1, -1, 1], 3, 3):
 Matrix is not symmetric; cannot be an (undirected) Laplacian
 [...]
@@ -107,9 +120,22 @@ Matrix is not symmetric; cannot be an (undirected) Laplacian
 
 # Notes
 If edges are to be bidirectional, then `L` must be symmetric. `L` must also have zero row
-sums, since the `(j, j)`-th entry is the weighted degree of node `j` (the sum of all
-incident edges' weights) and the `(i, j)`-th entry for `j ≠ i` is the negation of the weight
+sums, since the `(i, i)`-th entry is the weighted degree of node `i` (the sum of all
+incident edges' weights) and the `(i, j)`-th entry for `i ≠ j` is the negation of the weight
 of edge `(i, j)` (or simply `0`, if no such edge exists).
+
+Given the highly optimized, lazy, zero-allocation implementation of
+`LinearAlgebra.issymmetric`, the symmetry check is performed first. (Both steps are `O(n²)`
+in the worst case, but testing for symmetry is far more performant in practice.) This also
+allows us to (also lazily) check for nonzero column sums rather than nonzero row sums (since
+these are equivalent for symmetric matrices) in the second step, taking advantage of Julia's
+column-major storage model.
+
+At first blush, it may seem as though the choice of `DomainError` over something like
+`ArgumentError` (or even simply the return of a boolean) constitutes poor design. However,
+this is informed by the *ad hoc* use of `assert_matrix_is_undirected_laplacian` to validate
+inputs for other functions requiring Laplacian matrices. This function is never meant to be
+publicly exposed on its own.
 """
 function _assert_matrix_is_undirected_laplacian(L::AbstractMatrix{<:Integer})
     if !issymmetric(L)
@@ -118,7 +144,8 @@ function _assert_matrix_is_undirected_laplacian(L::AbstractMatrix{<:Integer})
         )
     end
 
-    if !iszero(sum(L; dims=1))
+    # This method of lazy evaluation is faster than calling `!iszero(sum(L, dims=1))`
+    if any(col -> !iszero(sum(col)), eachcol(L))
         throw(
             DomainError(
                 L, "Matrix has nonzero row sums; cannot be an (undirected) Laplacian"
@@ -141,7 +168,9 @@ the `R` matrix in `A = QR`), then the user should numerically estimate the rank 
 count(Δ .> maximum(Δ) * _rank_rtol(A))`.
 
 Since the machine epsilon is only defined for floating-point types, we call `eps()`
-(defaulting to `Float64`) instead of `eps(eltype(A))` when computing the tolerance.
+(defaulting to `Float64`) instead of `eps(eltype(A))` when computing the tolerance. If the
+elements of `A` are floats, on the other hand, then `_rank_rtol` dispatches to a separate
+method that uses the element type's machine epsilon.
 
 # Arguments
 - `A::AbstractMatrix{<:Real}`: the matrix for which to compute a tolerance.
@@ -158,6 +187,12 @@ of `maximum(size(A)) * eps()` in the `numpy.linalg.matrix_rank` function [numpy2
 with a square root taken for additional robustness. (In particular, the short, fat matrices
 holding all `{-1,0,1}`-eigenvectors of a Laplacian matrix are often ill-conditioned, hence
 the need for this higher tolerance.)
+
+In the case of using SVD to compute matrix rank, the decision to default to the `Float64`
+machine epsilon is motivated by how `LinearAlgebra.rank` handles non-floating-point
+matrices, as LAPACK automatically converts to `Float64` under the hood. In the case of QRD,
+our *ad hoc* use of this function in `SDiagonalizability._extract_independent_cols` takes in
+floating-point matrices anyway, so this particular method is no longer relevant.
 """
 function _rank_rtol(A::AbstractMatrix{<:Real})
     return sqrt(maximum(size(A)) * eps())

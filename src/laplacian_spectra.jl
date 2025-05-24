@@ -32,7 +32,7 @@ end
 struct _Eigenspace01Neg
     dimension::Int
     eigvecs_01neg::AbstractMatrix{Int}
-    indices_1neg::BitVector
+    indices_1neg::Vector{Int}
     basis_01neg::Union{Nothing,Matrix{Int}}
     basis_1neg::Union{Nothing,Matrix{Int}}
 end
@@ -75,7 +75,8 @@ end
 
 Check whether the eigenvalues of `A` are integers (up to floating-point error).
 
-If the eigenvalues are integers, then an eigenvalue-multiplicity map is also constructed.
+If the eigenvalues are indeed all integers, then an eigenvalue-multiplicity map is
+constructed as well.
 
 # Arguments
 - `A::AbstractMatrix{<:Integer}`: the matrix whose eigenvalues to check for integrality.
@@ -86,11 +87,11 @@ If the eigenvalues are integers, then an eigenvalue-multiplicity map is also con
     - `spectrum_integral::Bool`: whether the eigenvalues of `A` are integers.
     - `multiplicities::Union{Nothing,OrderedDict{Int,Int}}`: a map from eigenvalues to
         multiplicities, sorted first by ascending multiplicity then by ascending eigenvalue.
-        (This field is `nothing` if the eigenvalues are not integers.)
+        (This field is `nothing` if the eigenvalues are not all integers.)
 
 # Examples
-Confirm that the rotation matrix by `π/2` radians counterclockwise is not spectrum integral,
-since it has eigenvalues `±i` [Joy15; p. 1](@cite):
+Confirm that the rotation matrix by `π/2` radians counterclockwise is not spectrum integral
+(rather, it has eigenvalues `±i` [Joy15; p. 1](@cite)):
 ```jldoctest; setup = :(using SDiagonalizability)
 julia> R = Int8.([0 -1; 1 0])
 2×2 Matrix{Int8}:
@@ -107,8 +108,8 @@ julia> res.matrix
 julia> res.spectrum_integral
 false
 
-julia> res.multiplicities
-OrderedCollections.OrderedDict{Int64, Int64}()
+julia> isnothing(res.multiplicities)
+true
 ```
 
 Confirm that the adjacency matrix of the Petersen graph is spectrum integral, with correct
@@ -159,7 +160,21 @@ OrderedCollections.OrderedDict{Int64, Int64} with 3 entries:
 If an undirected graph with integer edge weights is `{-1,0,1}`-diagonalizable (or, more
 restrictively, `{-1,1}`-diagonalizable), then its Laplacian matrix has integer eigenvalues
 [JP25; p. 300](@cite). Hence, validating Laplacian integrality serves as a useful screening
-step in *SDiagonalizability.jl*'s principal *S*-bandwidth algorithm.
+step in *SDiagonalizability.jl*'s principal *S*-bandwidth minimzation algorithm.
+
+It is, perhaps, an odd choice to sort the eigenvalue/multiplicity pairs in this file rather
+than in `src/s_bandwidth.jl`—after all, in the context of the overarching *S*-bandwidth
+algorithm, this ordering is only ever used to determine which eigenspaces are searched for
+*S*-bases first. However, the inclusion of `check_spectrum_integrality` in the public API
+motivates the enforcement of a consistent, natural ordering of the `multiplicites` map in
+each (potentially user-facing) `SpectrumIntegralResult` instance.
+
+Of course, we make it a point to still sort `multiplicities` as desired (first by ascending
+multiplicity then by ascending eigenvalue) in `src/s_bandwidth.jl` itself whenever needed by
+another function; this seems more robust than relying on `check_spectrum_integrality` to do
+so or even folding the logic into the `SpectrumIntegralResult` inner constructor.
+
+TODO: Should some of this explanation go in the `SpectrumIntegralResult` docstring instead?
 """
 function check_spectrum_integrality(A::AbstractMatrix{<:Integer})
     A_copy = Matrix{Int}(A) # Avoid shared mutability and cast to `Matrix{Int}`
@@ -172,7 +187,7 @@ function check_spectrum_integrality(A::AbstractMatrix{<:Integer})
     if spectrum_integral
         multiplicities = OrderedDict(sort!(collect(counter(eigvals_int)); by=reverse))
     else
-        multiplicities = OrderedDict{Int,Int}()
+        multiplicities = nothing
     end
 
     SpectrumIntegralResult(A_copy, spectrum_integral, multiplicities)
@@ -216,6 +231,9 @@ julia> SDiagonalizability._extract_independent_cols(A)
   0  -4  2  0
   0   0  0  0
 ```
+
+# Notes
+TODO: Discuss unusual use of `_rank_rtol`
 """
 function _extract_independent_cols(A::AbstractMatrix{<:Integer})
     # Cast to a dense floating-point matrix to enable optimizations in `LinearAlgebra.qr`
@@ -237,17 +255,22 @@ end
 
 Find the indices of `{-1,1}`-eigenvectors given a map of eigenspaces.
 
-More precisely, TODO: Write here
+More precisely, given a map from each eigenvalue to all {-1,0,1}-vectors in the associated
+eigenspace, this function returns a map from each eigenvalue to the indices of the
+{-1,1}-vectors in each value from the input map.
 
 # Arguments
 - `eigvecs_01neg::AbstractDict{Int,<:AbstractMatrix{Int}}`: a map from eigenvalues to
     eigenspaces, TODO: Write here
 
 # Returns
-- `::AbstractDict{Int,BitVector}`: TODO: Write here
+- `::AbstractDict{Int,Vector{Int}}`: TODO: Write here
 
 # Examples
 TODO: Write here
+
+# Notes
+TODO: Justify decision to use `Vector{Int}` rather than `BitVector` for the indices
 """
 function _find_indices_1neg(eigvecs_01neg::AbstractDict{Int,<:AbstractMatrix{Int}})
     #= The order of the Laplacian matrix. Accessing the zero key is safe, as every
@@ -268,20 +291,60 @@ function _find_indices_1neg(eigvecs_01neg::AbstractDict{Int,<:AbstractMatrix{Int
     return indices_1neg # Indices of the {-1,0,1}-eigenvectors without 0's
 end
 
+"""
+    _laplacian_spectra_01neg(L::AbstractMatrix{<:Integer})
+
+TODO: Write here
+
+# Arguments
+- `L::AbstractMatrix{<:Integer}`: the Laplacian matrix on whose {-1,0,1}-spectrum we are to
+    compute data.
+
+# Returns
+- `::_LaplacianSpectrum01Neg`: a struct containing the following fields:
+    - `laplacian_matrix::Matrix{Int}`: a (casted) copy of `L`, avoiding shared mutability.
+    - `diagonalizable_01neg::Bool`: whether the Laplacian is {-1,0,1}-diagonalizable.
+    - `diagonalizable_1neg::Bool`: whether the Laplacian is {-1,1}-diagonalizable.
+    - `eigspaces_01neg::Union{Nothing,OrderedDict{Int,_Eigenspace01Neg}}`: a map from
+        eigenvalues to eigenspaces, sorted first by ascending multiplicity then by ascending
+        eigenvalue. (This field is `nothing` if the Laplacian is not
+        {-1,0,1}-diagonalizable.)
+
+# Examples
+TODO: Write here
+
+# Notes
+TODO: Write here
+"""
 function _laplacian_spectra_01neg(L::AbstractMatrix{<:Integer})
     TL = _cast_to_typed_laplacian(L)
     return _typed_laplacian_spectra_01neg(TL)
 end
 
+"""
+    _typed_laplacian_spectra_01neg(TL::_TypedLaplacian)
+
+TODO: Write here
+"""
 function _typed_laplacian_spectra_01neg(TL::_TypedLaplacian)
     throw(NotImplementedError(_typed_laplacian_spectra_01neg, typeof(TL), _TypedLaplacian))
 end
 
+"""
+    _typed_laplacian_spectra_01neg(TL::_NullGraphLaplacian)
+
+TODO: Write here
+"""
 function _typed_laplacian_spectra_01neg(TL::_NullGraphLaplacian)
     eigspaces_01neg = OrderedDict{Int,_Eigenspace01Neg}()
     return _LaplacianSpectrum01Neg(TL.matrix, true, true, eigspaces_01neg)
 end
 
+"""
+    _typed_laplacian_spectra_01neg(TL::_EmptyGraphLaplacian)
+
+TODO: Write here
+"""
 function _typed_laplacian_spectra_01neg(TL::_EmptyGraphLaplacian)
     L = TL.matrix
     n = size(L, 1)
@@ -313,6 +376,11 @@ function _typed_laplacian_spectra_01neg(TL::_EmptyGraphLaplacian)
     return _LaplacianSpectrum01Neg(L, true, diagonalizable_1neg, eigspaces_01neg)
 end
 
+"""
+    _typed_laplacian_spectra_01neg(TL::_CompleteGraphLaplacian)
+
+TODO: Write here
+"""
 function _typed_laplacian_spectra_01neg(TL::_CompleteGraphLaplacian)
     L = TL.matrix
     n = size(L, 1)
@@ -375,6 +443,11 @@ function _typed_laplacian_spectra_01neg(TL::_CompleteGraphLaplacian)
     return _LaplacianSpectrum01Neg(L, true, diagonalizable_1neg, eigspaces_01neg)
 end
 
+"""
+    _typed_laplacian_spectra_01neg(TL::_ArbitraryGraphLaplacian)
+
+TODO: Write here
+"""
 function _typed_laplacian_spectra_01neg(TL::_ArbitraryGraphLaplacian)
     L = TL.matrix
     res = check_spectrum_integrality(L)
