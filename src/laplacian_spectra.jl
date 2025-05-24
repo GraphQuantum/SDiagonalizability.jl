@@ -166,8 +166,8 @@ It is, perhaps, an odd choice to sort the eigenvalue/multiplicity pairs in this 
 than in `src/s_bandwidth.jl`—after all, in the context of the overarching *S*-bandwidth
 algorithm, this ordering is only ever used to determine which eigenspaces are searched for
 *S*-bases first. However, the inclusion of `check_spectrum_integrality` in the public API
-motivates the enforcement of a consistent, natural ordering of the `multiplicites` map in
-each (potentially user-facing) `SpectrumIntegralResult` instance.
+makes the enforcement of a consistent, natural ordering of the `multiplicites` map in each
+(potentially user-facing) `SpectrumIntegralResult` instance worth it nonetheless.
 
 Of course, we make it a point to still sort `multiplicities` as desired (first by ascending
 multiplicity then by ascending eigenvalue) in `src/s_bandwidth.jl` itself whenever needed by
