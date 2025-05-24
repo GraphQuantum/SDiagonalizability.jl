@@ -30,7 +30,7 @@ struct _ArbitraryGraphLaplacian <: _TypedLaplacian
 end
 
 function _cast_to_typed_laplacian(L::AbstractMatrix{<:Integer})
-    assert_matrix_is_undirected_laplacian(L)
+    _assert_matrix_is_undirected_laplacian(L)
     L_copy = Matrix{Int}(L) # Avoid shared mutability and cast to `Matrix{Int}`
     n = size(L_copy, 1)
 

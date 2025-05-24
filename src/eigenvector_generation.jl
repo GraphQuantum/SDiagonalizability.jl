@@ -7,7 +7,7 @@
 """
     _pot_kernel_eigvecs_01neg(n)
 
-Return a lazy generator of potential kernel `{-1,0,1}`-eigenvectors of a Laplacian.
+Lazily generate all potential kernel `{-1,0,1}`-eigenvectors of an order `n` Laplacian.
 
 Each vector is normalized so that its first nonzero entry is `1`, enforcing pairwise linear
 independence between all generated vectors.
@@ -20,17 +20,33 @@ independence between all generated vectors.
 - `eigvec_generator::Iterators.Flatten{<:Base.Generator}`: a lazily evaluated iterator over
     all `{-1,0,1}`-vectors in `ℝⁿ`, unique up to span.
 
+# Throws
+- `DomainError`: if `n` is negative.
+
 # Examples
 Generate all potential kernel eigenvectors for an order `2` Laplacian matrix:
-```jldoctest; setup = :(using SDiagonalizability: _pot_kernel_eigvecs_01neg)
-julia> hcat(_pot_kernel_eigvecs_01neg(3)...)
+```jldoctest; setup = :(using SDiagonalizability)
+julia> hcat(SDiagonalizability._pot_kernel_eigvecs_01neg(3)...)
 3×13 Matrix{Int64}:
   1   1   1   1  1  1   1  1  1   0  0  0  0
  -1  -1  -1   0  0  0   1  1  1   1  1  1  0
  -1   0   1  -1  0  1  -1  0  1  -1  0  1  1
 ```
+
+# Notes
+The number of potential kernel eigenvectors (unique up to span) for an order `n` Laplacian
+matrix is given by `(3ⁿ - 1) / 2`. See also the relevant OEIS sequence [Slo25](@cite).
+
+Regrettably, the implementation here is rather clunky and unidiomatic, but it is worth
+noting that eigenvector generation (and subsequent processing by `_laplacian_spectra_01neg`)
+is one of two major bottlenecks in the overall *S*-bandwidth minimization algorithm. Given
+how much potential there is for optimization in this piece of code, we thus prioritize
+performance over readability in this particular case, making every effort to include inline
+comments wherever clarification may be needed.
 """
 function _pot_kernel_eigvecs_01neg(n::Integer)
+    n < 0 && throw(DomainError(n, "Laplacian order must be non-negative"))
+
     # Cache to avoid redundant recomputations of the `leading` vector
     leading_cache = Dict{Int,Vector{Int}}()
 
@@ -45,7 +61,7 @@ function _pot_kernel_eigvecs_01neg(n::Integer)
             body,
         ) # Append the permuted entries to the leading [0, ..., 0, 1] vector
         for k in 1:n # Iterate over possible indices of first nonzero entry
-        # Iterate over permutations taken from the `r`th Cartesian power of {-1,0,1}
+        # Iterate over permutations taken from the `r`-th Cartesian power of {-1,0,1}
         for body in multiset_permutations(
             let r = n - k
                 entries = Vector{Int}(undef, 3r)
@@ -59,10 +75,13 @@ function _pot_kernel_eigvecs_01neg(n::Integer)
     )
 end
 
+# Specify the return type of the generator for type inference and stability
+Base.eltype(::typeof(_pot_kernel_eigvecs_01neg(0))) = Vector{Int}
+
 """
     _pot_nonkernel_eigvecs_01neg(n)
 
-Return a lazy generator of potential non-kernel `{-1,0,1}`-eigenvectors of a Laplacian.
+Lazily generate all potential non-kernel `{-1,0,1}`-eigenvectors of an order `n` Laplacian.
 
 Each vector is normalized so that its first nonzero entry is `1`, enforcing pairwise linear
 independence between all generated vectors. Since all Laplacian matrices have pairwise
@@ -78,18 +97,35 @@ orthogonal eigenspaces and the all-ones vector is always in the kernel, every no
     all `{-1,0,1}`-vectors in `ℝⁿ` orthogonal to the all-ones kernel vector, unique up to
     span.
 
+# Throws
+- `DomainError`: if `n` is negative.
+
 # Examples
 Generate all potential non-kernel eigenvectors of an order `4` Laplacian matrix:
-```jldoctest; setup = :(using SDiagonalizability: _pot_nonkernel_eigvecs_01neg)
-julia> hcat(_pot_nonkernel_eigvecs_01neg(4)...)
+```jldoctest; setup = :(using SDiagonalizability)
+julia> hcat(SDiagonalizability._pot_nonkernel_eigvecs_01neg(4)...)
 4×9 Matrix{Int64}:
   1   1   1   1   1   1   0   0   0
  -1   0   0  -1  -1   1   1   1   0
   0  -1   0  -1   1  -1  -1   0   1
   0   0  -1   1  -1  -1   0  -1  -1
 ```
+
+# Notes
+The number of potential non-kernel eigenvectors (unique up to span) for an order `n`
+Laplacian matrix is, by non-trivial combinatorial arguments, equal to the number of humps in
+all Motzkin paths of length `n`. See also the relevant OEIS sequence [Deu25](@cite).
+
+Regrettably, the implementation here is rather clunky and unidiomatic, but it is worth
+noting that eigenvector generation (and subsequent processing by `_laplacian_spectra_01neg`)
+is one of two major bottlenecks in the overall *S*-bandwidth minimization algorithm. Given
+how much potential there is for optimization in this piece of code, we thus prioritize
+performance over readability in this particular case, making every effort to include inline
+comments wherever clarification may be needed.
 """
 function _pot_nonkernel_eigvecs_01neg(n::Integer)
+    n < 0 && throw(DomainError(n, "Laplacian order must be non-negative"))
+
     # Caches to avoid redundant recomputations of the `leading` and `entries` vectors
     leading_cache = Dict{Int,Vector{Int}}()
     entries_cache = Dict{Int,Vector{Int}}()
@@ -122,6 +158,5 @@ function _pot_nonkernel_eigvecs_01neg(n::Integer)
     )
 end
 
-# TODO: Add comments here
-Base.eltype(::typeof(_pot_kernel_eigvecs_01neg(0))) = Vector{Int}
+# Specify the return type of the generator for type inference and stability
 Base.eltype(::typeof(_pot_nonkernel_eigvecs_01neg(0))) = Vector{Int}
