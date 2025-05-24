@@ -24,7 +24,7 @@ independence between all generated vectors.
 - `DomainError`: if `n` is negative.
 
 # Examples
-Generate all potential kernel eigenvectors for an order `2` Laplacian matrix:
+Generate all potential kernel eigenvectors for an order `3` Laplacian matrix:
 ```jldoctest; setup = :(using SDiagonalizability)
 julia> hcat(SDiagonalizability._pot_kernel_eigvecs_01neg(3)...)
 3×13 Matrix{Int64}:

@@ -174,6 +174,10 @@ multiplicity then by ascending eigenvalue) in `src/s_bandwidth.jl` itself whenev
 another function; this seems more robust than relying on `check_spectrum_integrality` to do
 so or even folding the logic into the `SpectrumIntegralResult` inner constructor.
 
+TODO: Actually implement this sorting in `src/s_bandwidth.jl` once we write it. Maybe first
+check if it is sorted, raise an EfficiencyWarning (like DBSCAN in scikit-learn) if not, then
+sort? This will be slower if the input is not sorted but faster if it is (as we expect).
+
 TODO: Should some of this explanation go in the `SpectrumIntegralResult` docstring instead?
 """
 function check_spectrum_integrality(A::AbstractMatrix{<:Integer})
