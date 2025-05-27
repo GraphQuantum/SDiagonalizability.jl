@@ -24,7 +24,7 @@ makedocs(;
         assets=String[],
     ),
     plugins=[bib],
-        pages=[
+    pages=[
         "Home" => "index.md",
         "Public API" => "public_api.md",
         "Private API" => "private_api.md",
