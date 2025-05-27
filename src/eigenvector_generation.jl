@@ -38,11 +38,12 @@ The number of potential kernel eigenvectors (unique up to span) for an order `n`
 matrix is given by `(3ⁿ - 1) / 2`. See also the relevant OEIS sequence [Slo25](@cite).
 
 Regrettably, the implementation here is rather clunky and unidiomatic, but it is worth
-noting that eigenvector generation (and subsequent processing by `_laplacian_spectra_01neg`)
-is one of two major bottlenecks in the overall *S*-bandwidth minimization algorithm. Given
-how much potential there is for optimization in this piece of code, we thus prioritize
-performance over readability in this particular case, making every effort to include inline
-comments wherever clarification may be needed.
+noting that eigenvector generation (and subsequent processing by
+[`laplacian_spectra_01neg`](@ref)) is one of two major bottlenecks in
+the overall *S*-bandwidth minimization algorithm. Given how much potential there is for
+optimization in this piece of code, we thus prioritize performance over readability in this
+particular case, making every effort to include inline comments wherever clarification may
+be needed.
 """
 function _pot_kernel_eigvecs_01neg(n::Integer)
     n < 0 && throw(DomainError(n, "Laplacian order must be non-negative"))
@@ -117,11 +118,12 @@ Laplacian matrix is, by non-trivial combinatorial arguments, equal to the number
 all Motzkin paths of length `n`. See also the relevant OEIS sequence [Deu25](@cite).
 
 Regrettably, the implementation here is rather clunky and unidiomatic, but it is worth
-noting that eigenvector generation (and subsequent processing by `_laplacian_spectra_01neg`)
-is one of two major bottlenecks in the overall *S*-bandwidth minimization algorithm. Given
-how much potential there is for optimization in this piece of code, we thus prioritize
-performance over readability in this particular case, making every effort to include inline
-comments wherever clarification may be needed.
+noting that eigenvector generation (and subsequent processing by
+[`laplacian_spectra_01neg`](@ref)) is one of two major bottlenecks in
+the overall *S*-bandwidth minimization algorithm. Given how much potential there is for
+optimization in this piece of code, we thus prioritize performance over readability in this
+particular case, making every effort to include inline comments wherever clarification may
+be needed.
 """
 function _pot_nonkernel_eigvecs_01neg(n::Integer)
     n < 0 && throw(DomainError(n, "Laplacian order must be non-negative"))

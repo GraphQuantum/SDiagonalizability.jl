@@ -4,8 +4,8 @@
 # http://opensource.org/licenses/MIT>. This file may not be copied, modified, or
 # distributed except according to those terms.
 
-# TODO: Extend functionality to multi-argument functions. Talk about "dispatch to [type] for
-# [parameter]" rather than the current error message.
+#= TODO: Extend functionality to multi-argument functions. Talk about "dispatch to [type] for
+# [parameter]" rather than the current error message. =#
 struct NotImplementedError <: Exception
     f::Function
     concretetype::Type
@@ -133,8 +133,8 @@ column-major storage model.
 
 At first blush, it may seem as though the choice of `DomainError` over something like
 `ArgumentError` (or even simply the return of a boolean) constitutes poor design. However,
-this is informed by the *ad hoc* use of `assert_matrix_is_undirected_laplacian` to validate
-inputs for other functions requiring Laplacian matrices. This function is never meant to be
+this is informed by the simple *ad hoc* use of this function to validate inputs for other
+functions requiring Laplacian matrices. Certainly, this function is never meant to be
 publicly exposed on its own.
 """
 function _assert_matrix_is_undirected_laplacian(L::AbstractMatrix{<:Integer})
@@ -169,7 +169,7 @@ count(Δ .> maximum(Δ) * _rank_rtol(A))`.
 
 Since the machine epsilon is only defined for floating-point types, we call `eps()`
 (defaulting to `Float64`) instead of `eps(eltype(A))` when computing the tolerance. If the
-elements of `A` are floats, on the other hand, then `_rank_rtol` dispatches to a separate
+elements of `A` are floats, on the other hand, then this function dispatches to a separate
 method that uses the element type's machine epsilon.
 
 # Arguments
@@ -191,8 +191,8 @@ the need for this higher tolerance.)
 In the case of using SVD to compute matrix rank, the decision to default to the `Float64`
 machine epsilon is motivated by how `LinearAlgebra.rank` handles non-floating-point
 matrices, as LAPACK automatically converts to `Float64` under the hood. In the case of QRD,
-our *ad hoc* use of this function in `SDiagonalizability._extract_independent_cols` takes in
-floating-point matrices anyway, so this particular method is no longer relevant.
+our *ad hoc* use of this function in [`SDiagonalizability._extract_independent_cols`](@ref)
+takes in floating-point matrices anyway, so this particular method is no longer relevant.
 """
 function _rank_rtol(A::AbstractMatrix{<:Real})
     return sqrt(maximum(size(A)) * eps())

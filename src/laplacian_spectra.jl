@@ -6,6 +6,11 @@
 
 # TODO: Add docstrings to this file, and some comments to the structs and associated methods
 
+"""
+    struct SpectrumIntegralResult
+
+TODO: Write here
+"""
 struct SpectrumIntegralResult
     matrix::Matrix{Int}
     spectrum_integral::Bool
@@ -29,6 +34,11 @@ struct SpectrumIntegralResult
     end
 end
 
+"""
+    struct _Eigenspace01Neg
+
+TODO: Write here
+"""
 struct _Eigenspace01Neg
     dimension::Int
     eigvecs_01neg::AbstractMatrix{Int}
@@ -37,19 +47,24 @@ struct _Eigenspace01Neg
     basis_1neg::Union{Nothing,Matrix{Int}}
 end
 
-struct _LaplacianSpectrum01Neg
+"""
+    struct LaplacianSpectrum01Neg
+
+TODO: Write here
+"""
+struct LaplacianSpectrum01Neg
     laplacian_matrix::Matrix{Int}
     diagonalizable_01neg::Bool
     diagonalizable_1neg::Bool
     eigspaces_01neg::Union{Nothing,OrderedDict{Int,_Eigenspace01Neg}}
 end
 
-function Base.getproperty(obj::_LaplacianSpectrum01Neg, name::Symbol)
+function Base.getproperty(obj::LaplacianSpectrum01Neg, name::Symbol)
     if name == :dimension || !(name in fieldnames(_Eigenspace01Neg))
         error("type $(typeof(obj)) has no field $name")
     end
 
-    if name != :eigspaces_01neg && name in fieldnames(_LaplacianSpectrum01Neg)
+    if name != :eigspaces_01neg && name in fieldnames(LaplacianSpectrum01Neg)
         value = getfield(obj, name)
     elseif getfield(obj, :diagonalizable_01neg)
         eigspaces_01neg = getfield(obj, :eigspaces_01neg)
@@ -70,6 +85,12 @@ function Base.getproperty(obj::_LaplacianSpectrum01Neg, name::Symbol)
     return value
 end
 
+#= TODO: (1) Actually implement this sorting in `src/s_bandwidth.jl` once we write it. First
+check if it is sorted, raise an EfficiencyWarning (like DBSCAN in scikit-learn) if not, then
+sort. This will be slower if the input is not sorted but faster if it is (as we expect). =#
+
+#= TODO: (2) Perhaps some of this documentation go in the `SpectrumIntegralResult`
+docstring instead, although I am leaning towards keeping it here. =#
 """
     check_spectrum_integrality(A)
 
@@ -159,26 +180,20 @@ OrderedCollections.OrderedDict{Int64, Int64} with 3 entries:
 # Notes
 If an undirected graph with integer edge weights is `{-1,0,1}`-diagonalizable (or, more
 restrictively, `{-1,1}`-diagonalizable), then its Laplacian matrix has integer eigenvalues
-[JP25; p. 300](@cite). Hence, validating Laplacian integrality serves as a useful screening
+[JP25; p. 312](@cite). Hence, validating Laplacian integrality serves as a useful screening
 step in *SDiagonalizability.jl*'s principal *S*-bandwidth minimzation algorithm.
 
 It is, perhaps, an odd choice to sort the eigenvalue/multiplicity pairs in this file rather
-than in `src/s_bandwidth.jl`—after all, in the context of the overarching *S*-bandwidth
+than in [`s_bandwidth`](@ref)—after all, in the context of the overarching *S*-bandwidth
 algorithm, this ordering is only ever used to determine which eigenspaces are searched for
-*S*-bases first. However, the inclusion of `check_spectrum_integrality` in the public API
-makes the enforcement of a consistent, natural ordering of the `multiplicites` map in each
-(potentially user-facing) `SpectrumIntegralResult` instance worth it nonetheless.
+*S*-bases first. However, the inclusion of [`check_spectrum_integrality`](@ref) in the
+public API motivates a consistent, natural ordering of the `multiplicites` map in each
+(potentially user-facing) [`SpectrumIntegralResult`](@ref) instance.
 
 Of course, we make it a point to still sort `multiplicities` as desired (first by ascending
-multiplicity then by ascending eigenvalue) in `src/s_bandwidth.jl` itself whenever needed by
-another function; this seems more robust than relying on `check_spectrum_integrality` to do
-so or even folding the logic into the `SpectrumIntegralResult` inner constructor.
-
-TODO: Actually implement this sorting in `src/s_bandwidth.jl` once we write it. Maybe first
-check if it is sorted, raise an EfficiencyWarning (like DBSCAN in scikit-learn) if not, then
-sort? This will be slower if the input is not sorted but faster if it is (as we expect).
-
-TODO: Should some of this explanation go in the `SpectrumIntegralResult` docstring instead?
+multiplicity then by ascending eigenvalue) in `s_bandwidth` itself; this seems more robust
+than relying on [`check_spectrum_integrality`](@ref) to do so or even folding the logic into
+the [`SpectrumIntegralResult`](@ref) inner constructor.
 """
 function check_spectrum_integrality(A::AbstractMatrix{<:Integer})
     A_copy = Matrix{Int}(A) # Avoid shared mutability and cast to `Matrix{Int}`
@@ -237,6 +252,11 @@ julia> SDiagonalizability._extract_independent_cols(A)
 ```
 
 # Notes
+The somewhat rare (although certainly far from unorthodox) choice of QR decomposition for
+our purposes merits discussion. [TODO: Write here]
+
+TODO: Also discuss why we can't just transpose first (gets us independent rows)
+
 TODO: Discuss unusual use of `_rank_rtol`
 """
 function _extract_independent_cols(A::AbstractMatrix{<:Integer})
@@ -248,7 +268,7 @@ function _extract_independent_cols(A::AbstractMatrix{<:Integer})
     pivots = F.p # The first `rank(A)` pivots correspond to independent columns of `A`
     ortho_coefs = diag(F.R) # Scaling factors of the columns of the `Q` matrix
 
-    tol = _rank_rtol(A_float) * maximum(abs, ortho_coefs)
+    tol = _rank_rtol(A_float) * maximum(abs, ortho_coefs) # TODO: Add inline comment
     r = count(x -> abs(x) > tol, ortho_coefs) # The rank of `A` within floating-point error
 
     return A[:, pivots[1:r]] # An independent spanning subset of the columns of `A`
@@ -296,31 +316,30 @@ function _find_indices_1neg(eigvecs_01neg::AbstractDict{Int,<:AbstractMatrix{Int
 end
 
 """
-    _laplacian_spectra_01neg(L::AbstractMatrix{<:Integer})
+    laplacian_spectra_01neg(L::AbstractMatrix{<:Integer})
+
+Compute data on the {-1,0,1}-spectrum of some Laplacian matrix `L`.
 
 TODO: Write here
 
 # Arguments
-- `L::AbstractMatrix{<:Integer}`: the Laplacian matrix on whose {-1,0,1}-spectrum we are to
-    compute data.
+- `L::AbstractMatrix{<:Integer}`: the Laplacian matrix on whose `{-1,0,1}`-spectrum we are
+    to compute data.
 
 # Returns
-- `::_LaplacianSpectrum01Neg`: a struct containing the following fields:
+- `::LaplacianSpectrum01Neg`: a struct containing the following fields:
     - `laplacian_matrix::Matrix{Int}`: a (casted) copy of `L`, avoiding shared mutability.
     - `diagonalizable_01neg::Bool`: whether the Laplacian is {-1,0,1}-diagonalizable.
     - `diagonalizable_1neg::Bool`: whether the Laplacian is {-1,1}-diagonalizable.
-    - `eigspaces_01neg::Union{Nothing,OrderedDict{Int,_Eigenspace01Neg}}`: a map from
-        eigenvalues to eigenspaces, sorted first by ascending multiplicity then by ascending
-        eigenvalue. (This field is `nothing` if the Laplacian is not
-        {-1,0,1}-diagonalizable.)
+    - `eigspaces_01neg::Union{Nothing,OrderedDict{Int,_Eigenspace01Neg}}`: TODO: Write here
 
 # Examples
 TODO: Write here
 
 # Notes
-TODO: Write here
+TODO: Include notes on the relevant properties of each type of Laplacian matrix
 """
-function _laplacian_spectra_01neg(L::AbstractMatrix{<:Integer})
+function laplacian_spectra_01neg(L::AbstractMatrix{<:Integer})
     TL = _cast_to_typed_laplacian(L)
     return _typed_laplacian_spectra_01neg(TL)
 end
@@ -341,7 +360,7 @@ TODO: Write here
 """
 function _typed_laplacian_spectra_01neg(TL::_NullGraphLaplacian)
     eigspaces_01neg = OrderedDict{Int,_Eigenspace01Neg}()
-    return _LaplacianSpectrum01Neg(TL.matrix, true, true, eigspaces_01neg)
+    return LaplacianSpectrum01Neg(TL.matrix, true, true, eigspaces_01neg)
 end
 
 """
@@ -377,7 +396,7 @@ function _typed_laplacian_spectra_01neg(TL::_EmptyGraphLaplacian)
             kernel_basis_1neg,
         ),
     )
-    return _LaplacianSpectrum01Neg(L, true, diagonalizable_1neg, eigspaces_01neg)
+    return LaplacianSpectrum01Neg(L, true, diagonalizable_1neg, eigspaces_01neg)
 end
 
 """
@@ -444,7 +463,7 @@ function _typed_laplacian_spectra_01neg(TL::_CompleteGraphLaplacian)
         eigspaces_01neg[eigval_nonzero] = nonkernel_01neg
     end
 
-    return _LaplacianSpectrum01Neg(L, true, diagonalizable_1neg, eigspaces_01neg)
+    return LaplacianSpectrum01Neg(L, true, diagonalizable_1neg, eigspaces_01neg)
 end
 
 """
@@ -458,7 +477,7 @@ function _typed_laplacian_spectra_01neg(TL::_ArbitraryGraphLaplacian)
 
     if !res.spectrum_integral
         # For integer edge weights, {-1,0,1}-diagonalizability implies Laplacian integrality
-        return _LaplacianSpectrum01Neg(L, false, false, nothing)
+        return LaplacianSpectrum01Neg(L, false, false, nothing)
     end
 
     n = size(L, 1)
@@ -534,7 +553,7 @@ function _typed_laplacian_spectra_01neg(TL::_ArbitraryGraphLaplacian)
         )
     end
 
-    return _LaplacianSpectrum01Neg(
+    return LaplacianSpectrum01Neg(
         L, res.spectrum_integral, diagonalizable_1neg, eigspaces_01neg
     )
 end

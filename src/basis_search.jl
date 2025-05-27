@@ -6,11 +6,21 @@
 
 # TODO: Add comments and docstrings to this file
 
+"""
+    mutable struct _QOBasisSearchNodeData
+
+TODO: Write here
+"""
 mutable struct _QOBasisSearchNodeData
     component::UInt8
     vertex_degree::UInt8
 end
 
+"""
+    _find_k_orthogonal_basis(column_space, column_rank, k)
+
+TODO: Write here
+"""
 function _find_k_orthogonal_basis(
     column_space::AbstractMatrix{Int}, column_rank::Int, k::Int
 )
@@ -18,10 +28,20 @@ function _find_k_orthogonal_basis(
     return _find_basis_with_property(column_space, column_rank, prop)
 end
 
+"""
+    _find_basis_with_property(column_space, column_rank, prop::_KOrthogonality)
+
+TODO: Write here
+"""
 function _find_basis_with_property(::AbstractMatrix{Int}, ::Int, prop::_KOrthogonality)
     throw(NotImplementedError(_find_basis_with_property, typeof(prop), _KOrthogonality))
 end
 
+"""
+    _find_basis_with_property(column_space, column_rank, prop:::_Orthogonality)
+
+TODO: Write here
+"""
 function _find_basis_with_property(
     column_space::AbstractMatrix{Int}, column_rank::Int, prop::_Orthogonality
 )
@@ -37,6 +57,11 @@ function _find_basis_with_property(
     return nothing
 end
 
+"""
+    _find_basis_with_property(column_space, column_rank, prop::_QuasiOrthogonality)
+
+TODO: Write here
+"""
 function _find_basis_with_property(
     column_space::AbstractMatrix{Int}, column_rank::Int, prop::_QuasiOrthogonality
 )
@@ -59,8 +84,12 @@ function _find_basis_with_property(
     return nothing
 end
 
-# TODO: For this function in particular, comments appear to be complete but are not. Also,
-# note that we assume `k < column_rank` (or else just use the QR results). Add assert or no?
+# TODO: Note that we assume `k < column_rank` (else, just use QR results). Add assert or no?
+"""
+    _find_basis_with_property(column_space, column_rank, prop::_WeakOrthogonality)
+
+TODO: Write here
+"""
 function _find_basis_with_property(
     column_space::AbstractMatrix{Int}, column_rank::Int, prop::_WeakOrthogonality
 )
@@ -80,14 +109,25 @@ function _find_basis_with_property(
         add_edge!(G, i, i + d)
     end
 
+    #= Every collection of `k` or less vectors is `k`-orthogonal, so we can start searching
+    from `k`-combinations of our columns. =#
     for root_indices in combinations(1:num_columns, k)
+        # Avoid reallocations by taking a view
         partial_basis = view(column_space, :, root_indices)
+
+        #= Bandwidth minimzation of the Gram matrix of our candidate basis vectors is
+        equivalent to testing the resulting graph for subgraph monomorphism to `G`. (We do,
+        however, plan to replace this with a more specialized algorithm in the future.) =#
         ortho_graph_compl_adjacency = .!iszero.(partial_basis' * partial_basis)
         ortho_graph_compl_adjacency[diagind(ortho_graph_compl_adjacency)] .= false
 
+        #= Before running a subgraph monomorphism search, we can filter out (partial) bases
+        by [TODO: Write here] =#
         if all(sum(ortho_graph_compl_adjacency; dims=1) .<= 2k - 2)
             H = Graph(column_rank) # Initialize the empty graph on `column_rank` vertices
 
+            #= The aforementioned "resulting graph" from the Gram matrix is constructed by
+            [TODO: Write here] =#
             for i in 1:(k - 1), j in (i + 1):k
                 ortho_graph_compl_adjacency[i, j] && add_edge!(H, i, j)
             end
@@ -95,13 +135,21 @@ function _find_basis_with_property(
             basis_indices = _find_basis_indices(
                 root_indices, column_space, column_rank, G, H, prop
             )
+            # If there is no monomorphism, terminate searching this branch of the tree
             isnothing(basis_indices) || return column_space[:, basis_indices]
         end
     end
 
+    #= If all children are searched/pruned and basis is found, return `nothing` to signal
+    that this branch should be pruned. =#
     return nothing
 end
 
+"""
+    _find_basis_indices(curr_indices, column_space, column_rank, prop::_Orthogonality)
+
+TODO: Write here
+"""
 function _find_basis_indices(
     curr_indices::AbstractVector{Int},
     column_space::AbstractMatrix{Int},
@@ -129,6 +177,18 @@ function _find_basis_indices(
     return nothing
 end
 
+"""
+    _find_basis_indices(
+        curr_indices,
+        column_space,
+        column_rank,
+        nodes,
+        union_find,
+        prop::_QuasiOrthogonality,
+    )
+
+TODO: Write here
+"""
 function _find_basis_indices(
     curr_indices::AbstractVector{Int},
     column_space::AbstractMatrix{Int},
@@ -187,7 +247,8 @@ function _find_basis_indices(
 
     if depth == column_rank
         basis_indices = copy(curr_indices)
-        # TODO: Note about nice ordering
+        #= Sorting within each connected component of the union-find structure
+        yields a "nicer," more natural ordering. =#
         order = collect(Iterators.flatmap(sort, values(union_find)))
         return basis_indices[order]
     end
@@ -210,6 +271,18 @@ function _find_basis_indices(
     return nothing
 end
 
+"""
+    _find_basis_indices(
+        curr_indices,
+        column_space,
+        column_rank,
+        G::Graph,
+        H::Graph,
+        prop::_WeakOrthogonality,
+    )
+
+TODO: Write here
+"""
 function _find_basis_indices(
     curr_indices::AbstractVector{Int},
     column_space::AbstractMatrix{Int},
@@ -242,7 +315,7 @@ function _find_basis_indices(
 
     if depth == column_rank
         basis_indices = copy(curr_indices)
-        # The monomorphism mapping gives a k-orthogonal column ordering
+        # The monomorphism mapping gives a `k`-orthogonal column ordering
         order = last.(sort(collect(monomorphism[1])))
         return basis_indices[order]
     end
