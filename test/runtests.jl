@@ -20,6 +20,5 @@ for file in readlines(joinpath(@__DIR__, "testgroups"))
 end
 
 @testset "Docstrings" begin
-    # TODO: Change from `@test_broken` to `@test` when the issue is fixed
-    @test_broken isempty(Docs.undocumented_names(SDiagonalizability))
+    @test isempty(Docs.undocumented_names(SDiagonalizability))
 end
