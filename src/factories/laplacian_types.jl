@@ -10,41 +10,37 @@
 An abstract type representing a classified Laplacian matrix of an undirected graph.
 
 # Interface
-Concrete subtypes of [`SDiagonalizability._TypedLaplacian`](@ref) **must** implement the
-following fields:
+Concrete subtypes of [_TypedLaplacian`](@ref) **must** implement the following fields:
 - `matrix::Matrix{Int}`: the Laplacian matrix of the graph.
 
 # Subtypes
-- [`SDiagonalizability._NullGraphLaplacian`](@ref): a Laplacian wrapper for the (unique)
-    graph with no nodes.
-- [`SDiagonalizability._EmptyGraphLaplacian`](@ref): a Laplacian wrapper for any graph with
-    no edges on `n ≥ 1` nodes.
-- [`SDiagonalizability._CompleteGraphLaplacian`](@ref): a Laplacian wrapper for any graph on
-    `n ≥ 2` nodes where every pair of nodes is connected by an edge and all edges possess
-    the same weight.
-- [`SDiagonalizability._ArbitraryGraphLaplacian`](@ref): a Laplacian wrapper for any graph
-    on `n ≥ 3` nodes with no particular strcuture of relevance in the context of
-    investigating `{-1,0,1}`-spectra.
+- [_NullGraphLaplacian`](@ref): a Laplacian wrapper for the (unique) graph with no nodes.
+- [`_EmptyGraphLaplacian`](@ref): a Laplacian wrapper for any graph with no edges on `n ≥ 1`
+    nodes.
+- [`_CompleteGraphLaplacian`](@ref): a Laplacian wrapper for any graph on `n ≥ 2` nodes
+    where every pair of nodes is connected by an edge and all edges possess the same weight.
+- [`_ArbitraryGraphLaplacian`](@ref): a Laplacian wrapper for any graph on `n ≥ 3` nodes
+    with no particular strcuture of relevance in the context of investigating
+    `{-1,0,1}`-spectra.
 
 # Notes
-Given that this type and all its subtypes are privately encapsulated within the
-[`SDiagonalizability`](@ref) module, we expect [`SDiagonalizability._TypedLaplacian`](@ref)
-instances to be created exclusively via the
-[`SDiagonalizability._cast_to_typed_laplacian`](@ref) factory function, which copies each
-input matrix to avoid shared mutability and converts it to a `Matrix{Int}` in the process.
-Therefore, it is safe to restrict the type of `matrix` field (in each concrete subtype) to
-`Matrix{Int}` in lieu of the more generic `AbstractMatrix{<:Integer}`. This decision may
-contribute marginal performance benefits via reduced type complexity and is highly unlikely
-to cause any issues (as this type is never to be exported to the public API). It also serves
-as an additional safeguard against directly passing a (wrongly typed) matrix to a subtype's
-constructor rather than calling [`SDiagonalizability._cast_to_typed_laplacian`](@ref).
+Given that this type and all its subtypes are privately encapsulated, we expect
+[`_TypedLaplacian`](@ref) instances to be created exclusively via the
+[`_cast_to_typed_laplacian`](@ref) factory function, which copies each input matrix to avoid
+shared mutability and converts it to a `Matrix{Int}` in the process. Therefore, it is safe
+to restrict the type of `matrix` field (in each concrete subtype) to `Matrix{Int}` in lieu
+of the more generic `AbstractMatrix{<:Integer}`. This decision may contribute marginal
+performance benefits via reduced type complexity and is highly unlikely to cause any issues
+(as this type is never to be exported to the public API). It also serves as an additional
+safeguard against directly passing a (wrongly typed) matrix to a subtype's constructor
+rather than calling [`_cast_to_typed_laplacian`](@ref).
 
 On a related note, it seems prudent to discuss the intended use case of
-[`SDiagonalizability._TypedLaplacian`](@ref). The interface and its subtypes are meant to
-support [`SDiagonalizability._cast_to_typed_laplacian`](@ref). This factory, in turn,
-determines which algorithm [`laplacian_spectra_01neg`](@ref) is to implement when computing
-data on the Laplacian matrix of a given graph, as different types of graphs exhibit
-different spectral properties which we may exploit to improve performance.
+[`_TypedLaplacian`](@ref). The interface and its subtypes are meant to support
+[`_cast_to_typed_laplacian`](@ref). This factory, in turn, determines which algorithm
+[`laplacian_spectra_01neg`](@ref) is to implement when computing data on the Laplacian
+matrix of a given graph, as different types of graphs exhibit different spectral properties
+which we may exploit to improve performance.
 """
 abstract type _TypedLaplacian end
 
@@ -63,8 +59,8 @@ _NullGraphLaplacian <: _TypedLaplacian <: Any
 See the documentation for [`laplacian_spectra_01neg`](@ref) for further details on the
 `{-1,0,1}`-spectral properties of this Laplacian type.
 
-See also the documentation for parent type [`SDiagonalizability._TypedLaplacian`](@ref) if
-seeking justification for typing the `matrix` field as `Matrix{Int}` rather than
+See also the documentation for parent type [`_TypedLaplacian`](@ref) if seeking
+justification for typing the `matrix` field as `Matrix{Int}` rather than
 `AbstractMatrix{<:Integer}`.
 """
 struct _NullGraphLaplacian <: _TypedLaplacian
@@ -85,14 +81,13 @@ _EmptyGraphLaplacian <: _TypedLaplacian <: Any
 
 # Notes
 We are confident in the assumption that `n` is at least `1` because the only graph on zero
-nodes is the null graph, which is handled by the
-[`SDiagonalizability._NullGraphLaplacian`](@ref) type.
+nodes is the null graph, which is handled by the [`_NullGraphLaplacian`](@ref) type.
 
 See the documentation for [`laplacian_spectra_01neg`](@ref) for further details on the
 `{-1,0,1}`-spectral properties of this Laplacian type.
 
-See also the documentation for parent type [`SDiagonalizability._TypedLaplacian`](@ref) if
-seeking justification for typing the `matrix` field as `Matrix{Int}` rather than
+See also the documentation for parent type [`_TypedLaplacian`](@ref) if seeking
+justification for typing the `matrix` field as `Matrix{Int}` rather than
 `AbstractMatrix{<:Integer}`.
 """
 struct _EmptyGraphLaplacian <: _TypedLaplacian
@@ -114,17 +109,16 @@ A wrapper for the Laplacian of any uniformly weighted complete graph on `n ≥ 2
 _CompleteGraphLaplacian <: _TypedLaplacian <: Any
 
 # Notes
-The only graph on zero nodes is the null graph (handled by the
-[`SDiagonalizability._NullGraphLaplacian`](@ref) type) and the only graph on one node is an
-empty graph (handled by the [`SDiagonalizability._EmptyGraphLaplacian`](@ref) type), so we
-are confident in the assumption that `n ≥ 2` for any
-[`SDiagonalizability._CompleteGraphLaplacian`](@ref) instance.
+The only graph on zero nodes is the null graph (handled by the [`_NullGraphLaplacian`](@ref)
+type) and the only graph on one node is an empty graph (handled by the
+[`_EmptyGraphLaplacian`](@ref) type), so we are confident in the assumption that `n ≥ 2` for
+any [`_CompleteGraphLaplacian`](@ref) instance.
 
 See the documentation for [`laplacian_spectra_01neg`](@ref) for further details on the
 `{-1,0,1}`-spectral properties of this Laplacian type.
 
-See also the documentation for parent type [`SDiagonalizability._TypedLaplacian`](@ref) if
-seeking justification for typing the `matrix` field as `Matrix{Int}` rather than
+See also the documentation for parent type [`_TypedLaplacian`](@ref) if seeking
+justification for typing the `matrix` field as `Matrix{Int}` rather than
 `AbstractMatrix{<:Integer}`.
 """
 struct _CompleteGraphLaplacian <: _TypedLaplacian
@@ -146,19 +140,18 @@ of interest.
 _ArbitraryGraphLaplacian <: _TypedLaplacian <: Any
 
 # Notes
-The only graph on zero nodes is the null graph (handled by the
-[`SDiagonalizability._NullGraphLaplacian`](@ref) type), the only graph on one node is an
-empty graph (handled by the [`SDiagonalizability._EmptyGraphLaplacian`](@ref) type), and the
-only graphs on two nodes are an empty graph and a complete graph (handled by the
-[`SDiagonalizability._CompleteGraphLaplacian`](@ref) type), so we are confident in the
-assumption that `n ≥ 3` for any [`SDiagonalizability._ArbitraryGraphLaplacian`](@ref)
+The only graph on zero nodes is the null graph (handled by the [`_NullGraphLaplacian`](@ref)
+type), the only graph on one node is an empty graph (handled by the
+[`_EmptyGraphLaplacian`](@ref) type), and the only graphs on two nodes are an empty graph
+and a complete graph (handled by the [`_CompleteGraphLaplacian`](@ref) type), so we are
+confident in the assumption that `n ≥ 3` for any [`_ArbitraryGraphLaplacian`](@ref)
 instance.
 
 See the documentation for [`laplacian_spectra_01neg`](@ref) for further details on the
 `{-1,0,1}`-spectral properties of this Laplacian type.
 
-See also the documentation for parent type [`SDiagonalizability._TypedLaplacian`](@ref) if
-seeking justification for typing the `matrix` field as `Matrix{Int}` rather than
+See also the documentation for parent type [`_TypedLaplacian`](@ref) if seeking
+justification for typing the `matrix` field as `Matrix{Int}` rather than
 `AbstractMatrix{<:Integer}`.
 """
 struct _ArbitraryGraphLaplacian <: _TypedLaplacian
@@ -168,17 +161,19 @@ end
 """
     _cast_to_typed_laplacian(L)
 
-Classify a Laplacian matrix and wrap it with [`SDiagonalizability._TypedLaplacian`](@ref).
+Classify the Laplacian matrix `L` and wrap it in a [`_TypedLaplacian`](@ref) object.
 
-`L` is classified based on any properties which may be exploited in computing data on its
-`{-1,0,1}`-spectrum. It is first verified that `L` is indeed a valid Laplacian matrix.
+It is first verified that `L` is indeed a Laplacian matrix by
+[`_assert_matrix_is_undirected_laplacian`](@ref), which throws a `DomainError` otherwise. It
+is then classified based on any properties which may be exploited in computing data on its
+`{-1,0,1}`-spectrum.
 
 # Arguments
 - `L::AbstractMatrix{<:Integer}`: the Laplacian matrix to classify.
 
 # Returns
 - `TL::_TypedLaplacian`: the Laplacian wrapped in a concrete
-    [`SDiagonalizability._TypedLaplacian`](@ref) subtype associated with the category of the
+    [`_TypedLaplacian`](@ref) subtype associated with the category of the
     graph represented by `L`. In the case of complete graphs, `TL` also contains data on the
     (necessarily uniform) weight of each edge.
 
@@ -257,13 +252,12 @@ true
 # Notes
 Right now, the possible types of Laplacian matrices (or, to be more precise, the graphs they
 represent) are:
-- [`SDiagonalizability._NullGraphLaplacian`](@ref): the (unique) graph with no nodes.
-- [`SDiagonalizability._EmptyGraphLaplacian`](@ref): any graph with no edges on `n ≥ 1`
-    nodes.
-- [`SDiagonalizability._CompleteGraphLaplacian`](@ref): any graph on `n ≥ 2` nodes where
-    every pair of nodes is connected by an edge and all edges possess the same weight.
-- [`SDiagonalizability._ArbitraryGraphLaplacian`](@ref): any graph on `n ≥ 3` nodes with no
-    particular strcuture of relevance in the context of investigating `{-1,0,1}`-spectra.
+- [`_NullGraphLaplacian`](@ref): the (unique) graph with no nodes.
+- [`_EmptyGraphLaplacian`](@ref): any graph with no edges on `n ≥ 1` nodes.
+- [`_CompleteGraphLaplacian`](@ref): any graph on `n ≥ 2` nodes where every pair of nodes is
+    connected by an edge and all edges possess the same weight.
+- [`_ArbitraryGraphLaplacian`](@ref): any graph on `n ≥ 3` nodes with no particular
+    strcuture of relevance in the context of investigating `{-1,0,1}`-spectra.
 """
 function _cast_to_typed_laplacian(L::AbstractMatrix{<:Integer})
     #= Verify that `L` is symmetric (thus representing an undirected graph) and has zero row

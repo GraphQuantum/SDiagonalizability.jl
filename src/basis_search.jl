@@ -115,7 +115,7 @@ function _find_basis_with_property(
         # Avoid reallocations by taking a view
         partial_basis = view(column_space, :, root_indices)
 
-        #= Bandwidth minimzation of the Gram matrix of our candidate basis vectors is
+        #= Bandwidth minimization of the Gram matrix of our candidate basis vectors is
         equivalent to testing the resulting graph for subgraph monomorphism to `G`. (We do,
         however, plan to replace this with a more specialized algorithm in the future.) =#
         ortho_graph_compl_adjacency = .!iszero.(partial_basis' * partial_basis)

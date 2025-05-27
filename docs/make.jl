@@ -12,7 +12,7 @@ DocMeta.setdocmeta!(
     SDiagonalizability, :DocTestSetup, :(using SDiagonalizability); recursive=true
 )
 
-bib = CitationBibliography(joinpath(@__DIR__, "src", "refs.bib"); style=:numeric)
+bib = CitationBibliography(joinpath(@__DIR__, "src", "refs.bib"); style=:alpha)
 
 makedocs(;
     modules=[SDiagonalizability],
@@ -24,7 +24,11 @@ makedocs(;
         assets=String[],
     ),
     plugins=[bib],
-    pages=["Home" => "index.md"],
+        pages=[
+        "Home" => "index.md",
+        "Public API" => "public_api.md",
+        "Private API" => "private_api.md",
+    ],
 )
 
 deploydocs(; repo="github.com/GraphQuantum/SDiagonalizability.jl", devbranch="main")

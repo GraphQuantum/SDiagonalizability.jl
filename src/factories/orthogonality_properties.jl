@@ -22,30 +22,28 @@ values of `k`. For each family of values, we apply a separate algorithm to deter
 there exists a permutation of a given collection of vectors that induces `k`-orthogonality.
 
 # Interface
-Concrete subtypes of [`SDiagonalizability._KOrthogonality`](@ref) **must** implement the
-following properties:
+Concrete subtypes of [`_KOrthogonality`](@ref) **must** implement the following properties:
 - `k::Int`: the `k`-orthogonality parameter.
 
 `k` need not necessarily be a field of the subtype (especially in the case of single-value
-types like [`SDiagonalizability._Orthogonality`](@ref) and
-[`SDiagonalizability._QuasiOrthogonality`](@ref), in which case making `k` a field may
-erroneously imply that it is variable), but it must be accessible via `Base.getproperty`.
+types like [`_Orthogonality`](@ref) and [`_QuasiOrthogonality`](@ref), in which case making
+`k` a field may erroneously imply that it is variable), but it must be accessible via
+`Base.getproperty`.
 
 # Subtypes
-- [`SDiagonalizability._Orthogonality`](@ref): `k`-orthogonality for `k = 1`.
-- [`SDiagonalizability._QuasiOrthogonality`](@ref): `k`-orthogonality for `k = 2`.
-- [`SDiagonalizability._WeakOrthogonality`](@ref): `k`-orthogonality for `k > 2`.
+- [`_Orthogonality`](@ref): `k`-orthogonality for `k = 1`.
+- [`_QuasiOrthogonality`](@ref): `k`-orthogonality for `k = 2`.
+- [`_WeakOrthogonality`](@ref): `k`-orthogonality for `k > 2`.
 
 # Notes
 Given the domain restriction of `k` to the positive integers, combined with the relatively
 small nature (`≤ 25`) of bandwidths examined by this package's principal *S*-bandwidth
-minimzation algorithm, it may seem prudent to ask why we do not type the `k` field as
+minimization algorithm, it may seem prudent to ask why we do not type the `k` field as
 `UInt8` instead of `Int`. An equally compelling argument can be made to type it as `Integer`
 for genericity as well. [TODO: Justify]
 
 On that note, the stipulation in the interface contract that `k` be an accessible property
-even for [`SDiagonalizability._Orthogonality`](@ref) and
-[`SDiagonalizability._QuasiOrthogonality`](@ref) [TODO: Elaborate]
+even for [`_Orthogonality`](@ref) and [`_QuasiOrthogonality`](@ref) [TODO: Elaborate]
 
 Another design choice worth scrutinizing is the "`_WeakOrthogonality`" name. "Orthogonality"
 is a term as old as time and "quasi-orthogonality" too has risen to prominence in recent
@@ -56,14 +54,13 @@ attempts to formally introduce as a new definition in the broader literature bey
 hoc* use (and but internally, at that) in this module.
 
 Finally, we note that it may be slightly misleading to state that this type is used to
-inform our choice of algorithm in determining whether a given collection of vectors is
-*`k`-orthogonalizable* (i.e., whether there exists a permutation of said collection that
-induces `k`-orthogonality). Rather, we use it when determining whether a large, linearly
-dependent set of vectors contains an `k`-orthogonal independent spanning subset. This is
-still related to the long-standing matrix bandwidth minimzation problem, but it differs in
-that we can take advantage of dynamic programming techniques when recursively searching for
-such a subset. (See the documentation for
-[`SDiagonalizability._find_k_orthogonal_basis`](@ref) for further details.)
+inform our choice of algorithm in determining whether a collection of vectors is
+*`k`-orthogonalizable* (i.e., whether there exists a `k`-orthogonal permutation of said
+collection). Rather, we use it when determining whether a large, linearly dependent set of
+vectors contains an `k`-orthogonal independent spanning subset. This is still related to the
+long-standing matrix bandwidth minimization problem, but it differs in that we can take
+advantage of dynamic programming techniques when recursively searching for such a subset.
+(See the documentation for [`_find_k_orthogonal_basis`](@ref) for further details.)
 """
 abstract type _KOrthogonality end
 
@@ -84,8 +81,8 @@ _Orthogonality <: _KOrthogonality <: Any
 
 # Notes
 Since this type is semantically unique inasmuch as it simply encodes the information
-`k = 1`, we define the singleton instance [`SDiagonalizability._ORTHOGONALITY`](@ref) to
-always be used when needed in favor of instantiating an identical object every time.
+`k = 1`, we define the singleton instance [`_ORTHOGONALITY`](@ref) to always be used when
+needed in favor of instantiating an identical object every time.
 """
 struct _Orthogonality <: _KOrthogonality end
 
@@ -101,11 +98,11 @@ end
 """
     _ORTHOGONALITY::_Orthogonality
 
-A singleton instance of the [`SDiagonalizability._Orthogonality`](@ref) type.
+A singleton instance of the semantically unique [`_Orthogonality`](@ref) type.
 
-This constant is used to represents the semantically unique property of pairwise
-orthogonality for a collection of vectors and should be always be used in favor of
-instantiating a new object with `_Orthogonality()` every time.
+This constant is used to represent the property of pairwise orthogonality for a collection
+of vectors and should be always be used in favor of instantiating a new object with
+`_Orthogonality()` every time.
 
 [TODO: Justify further]
 """
@@ -129,8 +126,8 @@ _QuasiOrthogonality <: _KOrthogonality <: Any
 
 # Notes
 Since this type is semantically unique inasmuch as it simply encodes the information
-`k = 2`, we define the singleton instance [`SDiagonalizability._QUASI_ORTHOGONALITY`](@ref)
-to always be used when needed in favor of instantiating an identical object every time.
+`k = 2`, we define the singleton instance [`_QUASI_ORTHOGONALITY`](@ref) to always be used
+when needed in favor of instantiating an identical object every time.
 """
 struct _QuasiOrthogonality <: _KOrthogonality end
 
@@ -146,11 +143,11 @@ end
 """
     _QUASI_ORTHOGONALITY::_QuasiOrthogonality
 
-A singleton instance of the [`SDiagonalizability._QuasiOrthogonality`](@ref) type.
+A singleton instance of the semantically unique [`_QuasiOrthogonality`](@ref) type.
 
-This constant is used to represents the semantically unique property of quasi-orthogonality
-for a collection of vectors and should be always be used in favor of instantiating a new
-object with `_QuasiOrthogonality()` every time.
+This constant is used to represents the property of quasi-orthogonality for a collection of
+vectors and should be always be used in favor of instantiating a new object with
+`_QuasiOrthogonality()` every time.
 
 [TODO: Justify further]
 """
@@ -175,15 +172,15 @@ orthogonal). This is equivalent to the vectors' Gram matrix having bandwidth at 
 _WeakOrthogonality <: _KOrthogonality <: Any
 
 # Constructors
-- `_WeakOrthogonality(k::Int)`: constructs a [`SDiagonalizability._WeakOrthogonality`](@ref)
-    object with the given `k`-orthogonality parameter. Throws a `DomainError` if `k <= 2`.
+- `_WeakOrthogonality(k::Int)`: constructs a [`_WeakOrthogonality`](@ref) object with the
+    given `k`-orthogonality parameter. Throws a `DomainError` if `k <= 2`.
 
 # Notes
 The term "weak orthogonality" is not standard terminology in the literature, but it is used
 here to emphasize the weaker nature of this property compared to orthogonality and
 quasi-orthogonality. It is an *ad hoc* term coined for this module and is not intended to
 be formally introduced in the broader literature. See also the documentation for parent type
-[`SDiagonalizability._KOrthogonality`](@ref) for further discussion of this topic.
+[`_KOrthogonality`](@ref) for further discussion of this topic.
 """
 struct _WeakOrthogonality <: _KOrthogonality
     k::Int
@@ -213,8 +210,8 @@ values to which our `k` parameter belongs informs our choice of algorithm.
 - `k::Int`: the `k`-orthogonality parameter to classify. Must be a positive integer.
 
 # Returns
-- `::_KOrthogonality`: An instance of a concrete
-    [`SDiagonalizability._KOrthogonality`](@ref) subtype corresponding to `k`.
+- `::_KOrthogonality`: An instance of a concrete [`_KOrthogonality`](@ref) subtype
+    corresponding to `k`.
 
 # Throws
 - `DomainError`: if `k` is not a positive integer.
@@ -235,8 +232,8 @@ SDiagonalizability._WeakOrthogonality(13)
 ```
 
 # Notes
-See the documentation for [`SDiagonalizability._find_k_orthogonal_basis`](@ref) for further
-details on how this function is used in the context of finding a `k`-orthogonal basis.
+See the documentation for [`_find_k_orthogonal_basis`](@ref) for further details on how this
+function is used in the context of finding a `k`-orthogonal basis.
 """
 function _classify_orthogonality_property(k::Int)
     k < 1 && throw(DomainError(k, "k-orthogonality parameter must be a positive integer"))

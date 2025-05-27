@@ -181,7 +181,7 @@ OrderedCollections.OrderedDict{Int64, Int64} with 3 entries:
 If an undirected graph with integer edge weights is `{-1,0,1}`-diagonalizable (or, more
 restrictively, `{-1,1}`-diagonalizable), then its Laplacian matrix has integer eigenvalues
 [JP25; p. 312](@cite). Hence, validating Laplacian integrality serves as a useful screening
-step in *SDiagonalizability.jl*'s principal *S*-bandwidth minimzation algorithm.
+step in this package's principal *S*-bandwidth minimization algorithm.
 
 It is, perhaps, an odd choice to sort the eigenvalue/multiplicity pairs in this file rather
 than in [`s_bandwidth`](@ref)—after all, in the context of the overarching *S*-bandwidth

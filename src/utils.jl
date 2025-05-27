@@ -191,8 +191,8 @@ the need for this higher tolerance.)
 In the case of using SVD to compute matrix rank, the decision to default to the `Float64`
 machine epsilon is motivated by how `LinearAlgebra.rank` handles non-floating-point
 matrices, as LAPACK automatically converts to `Float64` under the hood. In the case of QRD,
-our *ad hoc* use of this function in [`SDiagonalizability._extract_independent_cols`](@ref)
-takes in floating-point matrices anyway, so this particular method is no longer relevant.
+our *ad hoc* use of this function in [`_extract_independent_cols`](@ref) takes in
+floating-point matrices anyway, so this particular method is no longer relevant.
 """
 function _rank_rtol(A::AbstractMatrix{<:Real})
     return sqrt(maximum(size(A)) * eps())
