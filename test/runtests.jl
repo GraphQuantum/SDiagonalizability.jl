@@ -20,5 +20,9 @@ for file in readlines(joinpath(@__DIR__, "testgroups"))
 end
 
 @testset "Docstrings" begin
-    @test isempty(Docs.undocumented_names(SDiagonalizability))
+    if VERSION >= v"1.11" # `Docs.undocumented_names` was introduced in Julia 1.11
+        @test isempty(Docs.undocumented_names(SDiagonalizability))
+    else
+        @info "Skipping undocumented_names test: not available on Julia $(VERSION)"
+    end
 end
