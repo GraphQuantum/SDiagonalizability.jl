@@ -5,3 +5,10 @@
 # distributed except according to those terms.
 
 # TODO: Implement
+
+"""
+    s_bandwidth()
+
+TODO: Write here. Just a placeholder for `Documenter.jl` as of right now.
+"""
+function s_bandwidth() end
