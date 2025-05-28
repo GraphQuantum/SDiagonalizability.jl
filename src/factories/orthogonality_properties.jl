@@ -101,7 +101,7 @@ end
 A singleton instance of the semantically unique [`_Orthogonality`](@ref) type.
 
 This constant is used to represent the property of pairwise orthogonality for a collection
-of vectors and should be always be used in favor of instantiating a new object with
+of vectors and should always be used in favor of instantiating a new object with
 `_Orthogonality()` every time.
 
 [TODO: Justify further]
@@ -146,7 +146,7 @@ end
 A singleton instance of the semantically unique [`_QuasiOrthogonality`](@ref) type.
 
 This constant is used to represents the property of quasi-orthogonality for a collection of
-vectors and should be always be used in favor of instantiating a new object with
+vectors and should always be used in favor of instantiating a new object with
 `_QuasiOrthogonality()` every time.
 
 [TODO: Justify further]
