@@ -4,12 +4,28 @@
 # http://opensource.org/licenses/MIT>. This file may not be copied, modified, or
 # distributed except according to those terms.
 
-# TODO: Add docstrings to this file, and some comments to the structs and associated methods
+# TODO: Should I add a note in the corresponding docstring every time I use an `@assert`?
 
 """
     struct SpectrumIntegralResult
 
-TODO: Write here
+Data on whether a matrix is spectrum integral (i.e., whether its eigenvalues are integers).
+
+This struct also contains a map from each eigenvalue to its multiplicity, provided that the
+eigenvalues are indeed all integers. (Otherwise, the associated field is simply `nothing`.)
+
+# Fields
+- `matrix::Matrix{Int}`: the matrix whose eigenvalues and their integrality are of interest.
+- `spectrum_integral::Bool`: whether the eigenvalues of `matrix` are all integers.
+- `multiplicities::Union{Nothing,OrderedDict{Int,Int}}`: a map from each eigenvalue to its
+    multiplicity, sorted first by ascending multiplicity then by ascending eigenvalue. (This
+    field is `nothing` if `spectrum_integral` is false.)
+
+# Notes
+If an undirected graph with integer edge weights is `{-1,0,1}`-diagonalizable (or, more
+restrictively, `{-1,1}`-diagonalizable), then its Laplacian matrix has integer eigenvalues
+[JP25; p. 312](@cite). Hence, validating Laplacian integrality serves as a useful screening
+step in this package's principal *S*-bandwidth minimization algorithm.
 """
 struct SpectrumIntegralResult
     matrix::Matrix{Int}
@@ -24,7 +40,7 @@ struct SpectrumIntegralResult
         if spectrum_integral && isnothing(multiplicities)
             throw(
                 ArgumentError(
-                    "`multiplicities` is only nothing as a sentinel value " *
+                    "`multiplicities` is only `nothing` as a sentinel value " *
                     "when `spectrum_integral` is false.",
                 ),
             )
@@ -37,7 +53,21 @@ end
 """
     struct _Eigenspace01Neg
 
-TODO: Write here
+Data on an eigenspace of some Laplacian matrix with respect to the `{-1,0,1}`-spectrum.
+
+# Fields
+- `dimension::Int`: the dimension of the eigenspace.
+- `eigvecs_01neg::AbstractMatrix{Int}`: the `{-1,0,1}`-eigenvectors in this eigenspace,
+    stored as columns of a matrix.
+- `indices_1neg::Vector{Int}`: the indices of all `{-1,1}`-columns in `eigvecs_01neg`.
+- `basis_01neg::Union{Nothing,Matrix{Int}}`: a `{-1,0,1}`-basis for the eigenspace, if one
+    exists. (This field is `nothing` if no such basis exists.)
+- `basis_1neg::Union{Nothing,Matrix{Int}}`: a `{-1,1}`-basis for the eigenspace, if one
+    exists. (This field is `nothing` if no such basis exists.)
+
+# Notes
+TODO: [No eigenvalue/matrix, deterministic but arbitrary selection of bases, re-route to
+documentation elsewhere for `Vector{Int}` over `BitVector` justification]
 """
 struct _Eigenspace01Neg
     dimension::Int
@@ -50,7 +80,7 @@ end
 """
     struct LaplacianSpectrum01Neg
 
-TODO: Write here
+Data on the `{-1,0,1}`-spectrum of some Laplacian matrix.
 """
 struct LaplacianSpectrum01Neg
     laplacian_matrix::Matrix{Int}
@@ -67,14 +97,13 @@ function Base.getproperty(obj::LaplacianSpectrum01Neg, name::Symbol)
     if name != :eigspaces_01neg && name in fieldnames(LaplacianSpectrum01Neg)
         value = getfield(obj, name)
     elseif getfield(obj, :diagonalizable_01neg)
+        #= `eigspaces_01neg` is only `nothing` when `diagonalizable_01neg` is false, so we
+        explicitly assert its type here for compiler inference during static analysis. =#
         eigspaces_01neg = getfield(obj, :eigspaces_01neg)
-
-        #= For compiler inference during static analysis. We choose to assert rather than
-        throw an error because this struct is not part of the public API; hence, any failure
-        to meet this condition indicates a developer error. =#
         @assert !isnothing(eigspaces_01neg)
 
         name == :multiplicities && (name = :dimension)
+
         value = OrderedDict(
             eigval => getfield(eigspace, name) for (eigval, eigspace) in eigspaces_01neg
         )
@@ -85,12 +114,9 @@ function Base.getproperty(obj::LaplacianSpectrum01Neg, name::Symbol)
     return value
 end
 
-#= TODO: (1) Actually implement this sorting in `src/s_bandwidth.jl` once we write it. First
+#= TODO: Actually implement this sorting in `src/s_bandwidth.jl` once we write it. First
 check if it is sorted, raise an EfficiencyWarning (like DBSCAN in scikit-learn) if not, then
 sort. This will be slower if the input is not sorted but faster if it is (as we expect). =#
-
-#= TODO: (2) Perhaps some of this documentation go in the `SpectrumIntegralResult`
-docstring instead, although I am leaning towards keeping it here. =#
 """
     check_spectrum_integrality(A)
 
@@ -106,9 +132,9 @@ constructed as well.
 - `::SpectrumIntegralResult`: a struct containing the following fields:
     - `matrix::Matrix{Int}`: a (casted) copy of `A`, avoiding shared mutability.
     - `spectrum_integral::Bool`: whether the eigenvalues of `A` are integers.
-    - `multiplicities::Union{Nothing,OrderedDict{Int,Int}}`: a map from eigenvalues to
-        multiplicities, sorted first by ascending multiplicity then by ascending eigenvalue.
-        (This field is `nothing` if the eigenvalues are not all integers.)
+    - `multiplicities::Union{Nothing,OrderedDict{Int,Int}}`: a map from each eigenvalue to
+        its multiplicity, sorted first by ascending multiplicity then by ascending
+        eigenvalue. (This field is `nothing` if the eigenvalues are not all integers.)
 
 # Examples
 Confirm that the rotation matrix by `π/2` radians counterclockwise is not spectrum integral
@@ -209,7 +235,7 @@ function check_spectrum_integrality(A::AbstractMatrix{<:Integer})
         multiplicities = nothing
     end
 
-    SpectrumIntegralResult(A_copy, spectrum_integral, multiplicities)
+    return SpectrumIntegralResult(A_copy, spectrum_integral, multiplicities)
 end
 
 """
@@ -217,9 +243,13 @@ end
 
 Return a (not necessarily unique) independent spanning subset of the columns of `A`.
 
-Computing a QR decomposition of `A`, the scaling coefficients from the orthogonalization
-process are used to determine the rank (rather than recompute it with an SVD), while the
-pivots are used to extract a spanning set of independent columns.
+Computing a rank-revealing (pivoted) QR decomposition of `A`, the scaling coefficients from
+the orthogonalization process are used to determine the rank (rather than recompute it with
+an SVD), while the pivots are used to extract a spanning set of independent columns.
+
+The rank-revealing Businger–Golub QR algorithm is used for the pivoting strategy, appending
+the "most independent" column with respect to the current set of pivots at each step via
+Householder transformations [BG65; pp. 269--70](@cite).
 
 # Arguments
 - `A::AbstractMatrix{T<:Integer}`: the matrix whose independent columns to extract.
@@ -252,26 +282,34 @@ julia> SDiagonalizability._extract_independent_cols(A)
 ```
 
 # Notes
-The somewhat rare (although certainly far from unorthodox) choice of QR decomposition for
-our purposes merits discussion. [TODO: Write here]
+Since we already need a pivoted QR decomposition to identify independent columns of `A` (or,
+rather, to order the columns in such a way that the first `rank(A)` ones are guaranteed to
+be independent), it makes sense to use data from the resulting factorization object to
+compute the rank of `A` rather than compute a separate SVD. We thus count the nonzero scaling
+coefficients—that is, the diagonal entries of the `R` matrix in `A = QR`—to determine the
+rank, similarly to how we count the nonzero singular values in an SVD.
 
-TODO: Also discuss why we can't just transpose first (gets us independent rows)
-
-TODO: Discuss unusual use of `_rank_rtol`
+It is worth noting that we manually specify a higher relative tolerance for this rank
+computation. Further discussion can be found in the [`_rank_rtol`](@ref) documentation, but
+in short, a critical part of the formula for `LinearAlgebra.rank`'s default `rtol`
+uses the minimum dimension of the input matrix. This may result in rank overestimation for
+tall-and-skinny and short-and-fat matrices (precisely the type we expect to encounter when
+dealing with all `{-1,0,1}`-eigenvectors of a Laplacian matrix, which is the intended use
+case of this helper function in this package). Our replacement tolerance, on the other hand,
+is a widely accepted standard in numerical analysis which uses the maximum dimension instead
+[PTVF07; p. 795](@cite).
 """
 function _extract_independent_cols(A::AbstractMatrix{<:Integer})
-    # Cast to a dense floating-point matrix to enable optimizations in `LinearAlgebra.qr`
-    A_float = Matrix{Float64}(A)
+    F = qr(A, ColumnNorm())
+    rtol = _rank_rtol(A) # Use a higher tolerance (NumPy's/MATLAB's) than Julia's default
 
-    # Factorize `A = QR` for some real unitary matrix `Q` and upper triangular matrix `R`
-    F = qr(A_float, ColumnNorm())
-    pivots = F.p # The first `rank(A)` pivots correspond to independent columns of `A`
-    ortho_coefs = diag(F.R) # Scaling factors of the columns of the `Q` matrix
+    #= In Julia 1.12+, `LinearAlgebra.rank` dispatches to a method that re-uses an existing
+    QR decomposition. For compatibility with v1.10–1.11, we manually define it ourselves in
+    `src/utils.jl`. =#
+    r = rank(F; rtol=rtol)
+    pivots = F.p[1:r] # The first `rank(A)` pivots correspond to independent columns of `A`
 
-    tol = _rank_rtol(A_float) * maximum(abs, ortho_coefs) # TODO: Add inline comment
-    r = count(x -> abs(x) > tol, ortho_coefs) # The rank of `A` within floating-point error
-
-    return A[:, pivots[1:r]] # An independent spanning subset of the columns of `A`
+    return A[:, pivots]
 end
 
 """
@@ -279,22 +317,24 @@ end
 
 Find the indices of `{-1,1}`-eigenvectors given a map of eigenspaces.
 
-More precisely, given a map from each eigenvalue to all {-1,0,1}-vectors in the associated
+More precisely, given a map from each eigenvalue to all `{-1,0,1}`-vectors in the associated
 eigenspace, this function returns a map from each eigenvalue to the indices of the
-{-1,1}-vectors in each value from the input map.
+`{-1,1}`-vectors in each value from the input map.
 
 # Arguments
-- `eigvecs_01neg::AbstractDict{Int,<:AbstractMatrix{Int}}`: a map from eigenvalues to
-    eigenspaces, TODO: Write here
+- `eigvecs_01neg::AbstractDict{Int,<:AbstractMatrix{Int}}`: a map from each eigenvalue to
+    all `{-1,0,1}`-eigenvectors in the associated eigenspace.
 
 # Returns
-- `::AbstractDict{Int,Vector{Int}}`: TODO: Write here
+- `::AbstractDict{Int,Vector{Int}}`: a map from each eigenvalue to the indices of the
+    `{-1,1}`-columns in `eigvecs_01neg[eigval]`.
 
 # Examples
 TODO: Write here
 
 # Notes
-TODO: Justify decision to use `Vector{Int}` rather than `BitVector` for the indices
+TODO: Justify decision to use `Vector{Int}` rather than `BitVector` for the indices (that
+is, memory efficiency when very few columns have entries exclusively from `{-1,1}`).
 """
 function _find_indices_1neg(eigvecs_01neg::AbstractDict{Int,<:AbstractMatrix{Int}})
     #= The order of the Laplacian matrix. Accessing the zero key is safe, as every
@@ -304,12 +344,12 @@ function _find_indices_1neg(eigvecs_01neg::AbstractDict{Int,<:AbstractMatrix{Int
     # Only even-ordered Laplacians have non-kernel {-1,1}-eigenvectors
     if n % 2 == 0 # Check all eigenspaces for {-1,1}-eigenvectors
         indices_1neg = Dict(
-            eigval => findall(v -> all(v .!= 0), eachcol(eigvecs)) for
+            eigval => findall(v -> !any(iszero, v), eachcol(eigvecs)) for
             (eigval, eigvecs) in eigvecs_01neg
         )
     else # Only check the kernel for {-1,1}-eigenvectors
         indices_1neg = Dict(eigval => Int[] for eigval in keys(eigvecs_01neg))
-        indices_1neg[0] = findall(v -> all(v .!= 0), eachcol(eigvecs_01neg[0]))
+        indices_1neg[0] = findall(v -> !any(iszero, v), eachcol(eigvecs_01neg[0]))
     end
 
     return indices_1neg # Indices of the {-1,0,1}-eigenvectors without 0's
@@ -318,26 +358,27 @@ end
 """
     laplacian_spectra_01neg(L::AbstractMatrix{<:Integer})
 
-Compute data on the {-1,0,1}-spectrum of some Laplacian matrix `L`.
+Compute data on the `{-1,0,1}`- and `{-1,1}`-spectrum of some Laplacian matrix `L`.
 
 TODO: Write here
 
 # Arguments
-- `L::AbstractMatrix{<:Integer}`: the Laplacian matrix on whose `{-1,0,1}`-spectrum we are
-    to compute data.
+- `L::AbstractMatrix{<:Integer}`: the Laplacian matrix in whose `{-1,0,1}`- and
+    `{-1,1}`-spectrum we are interested.
 
 # Returns
 - `::LaplacianSpectrum01Neg`: a struct containing the following fields:
     - `laplacian_matrix::Matrix{Int}`: a (casted) copy of `L`, avoiding shared mutability.
-    - `diagonalizable_01neg::Bool`: whether the Laplacian is {-1,0,1}-diagonalizable.
-    - `diagonalizable_1neg::Bool`: whether the Laplacian is {-1,1}-diagonalizable.
+    - `diagonalizable_01neg::Bool`: whether the Laplacian is `{-1,0,1}`-diagonalizable.
+    - `diagonalizable_1neg::Bool`: whether the Laplacian is `{-1,1}`-diagonalizable.
     - `eigspaces_01neg::Union{Nothing,OrderedDict{Int,_Eigenspace01Neg}}`: TODO: Write here
 
 # Examples
 TODO: Write here
 
 # Notes
-TODO: Include notes on the relevant properties of each type of Laplacian matrix
+TODO: Include notes on the relevant properties of each type of Laplacian matrix. Also,
+reference documentation on the `LaplacianSpectrum01Neg` struct.
 """
 function laplacian_spectra_01neg(L::AbstractMatrix{<:Integer})
     TL = _cast_to_typed_laplacian(L)
@@ -372,6 +413,9 @@ function _typed_laplacian_spectra_01neg(TL::_EmptyGraphLaplacian)
     L = TL.matrix
     n = size(L, 1)
 
+    #= TODO: Static analysis with JET.jl reads this as either a `Matrix` or a `Vector{Any}`,
+    generating a warning given the latter possibility. Will JET complain about a potential
+    `MethodError` if we type this as `::Matrix` (in which case we'll need an `@assert`)? =#
     kernel_eigvecs_01neg = hcat(_pot_kernel_eigvecs_01neg(n)...)
     eigvecs_01neg = Dict(0 => kernel_eigvecs_01neg)
     indices_1neg = _find_indices_1neg(eigvecs_01neg)
@@ -480,8 +524,12 @@ function _typed_laplacian_spectra_01neg(TL::_ArbitraryGraphLaplacian)
         return LaplacianSpectrum01Neg(L, false, false, nothing)
     end
 
-    n = size(L, 1)
+    #= `multiplicities` is only `nothing` when `spectrum_integral` is false, so we
+    explicitly assert its type here for compiler inference during static analysis. =#
     multiplicities = res.multiplicities
+    @assert !isnothing(multiplicities)
+
+    n = size(L, 1)
     eigvals_nonzero = filter(!iszero, keys(multiplicities))
     eigvecs_01neg = Dict{Int,AbstractMatrix{Int}}(
         # Initialize resizeable matrices to store an unknown number of eigenvectors
@@ -511,10 +559,11 @@ function _typed_laplacian_spectra_01neg(TL::_ArbitraryGraphLaplacian)
 
     indices_1neg = _find_indices_1neg(eigvecs_01neg)
 
+    # TODO: Comment on why we type the values
     bases_01neg = Dict{Int,Union{Nothing,Matrix{Int}}}(
         eigval => _extract_independent_cols(vecs) for (eigval, vecs) in eigvecs_01neg
     )
-    bases_1neg = Dict(
+    bases_1neg = Dict{Int,Union{Nothing,Matrix{Int}}}(
         eigval => _extract_independent_cols(vecs[:, indices_1neg[eigval]]) for
         (eigval, vecs) in eigvecs_01neg
     )
@@ -524,9 +573,13 @@ function _typed_laplacian_spectra_01neg(TL::_ArbitraryGraphLaplacian)
     #= If they exist, find a {-1,0,1}- and {-1,1}-basis for each non-kernel eigenspace.
     {-1,1}-bases are preferable, so they take priority whenever they exist. =#
     for eigval in eigvals_nonzero
-        multiplicity = multiplicities[eigval]
+        # TODO: Comment on the `@assert`'s for compiler inference during static analysis
         pot_basis_01neg = bases_01neg[eigval]
+        @assert !isnothing(pot_basis_01neg)
         pot_basis_1neg = bases_1neg[eigval]
+        @assert !isnothing(pot_basis_1neg)
+
+        multiplicity = multiplicities[eigval]
 
         if size(pot_basis_01neg, 2) < multiplicity # The eigenspace has no {-1,0,1}-basis
             bases_01neg[eigval] = bases_1neg[eigval] = nothing

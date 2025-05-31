@@ -53,7 +53,7 @@ A wrapper for the Laplacian matrix of the (unique) graph with no nodes.
 - `matrix::Matrix{Int}`: the Laplacian in question. (Necessarily a `0×0 Matrix{Int}`.)
 
 # Supertype Hierarchy
-_NullGraphLaplacian <: _TypedLaplacian <: Any
+[`_NullGraphLaplacian`](@ref) <: [`_TypedLaplacian`](@ref) <: Any
 
 # Notes
 See the documentation for [`laplacian_spectra_01neg`](@ref) for further details on the
@@ -77,7 +77,7 @@ A wrapper for the Laplacian matrix of any graph with no edges on `n ≥ 1` nodes
     `zeros(Int, n, n)` for some `n ≥ 1`.)
 
 # Supertype Hierarchy
-_EmptyGraphLaplacian <: _TypedLaplacian <: Any
+[`_EmptyGraphLaplacian`](@ref) <: [`_TypedLaplacian`](@ref) <: Any
 
 # Notes
 We are confident in the assumption that `n` is at least `1` because the only graph on zero
@@ -106,7 +106,7 @@ A wrapper for the Laplacian of any uniformly weighted complete graph on `n ≥ 2
     a nonzero integer.)
 
 # Supertype Hierarchy
-_CompleteGraphLaplacian <: _TypedLaplacian <: Any
+[`_CompleteGraphLaplacian`](@ref) <: [`_TypedLaplacian`](@ref) <: Any
 
 # Notes
 The only graph on zero nodes is the null graph (handled by the [`_NullGraphLaplacian`](@ref)
@@ -137,7 +137,7 @@ of interest.
     with zero row sums for some `n ≥ 3`.)
 
 # Supertype Hierarchy
-_ArbitraryGraphLaplacian <: _TypedLaplacian <: Any
+[`_ArbitraryGraphLaplacian`](@ref) <: [`_TypedLaplacian`](@ref) <: Any
 
 # Notes
 The only graph on zero nodes is the null graph (handled by the [`_NullGraphLaplacian`](@ref)
@@ -271,8 +271,10 @@ function _cast_to_typed_laplacian(L::AbstractMatrix{<:Integer})
         TL = _NullGraphLaplacian(L_copy)
     elseif iszero(L_copy) # The graph has no edges
         TL = _EmptyGraphLaplacian(L_copy)
-        #= We have already verified symmetry, so equality of all strictly upper-triangular
-        elements is a sufficient condition for `L` to represent a complete graph. =#
+    #! format: off
+    #= We have already verified symmetry, so equality of all strictly upper-triangular
+    elements is a sufficient condition for `L` to represent a complete graph. =#
+    #! format: on
     elseif allequal(L_copy[i, j] for i in 1:(n - 1) for j in (i + 1):n)
         weight = L_copy[1, 2]
         TL = _CompleteGraphLaplacian(L_copy, weight)

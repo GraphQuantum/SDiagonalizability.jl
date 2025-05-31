@@ -4,8 +4,6 @@
 # http://opensource.org/licenses/MIT>. This file may not be copied, modified, or
 # distributed except according to those terms.
 
-# TODO: Add comments and docstrings to this file
-
 """
     mutable struct _QOBasisSearchNodeData
 
@@ -40,7 +38,7 @@ end
 """
     _find_basis_with_property(column_space, column_rank, prop:::_Orthogonality)
 
-TODO: Write here
+TODO: Write here, and add comments
 """
 function _find_basis_with_property(
     column_space::AbstractMatrix{Int}, column_rank::Int, prop::_Orthogonality
@@ -60,7 +58,7 @@ end
 """
     _find_basis_with_property(column_space, column_rank, prop::_QuasiOrthogonality)
 
-TODO: Write here
+TODO: Write here, and add comments
 """
 function _find_basis_with_property(
     column_space::AbstractMatrix{Int}, column_rank::Int, prop::_QuasiOrthogonality
@@ -122,7 +120,8 @@ function _find_basis_with_property(
         ortho_graph_compl_adjacency[diagind(ortho_graph_compl_adjacency)] .= false
 
         #= Before running a subgraph monomorphism search, we can filter out (partial) bases
-        by [TODO: Write here] =#
+        that lack a sufficient number of orthogonality relations to be `k`-orthogonal,
+        regardless of the column ordering. =#
         if all(sum(ortho_graph_compl_adjacency; dims=1) .<= 2k - 2)
             H = Graph(column_rank) # Initialize the empty graph on `column_rank` vertices
 
@@ -200,9 +199,10 @@ function _find_basis_indices(
     depth = length(curr_indices)
     num_columns = size(column_space, 2)
     partial_basis = view(column_space, :, curr_indices)
+    # Use a more robust tolerance (NumPy's and MATLAB's default) than Julia's default
     rtol = _rank_rtol(partial_basis)
 
-    rank(partial_basis, rtol) < depth && return nothing
+    rank(partial_basis; rtol=rtol) < depth && return nothing
 
     parent_partial_basis = view(partial_basis, :, 1:(depth - 1))
     curr_column = view(partial_basis, :, depth)
@@ -295,9 +295,10 @@ function _find_basis_indices(
     depth = length(curr_indices)
     num_columns = size(column_space, 2)
     partial_basis = view(column_space, :, curr_indices)
+    # Use a more robust tolerance (NumPy's and MATLAB's default) than Julia's default
     rtol = _rank_rtol(partial_basis)
 
-    rank(partial_basis, rtol) < depth && return nothing
+    rank(partial_basis; rtol=rtol) < depth && return nothing
 
     parent_partial_basis = view(partial_basis, :, 1:(depth - 1))
     curr_column = view(partial_basis, :, depth)
