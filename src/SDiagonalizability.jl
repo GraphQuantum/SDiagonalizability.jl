@@ -34,8 +34,6 @@ using MolecularGraph: subgraph_monomorphisms
 # TODO: Create and include `precompile_workload.jl`
 using PrecompileTools: @setup_workload, @compile_workload
 
-# TODO: Check if we really need the module preface for cross-referencing private functions
-
 include("utils.jl")
 include("factories/laplacian_types.jl")
 include("factories/orthogonality_properties.jl")
@@ -46,8 +44,8 @@ include("basis_search.jl")
 include("s_bandwidth.jl")
 
 # Exports from `laplacian_spectra.jl`
-export LaplacianSpectrum01Neg, laplacian_spectra_01neg
 export SpectrumIntegralResult, check_spectrum_integrality
+export LaplacianSpectrum01Neg, laplacian_spectra_01neg
 
 # Exports from `s_bandwidth.jl`
 export s_bandwidth
