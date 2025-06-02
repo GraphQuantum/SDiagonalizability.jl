@@ -21,7 +21,7 @@ makedocs(;
     format=Documenter.HTML(;
         canonical="https://GraphQuantum.github.io/SDiagonalizability.jl",
         edit_link="main",
-        assets=String[],
+        assets=["assets/styles.css"],
     ),
     plugins=[bib],
     pages=[

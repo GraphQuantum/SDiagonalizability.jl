@@ -2,6 +2,7 @@
 CurrentModule = SDiagonalizability
 ```
 
+```@raw html
 <table>
   <tr>
     <td>
@@ -43,11 +44,16 @@ CurrentModule = SDiagonalizability
       </table>
     </td>
     <td>
-      <img src="https://github.com/GraphQuantum/SDiagonalizability.jl/raw/main/docs/src/assets/logo.jpg" alt="GraphQuantum logo by Madiha Waqar" width="170"><br>
-      <sup><sub><em>GraphQuantum</em> logo by <a href="https://github.com/madihaahmed1">Madiha Waqar</a></sub></sup>
+      <figure>
+        <img src="https://github.com/GraphQuantum/SDiagonalizability.jl/raw/main/docs/src/assets/logo.jpg" alt="GraphQuantum logo by Madiha Waqar">
+        <figcaption>
+          <em>GraphQuantum</em> logo by <a href="https://github.com/madihaahmed1">Madiha Waqar</a>
+        </figcaption>
+      </figure>
     </td>
   </tr>
 </table>
+```
 
 # SDiagonalizability.jl
 
