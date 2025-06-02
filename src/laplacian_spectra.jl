@@ -81,12 +81,33 @@ end
     struct LaplacianSpectrum01Neg
 
 Data on the `{-1,0,1}`-spectrum of some Laplacian matrix.
+
+TODO: Write here
+
+# Fields
+- `laplacian_matrix::Matrix{Int}`: the Laplacian matrix.
+- `diagonalizable_01neg::Bool`: whether the Laplacian is `{-1,0,1}`-diagonalizable.
+- `diagonalizable_1neg::Bool`: whether the Laplacian is `{-1,1}`-diagonalizable.
+- `eigspaces_01neg::Union{Nothing,OrderedDict{Int,_Eigenspace01Neg}}`: a map from each
+    eigenvalue to its corresponding `{-1,0,1}`-spectrum, sorted first by ascending
+    multiplicity then by ascending eigenvalue. (This field is `nothing` if and only if the
+    Laplacian is not spectrum integral, which implies that `diagonalizable_01neg` is also
+    false [JP25; p. 312](@cite). However, this field contains data even when
+    `diagonalizable_01neg` is false in the case that `laplacian_matrix` has *some*
+    `{-1,0,1}`-eigenvectors but lacks spanning `{-1,0,1}`-bases for all eigenspaces.)
+
+# Properties
+TODO: Write here
+
+# Notes
+TODO: Write here
 """
 struct LaplacianSpectrum01Neg
     laplacian_matrix::Matrix{Int}
     diagonalizable_01neg::Bool
     diagonalizable_1neg::Bool
     eigspaces_01neg::Union{Nothing,OrderedDict{Int,_Eigenspace01Neg}}
+    # TODO: Add a constructor that validates {-1.0,1}-spectra?
 end
 
 function Base.getproperty(obj::LaplacianSpectrum01Neg, name::Symbol)
@@ -108,6 +129,7 @@ function Base.getproperty(obj::LaplacianSpectrum01Neg, name::Symbol)
             eigval => getfield(eigspace, name) for (eigval, eigspace) in eigspaces_01neg
         )
     else
+        # TODO: Is thi the desired behavior? We might want data even when not diagonalizable
         value = nothing
     end
 
@@ -321,6 +343,9 @@ More precisely, given a map from each eigenvalue to all `{-1,0,1}`-vectors in th
 eigenspace, this function returns a map from each eigenvalue to the indices of the
 `{-1,1}`-vectors in each value from the input map.
 
+It is, of course, assumed that the input map indeed contains only `{-1,0,1}`-matrices as
+values, and that it contains `0` as a key.
+
 # Arguments
 - `eigvecs_01neg::AbstractDict{Int,<:AbstractMatrix{Int}}`: a map from each eigenvalue to
     all `{-1,0,1}`-eigenvectors in the associated eigenspace.
@@ -333,6 +358,8 @@ eigenspace, this function returns a map from each eigenvalue to the indices of t
 TODO: Write here
 
 # Notes
+
+
 TODO: Justify decision to use `Vector{Int}` rather than `BitVector` for the indices (that
 is, memory efficiency when very few columns have entries exclusively from `{-1,1}`).
 """

@@ -17,10 +17,31 @@ end
 """
     _find_k_orthogonal_basis(column_space, column_rank, k)
 
-TODO: Write here
+Find a `k`-orthogonal spanning subset of the column set of a matrix.
+
+This function does not allow for any `k`-orthogonal basis of `column_space` (in which case
+it would be trivial to construct a *pairwise* orthogonal basis via a QR decomposition).
+Instead, it restricts its search to spanning subsets comprised exclusively of columns
+already in `column_space`, returning `nothing` if no such basis exists.
+
+# Arguments
+- `column_space::T<:AbstractMatrix{Int}`: the matrix whose column space is search for a
+    `k`-orthogonal basis.
+- `column_rank::Int`: the rank of the column space of `column_space`, pre-computed for
+    efficiency.
+- `k::Integer`: the minimum `k`-orthogonality parameter of the desired basis. (Must be a
+    positive integer.)
+
+# Returns
+- `::Union{Nothing,T}`: a `k`-orthogonal spanning subset of the columns of `column_space`,
+    with the same type as `column_space`. If no such basis exists, this is simply `nothing`.
+
+# Notes
+TODO: Write here. In particular, comment on the "basis" naming and perhaps `k`. Also,
+comment on typing decisions. (Should `k` just be `Int`?)
 """
 function _find_k_orthogonal_basis(
-    column_space::AbstractMatrix{Int}, column_rank::Int, k::Int
+    column_space::AbstractMatrix{Int}, column_rank::Int, k::Integer
 )
     prop = _classify_orthogonality_property(k)
     return _find_basis_with_property(column_space, column_rank, prop)
