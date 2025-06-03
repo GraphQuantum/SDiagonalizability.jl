@@ -47,7 +47,7 @@ CurrentModule = SDiagonalizability
       <figure>
         <img src="https://github.com/GraphQuantum/SDiagonalizability.jl/raw/main/docs/src/assets/logo.jpg" alt="GraphQuantum logo by Madiha Waqar">
         <figcaption>
-          <em>GraphQuantum</em> logo by <a href="https://github.com/madihaahmed1">Madiha Waqar</a>
+          <em style="font-style: normal;">GraphQuantum</em> logo by <a href="https://github.com/madihaahmed1">Madiha Waqar</a>
         </figcaption>
       </figure>
     </td>
@@ -56,6 +56,8 @@ CurrentModule = SDiagonalizability
 ```
 
 # SDiagonalizability.jl
+
+## Overview
 
 *SDiagonalizability.jl* implements the first non-naïve deterministic algorithm to minimize the ``S``-bandwidth of a quantum network (or, to be more precise, its graph representation), written in Julia. Given some finite ``S \in \mathbb{Z}^n``, the ``S``-bandwidth of an (undirected) graph ``G`` with Laplacian ``L(G) \in \mathbb{R}^{n \times n}`` is the minimum integer ``k \ge 1`` such that ``L(G) = PDP^{-1}`` for some diagonal ``D \in \mathbb{R}^{n \times n}`` and ``P \in S^{n \times n}`` with ``P^T P_{ij} = 0`` whenever ``|i - j| \ge k``. For specific choices of ``S`` (namely ``S = \{-1,1\}`` and ``S = \{-1,0,1\}``), a quantum network's ``S``-bandwidth has been shown to be an indicator of high state transfer fidelity due to automorphic properties of its graph representation.
 
