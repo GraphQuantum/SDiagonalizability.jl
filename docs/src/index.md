@@ -11,14 +11,14 @@ CurrentModule = SDiagonalizability
           <td>Metadata</td>
           <td>
             <img src="https://img.shields.io/badge/version-v0.1.0--dev-pink.svg" alt="Version">
-            <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+            <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-A31F34.svg" alt="License: MIT"></a>
             <a href="https://github.com/JuliaDiff/BlueStyle"><img src="https://img.shields.io/badge/code%20style-blue-4495d1.svg" alt="Code Style: Blue"></a>
           </td>
         </tr>
         <tr>
           <td>Documentation</td>
           <td>
-            <a href="https://graphquantum.github.io/SDiagonalizability.jl/stable/"><img src="https://img.shields.io/badge/docs-stable-blue.svg" alt="Documentation of latest stable version"></a>
+            <a href="https://graphquantum.github.io/SDiagonalizability.jl/stable/"><img src="https://img.shields.io/badge/docs-stable-darkgreen.svg" alt="Documentation of latest stable version"></a>
             <a href="https://graphquantum.github.io/SDiagonalizability.jl/dev/"><img src="https://img.shields.io/badge/docs-dev-rebeccapurple.svg" alt="Documentation of dev version"></a>
           </td>
         </tr>
