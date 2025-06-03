@@ -28,7 +28,7 @@
         <tr>
           <td>Code coverage</td>
           <td>
-            <a href="https://codecov.io/gh/GraphQuantum/SDiagonalizability.jl"><img src="https://img.shields.io/codecov/c/gh/GraphQuantum/SDiagonalizability.jl?label=codecov.svg" alt="Test coverage from codecov"></a>
+            <a href="https://codecov.io/gh/GraphQuantum/SDiagonalizability.jl"><img src="https://img.shields.io/codecov/c/gh/GraphQuantum/SDiagonalizability.jl.svg?label=codecov" alt="Test coverage from codecov"></a>
           </td>
         </tr>
         <tr>
