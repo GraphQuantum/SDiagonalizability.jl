@@ -190,7 +190,7 @@ end
 decomposition. For compatibility with v1.10–1.11, we manually define it ourselves here. =#
 @static if VERSION < v"1.12"
     #! format: off
-    function rank(A::QRPivoted; atol::Real=0, rtol::Real=min(size(A)...) * eps(real(float(eltype(A)))) * iszero(atol))
+    function LinearAlgebra.rank(A::QRPivoted; atol::Real=0, rtol::Real=min(size(A)...) * eps(real(float(eltype(A)))) * iszero(atol))
         m = min(size(A)...)
         m == 0 && return 0
         tol = max(atol, rtol*abs(A.factors[1,1]))
@@ -203,7 +203,7 @@ decomposition. For compatibility with v1.10–1.11, we manually define it oursel
 
     Compute the numerical rank of the QR factorization `A` by counting how many diagonal entries of
     `A.factors` are greater than `max(atol, rtol*Δ₁)` where `Δ₁` is the largest calculated such entry.
-    This is equivalent to the default [`rank(::AbstractMatrix)`](@ref) method except that it re-uses an existing QR factorization.
+    This is equivalent to the default `rank(::AbstractMatrix)` method except that it re-uses an existing QR factorization.
     `atol` and `rtol` are the absolute and relative tolerances, respectively.
     The default relative tolerance is `n*ϵ`, where `n` is the size of the smallest dimension of `A`
     and `ϵ` is the `eps` of the element type of `A`.
