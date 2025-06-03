@@ -13,7 +13,7 @@ Recall that an (ordered) collection of vectors `v₁, v₂, ..., vₙ` is said t
 *`k`-orthogonal* if we have the inner product `⟨vᵢ, vⱼ⟩ = 0` whenever `|i - j| ≥ k` (i.e.,
 if every pair of vectors at least `k` indices apart is orthogonal). This is equivalent to
 the vectors' Gram matrix having bandwidth at most `k`, where we define the bandwidth of a
-matrix `A` to be the minimum positive integer `k` such that `aᵢⱼ = 0` whenever `|i - j| ≥ k`
+matrix `A` to be the minimum integer `k ≥ 1` such that `aᵢⱼ = 0` whenever `|i - j| ≥ k`
 [JP25; p. 313](@cite). (Note that many texts instead define matrix bandwidth using
 zero-based indexing—that is, with the condition `|i - j| > k` [Maf14; p. 186](@cite).)
 

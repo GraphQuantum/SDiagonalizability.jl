@@ -12,11 +12,11 @@ A dynamic algorithm to test a graph for *S*-diagonalizability and minimize its *
 *SDiagonalizability.jl* packages the first non-naïve deterministic algorithm to minimize the
 *S*-bandwidth of a quantum network (or, to be more precise, its graph representation),
 written in Julia. Given some finite *S* ∈ **Z**ⁿ, the *S*-bandwidth of an (undirected) graph
-*G* with Laplacian *L(G)* ∈ **R**ⁿˣⁿ is the minimum *k* ≥ 1 such that *L(G)* = *PDP*⁻¹ for
-some diagonal *D* ∈ **R**ⁿˣⁿ and *P* ∈ *S*ⁿˣⁿ with [*P*ᵀ*P*]ᵢⱼ = 0 whenever |*i* - *j*| ≥
-*k*. For specific choices of *S* (namely *S* = {-1,1} and *S* = {-1,0,1}), a quantum
-network's *S*-bandwidth has been shown to be an indicator of high state transfer fidelity
-due to automorphic properties of its graph representation.
+*G* with Laplacian *L(G)* ∈ **R**ⁿˣⁿ is the minimum integer *k* ≥ 1 such that *L(G)* =
+*PDP*⁻¹ for some diagonal *D* ∈ **R**ⁿˣⁿ and *P* ∈ *S*ⁿˣⁿ with [*P*ᵀ*P*]ᵢⱼ = 0 whenever
+|*i* - *j*| ≥ *k*. For specific choices of *S* (namely *S* = {-1,1} and *S* = {-1,0,1}), a
+quantum network's *S*-bandwidth has been shown to be an indicator of high state transfer
+fidelity due to automorphic properties of its graph representation.
 
 [Full documentation](https://graphquantum.github.io/SDiagonalizability.jl/dev/) is available
 for the latest development version of this package.
