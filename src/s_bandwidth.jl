@@ -6,6 +6,10 @@
 
 # TODO: Implement
 
+#= TODO: Implement sorting (see `check_spectrum_integrality`). First check if the eigenstuff
+is already sorted, then raise an EfficiencyWarning (like DBSCAN in scikit-learn) if not and
+sort. This will be slower if the input is not sorted but faster if it is (as we expect). =#
+
 """
     s_bandwidth()
 

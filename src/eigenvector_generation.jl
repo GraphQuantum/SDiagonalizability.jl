@@ -57,7 +57,7 @@ function _pot_kernel_eigvecs_01neg(n::Integer)
                 leading = Vector{Int}(undef, k)
                 leading[1:(k - 1)] .= 0
                 leading[k] = 1 # Normalize the leading entry to 1
-                leading
+                return leading
             end,
             body,
         ) # Append the permuted entries to the leading [0, ..., 0, 1] vector
@@ -139,7 +139,7 @@ function _pot_nonkernel_eigvecs_01neg(n::Integer)
                 leading = Vector{Int}(undef, k)
                 leading[1:(k - 1)] .= 0
                 leading[k] = 1 # Normalize the leading entry to 1
-                leading
+                return leading
             end,
             body,
         ) # Append the permuted entries to the leading [0, ..., 0, 1] vector
@@ -153,7 +153,7 @@ function _pot_nonkernel_eigvecs_01neg(n::Integer)
                 entries[1:j] .= -1
                 entries[(j + 1):(r - j + 1)] .= 0
                 entries[(r - j + 2):r] .= 1
-                entries
+                return entries
             end,
             r,
         )

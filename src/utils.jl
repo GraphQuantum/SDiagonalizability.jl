@@ -29,7 +29,7 @@ struct NotImplementedError <: Exception
 end
 
 function Base.showerror(io::IO, e::NotImplementedError)
-    print(
+    return print(
         io,
         """NotImplementedError with `$(e.concretetype)`:
         The function `$(e.f)` is not yet implemented for this subtype of `$(e.abstracttype)`.""",
@@ -161,16 +161,9 @@ end
 
 Return a reasonable relative tolerance for computing matrix rank via SVD or QRD.
 
-If using SVD to compute rank with singular values Ω, then the intended use case is to
-numerically estimate the rank `r` of `A` by `r = count(Ω .> maximum(Ω) * _rank_rtol(A))`.
-Similarly, if using QRD to compute rank with scaling coefficients Δ (the diagonal entries of
-the `R` matrix in `A = QR`), then the user should numerically estimate the rank by `r =
-count(Δ .> maximum(Δ) * _rank_rtol(A))`.
-
-Since the machine epsilon is only defined for floating-point types, we call `eps()`
-(defaulting to `Float64`) instead of `eps(eltype(A))` when computing the tolerance. If the
-elements of `A` are floats, on the other hand, then this function dispatches to a separate
-method that uses the element type's machine epsilon.
+The output is intended to be passed as a keyword argument to `LinearAlgebra.rank`.
+`LinearAlgebra.eigtype` is used to determine the appropriate machine epsilon for the element
+type of `A` when `eltype(A)` is not an `AbstractFloat`.
 
 # Arguments
 - `A::AbstractMatrix{<:Real}`: the matrix for which to compute a tolerance.
@@ -180,52 +173,48 @@ method that uses the element type's machine epsilon.
     This scales proportionally to the maximum dimension of `A`.
 
 # Notes
-This is very much an *ad hoc* function applied specifically for numerical stability within
-this package and is never meant to be used as part of the public API. The
-`sqrt(maximum(size(A)) * eps())` formula is inspired by NumPy's default relative tolerance
-of `maximum(size(A)) * eps()` in the `numpy.linalg.matrix_rank` function [numpy25](@cite),
-with a square root taken for additional robustness. (In particular, the short, fat matrices
-holding all `{-1,0,1}`-eigenvectors of a Laplacian matrix are often ill-conditioned, hence
-the need for this higher tolerance.)
-
-In the case of using SVD to compute matrix rank, the decision to default to the `Float64`
-machine epsilon is motivated by how `LinearAlgebra.rank` handles non-floating-point
-matrices, as LAPACK automatically converts to `Float64` under the hood. In the case of QRD,
-our *ad hoc* use of this function in [`_extract_independent_cols`](@ref) takes in
-floating-point matrices anyway, so this particular method is no longer relevant.
+`LinearAlgebra.rank`'s default `rtol` of `min(m,n) * ϵ` for computing the rank of an `m × n`
+matrix may result in overestimating rank when `|m - n| ≫ 0`, since condition number (which
+determines how numerically stable SVD and QRD are) grows with both dimensions
+[CD05; p. 603](@cite). Given that we often deal with short-and-fat matrices in this package
+(particularly when processing all `{-1,0,1}`-eigenvectors of a Laplacian matrix), we turn
+instead to the same relative tolerance used by NumPy's and MATLAB's rank
+functions—`max(m,n) * ϵ` [Num25, MAT25](@cite). (Indeed, this is a widely adopted standard
+across the field of numerical analysis [PTVF07; p. 795](@cite).)
 """
-function _rank_rtol(A::AbstractMatrix{<:Real})
-    return sqrt(maximum(size(A)) * eps())
+function _rank_rtol(A::AbstractMatrix{T}) where {T}
+    return maximum(size(A)) * eps(LinearAlgebra.eigtype(T))
 end
 
-"""
-    function _rank_rtol(A::AbstractMatrix{<:AbstractFloat})
+#= In Julia 1.12+, `LinearAlgebra.rank` dispatches to a method that re-uses an existing QR
+decomposition. For compatibility with v1.10–1.11, we manually define it ourselves here. =#
+@static if VERSION < v"1.12"
+    #! format: off
+    function rank(A::QRPivoted; atol::Real=0, rtol::Real=min(size(A)...) * eps(real(float(eltype(A)))) * iszero(atol))
+        m = min(size(A)...)
+        m == 0 && return 0
+        tol = max(atol, rtol*abs(A.factors[1,1]))
+        return something(findfirst(i -> abs(A.factors[i,i]) <= tol, 1:m), m+1) - 1
+    end
+    #! format: on
 
-Return a reasonable relative tolerance for computing matrix rank via SVD or QRD.
+    @doc """
+        rank(A::QRPivoted{<:Any, T}; atol::Real=0, rtol::Real=min(n,m)*ϵ) where {T}
 
-If using SVD to compute rank with singular values `Ω`, then the intended use case is to
-numerically estimate the rank `r` of `A` by `r = count(Ω .> maximum(Ω) * _rank_rtol(A))`.
-Similarly, if using QRD to compute rank with scaling coefficients `Δ` (the diagonal entries
-of the `R` matrix in `A = QR`), then the user should numerically estimate the rank by `r =
-count(Δ .> maximum(Δ) * _rank_rtol(A))`.
+    Compute the numerical rank of the QR factorization `A` by counting how many diagonal entries of
+    `A.factors` are greater than `max(atol, rtol*Δ₁)` where `Δ₁` is the largest calculated such entry.
+    This is similar to the `LinearAlgebra.rank(::AbstractMatrix)` method insofar as it counts the number of
+    (numerically) nonzero coefficients from a matrix factorization, although the default method uses an
+    SVD instead of a QR factorization. Like `LinearAlgebra.rank(::SVD)`, this method also re-uses an existing
+    matrix factorization.
 
-# Arguments
-- `A::AbstractMatrix{T<:AbstractFloat}`: the matrix for which to compute a tolerance.
+    Computing rank via QR factorization should almost always produce the same results as via SVD,
+    although this method may be more prone to overestimating the rank in pathological cases where the
+    matrix is ill-conditioned. It is also worth noting that it is generally faster to compute a QR
+    factorization than an SVD, so this method may be preferred when performance is a concern.
 
-# Returns
-- `tol::Float64`: a reasonable relative tolerance for computing matrix rank via SVD or QRD.
-    This scales proportionally to the maximum dimension of `A` and the machine epsilon of
-    the element type `T`.
-
-# Notes
-This is very much an *ad hoc* function applied specifically for numerical stability within
-this package and is never meant to be used as part of the public API. The
-`sqrt(maximum(size(A)) * eps())` formula is inspired by NumPy's default relative tolerance
-of `maximum(size(A)) * eps()` in the `numpy.linalg.matrix_rank` function [numpy25](@cite),
-with a square root taken for additional robustness. (In particular, the short, fat matrices
-holding all `{-1,0,1}`-eigenvectors of a Laplacian matrix are often ill-conditioned, hence
-the need for this higher tolerance.)
-"""
-function _rank_rtol(A::AbstractMatrix{T}) where {T<:AbstractFloat}
-    return sqrt(maximum(size(A)) * Float64(eps(T)))
+    `atol` and `rtol` are the absolute and relative tolerances, respectively.
+    The default relative tolerance is `n*ϵ`, where `n` is the size of the smallest dimension of `A`
+    and `ϵ` is the `eps` of the element type of `A`.
+    """ -> rank
 end

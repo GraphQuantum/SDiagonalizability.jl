@@ -53,7 +53,7 @@
 
 ## Installation
 
-Installation is straightforward using the Julia package manager. First, enter Pkg mode by typing `]` in the Julia REPL, then run the following command:
+The only prerequisite is a working Julia installation (v1.10 or later). First, enter Pkg mode by typing `]` in the Julia REPL, then run the following command:
 
 ```julia-repl
 pkg> add https://github.com/GraphQuantum/SDiagonalizability.jl

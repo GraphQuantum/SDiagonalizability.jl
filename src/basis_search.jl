@@ -4,8 +4,6 @@
 # http://opensource.org/licenses/MIT>. This file may not be copied, modified, or
 # distributed except according to those terms.
 
-# TODO: Add comments and docstrings to this file
-
 """
     mutable struct _QOBasisSearchNodeData
 
@@ -19,10 +17,31 @@ end
 """
     _find_k_orthogonal_basis(column_space, column_rank, k)
 
-TODO: Write here
+Find a `k`-orthogonal spanning subset of the column set of a matrix.
+
+This function does not allow for any `k`-orthogonal basis of `column_space` (in which case
+it would be trivial to construct a *pairwise* orthogonal basis via a QR decomposition).
+Instead, it restricts its search to spanning subsets comprised exclusively of columns
+already in `column_space`, returning `nothing` if no such basis exists.
+
+# Arguments
+- `column_space::T<:AbstractMatrix{Int}`: the matrix whose column space is search for a
+    `k`-orthogonal basis.
+- `column_rank::Int`: the rank of the column space of `column_space`, pre-computed for
+    efficiency.
+- `k::Integer`: the minimum `k`-orthogonality parameter of the desired basis. (Must be a
+    positive integer.)
+
+# Returns
+- `::Union{Nothing,T}`: a `k`-orthogonal spanning subset of the columns of `column_space`,
+    with the same type as `column_space`. If no such basis exists, this is simply `nothing`.
+
+# Notes
+TODO: Write here. In particular, comment on the "basis" naming and perhaps `k`. Also,
+comment on typing decisions. (Should `k` just be `Int`?)
 """
 function _find_k_orthogonal_basis(
-    column_space::AbstractMatrix{Int}, column_rank::Int, k::Int
+    column_space::AbstractMatrix{Int}, column_rank::Int, k::Integer
 )
     prop = _classify_orthogonality_property(k)
     return _find_basis_with_property(column_space, column_rank, prop)
@@ -40,7 +59,7 @@ end
 """
     _find_basis_with_property(column_space, column_rank, prop:::_Orthogonality)
 
-TODO: Write here
+TODO: Write here, and add comments
 """
 function _find_basis_with_property(
     column_space::AbstractMatrix{Int}, column_rank::Int, prop::_Orthogonality
@@ -60,7 +79,7 @@ end
 """
     _find_basis_with_property(column_space, column_rank, prop::_QuasiOrthogonality)
 
-TODO: Write here
+TODO: Write here, and add comments
 """
 function _find_basis_with_property(
     column_space::AbstractMatrix{Int}, column_rank::Int, prop::_QuasiOrthogonality
@@ -122,7 +141,8 @@ function _find_basis_with_property(
         ortho_graph_compl_adjacency[diagind(ortho_graph_compl_adjacency)] .= false
 
         #= Before running a subgraph monomorphism search, we can filter out (partial) bases
-        by [TODO: Write here] =#
+        that lack a sufficient number of orthogonality relations to be `k`-orthogonal,
+        regardless of the column ordering. =#
         if all(sum(ortho_graph_compl_adjacency; dims=1) .<= 2k - 2)
             H = Graph(column_rank) # Initialize the empty graph on `column_rank` vertices
 
@@ -200,9 +220,10 @@ function _find_basis_indices(
     depth = length(curr_indices)
     num_columns = size(column_space, 2)
     partial_basis = view(column_space, :, curr_indices)
+    # Use a more robust tolerance (NumPy's and MATLAB's default) than Julia's default
     rtol = _rank_rtol(partial_basis)
 
-    rank(partial_basis, rtol) < depth && return nothing
+    rank(partial_basis; rtol=rtol) < depth && return nothing
 
     parent_partial_basis = view(partial_basis, :, 1:(depth - 1))
     curr_column = view(partial_basis, :, depth)
@@ -295,9 +316,10 @@ function _find_basis_indices(
     depth = length(curr_indices)
     num_columns = size(column_space, 2)
     partial_basis = view(column_space, :, curr_indices)
+    # Use a more robust tolerance (NumPy's and MATLAB's default) than Julia's default
     rtol = _rank_rtol(partial_basis)
 
-    rank(partial_basis, rtol) < depth && return nothing
+    rank(partial_basis; rtol=rtol) < depth && return nothing
 
     parent_partial_basis = view(partial_basis, :, 1:(depth - 1))
     curr_column = view(partial_basis, :, depth)

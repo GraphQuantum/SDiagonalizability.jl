@@ -10,7 +10,7 @@
 An abstract type representing a classified Laplacian matrix of an undirected graph.
 
 # Interface
-Concrete subtypes of [_TypedLaplacian`](@ref) **must** implement the following fields:
+Concrete subtypes of `_TypedLaplacian` **must** implement the following fields:
 - `matrix::Matrix{Int}`: the Laplacian matrix of the graph.
 
 # Subtypes
@@ -25,7 +25,7 @@ Concrete subtypes of [_TypedLaplacian`](@ref) **must** implement the following f
 
 # Notes
 Given that this type and all its subtypes are privately encapsulated, we expect
-[`_TypedLaplacian`](@ref) instances to be created exclusively via the
+`_TypedLaplacian` instances to be created exclusively via the
 [`_cast_to_typed_laplacian`](@ref) factory function, which copies each input matrix to avoid
 shared mutability and converts it to a `Matrix{Int}` in the process. Therefore, it is safe
 to restrict the type of `matrix` field (in each concrete subtype) to `Matrix{Int}` in lieu
@@ -35,12 +35,11 @@ performance benefits via reduced type complexity and is highly unlikely to cause
 safeguard against directly passing a (wrongly typed) matrix to a subtype's constructor
 rather than calling [`_cast_to_typed_laplacian`](@ref).
 
-On a related note, it seems prudent to discuss the intended use case of
-[`_TypedLaplacian`](@ref). The interface and its subtypes are meant to support
-[`_cast_to_typed_laplacian`](@ref). This factory, in turn, determines which algorithm
-[`laplacian_spectra_01neg`](@ref) is to implement when computing data on the Laplacian
-matrix of a given graph, as different types of graphs exhibit different spectral properties
-which we may exploit to improve performance.
+On a related note, it seems prudent to discuss the intended use case of `_TypedLaplacian`.
+The interface and its subtypes are meant to support [`_cast_to_typed_laplacian`](@ref). This
+factory, in turn, determines which algorithm [`laplacian_spectra_01neg`](@ref) is to
+implement when computing data on the Laplacian matrix of a given graph, as different types
+of graphs exhibit different spectral properties which we may exploit to improve performance.
 """
 abstract type _TypedLaplacian end
 
@@ -53,11 +52,11 @@ A wrapper for the Laplacian matrix of the (unique) graph with no nodes.
 - `matrix::Matrix{Int}`: the Laplacian in question. (Necessarily a `0×0 Matrix{Int}`.)
 
 # Supertype Hierarchy
-_NullGraphLaplacian <: _TypedLaplacian <: Any
+`_NullGraphLaplacian` <: [`_TypedLaplacian`](@ref) <: Any
 
 # Notes
-See the documentation for [`laplacian_spectra_01neg`](@ref) for further details on the
-`{-1,0,1}`-spectral properties of this Laplacian type.
+See the [`_typed_laplacian_spectra_01neg(::_NullGraphLaplacian)`](@ref) documentation for
+more details on the `{-1,0,1}`-spectral properties of this Laplacian type.
 
 See also the documentation for parent type [`_TypedLaplacian`](@ref) if seeking
 justification for typing the `matrix` field as `Matrix{Int}` rather than
@@ -77,14 +76,14 @@ A wrapper for the Laplacian matrix of any graph with no edges on `n ≥ 1` nodes
     `zeros(Int, n, n)` for some `n ≥ 1`.)
 
 # Supertype Hierarchy
-_EmptyGraphLaplacian <: _TypedLaplacian <: Any
+`_EmptyGraphLaplacian` <: [`_TypedLaplacian`](@ref) <: Any
 
 # Notes
 We are confident in the assumption that `n` is at least `1` because the only graph on zero
 nodes is the null graph, which is handled by the [`_NullGraphLaplacian`](@ref) type.
 
-See the documentation for [`laplacian_spectra_01neg`](@ref) for further details on the
-`{-1,0,1}`-spectral properties of this Laplacian type.
+See the [`_typed_laplacian_spectra_01neg::_EmptyGraphLaplacian`](@ref) documentation for
+more details on the `{-1,0,1}`-spectral properties of this Laplacian type.
 
 See also the documentation for parent type [`_TypedLaplacian`](@ref) if seeking
 justification for typing the `matrix` field as `Matrix{Int}` rather than
@@ -106,16 +105,16 @@ A wrapper for the Laplacian of any uniformly weighted complete graph on `n ≥ 2
     a nonzero integer.)
 
 # Supertype Hierarchy
-_CompleteGraphLaplacian <: _TypedLaplacian <: Any
+`_CompleteGraphLaplacian` <: [`_TypedLaplacian`](@ref) <: Any
 
 # Notes
 The only graph on zero nodes is the null graph (handled by the [`_NullGraphLaplacian`](@ref)
 type) and the only graph on one node is an empty graph (handled by the
 [`_EmptyGraphLaplacian`](@ref) type), so we are confident in the assumption that `n ≥ 2` for
-any [`_CompleteGraphLaplacian`](@ref) instance.
+any `_CompleteGraphLaplacian` instance.
 
-See the documentation for [`laplacian_spectra_01neg`](@ref) for further details on the
-`{-1,0,1}`-spectral properties of this Laplacian type.
+See the [`_typed_laplacian_spectra_01neg::_CompleteGraphLaplacian`](@ref) documentation for
+more details on the `{-1,0,1}`-spectral properties of this Laplacian type.
 
 See also the documentation for parent type [`_TypedLaplacian`](@ref) if seeking
 justification for typing the `matrix` field as `Matrix{Int}` rather than
@@ -137,18 +136,17 @@ of interest.
     with zero row sums for some `n ≥ 3`.)
 
 # Supertype Hierarchy
-_ArbitraryGraphLaplacian <: _TypedLaplacian <: Any
+`_ArbitraryGraphLaplacian` <: [`_TypedLaplacian`](@ref) <: Any
 
 # Notes
 The only graph on zero nodes is the null graph (handled by the [`_NullGraphLaplacian`](@ref)
 type), the only graph on one node is an empty graph (handled by the
 [`_EmptyGraphLaplacian`](@ref) type), and the only graphs on two nodes are an empty graph
 and a complete graph (handled by the [`_CompleteGraphLaplacian`](@ref) type), so we are
-confident in the assumption that `n ≥ 3` for any [`_ArbitraryGraphLaplacian`](@ref)
-instance.
+confident in the assumption that `n ≥ 3` for any `_ArbitraryGraphLaplacian` instance.
 
-See the documentation for [`laplacian_spectra_01neg`](@ref) for further details on the
-`{-1,0,1}`-spectral properties of this Laplacian type.
+See the [`_typed_laplacian_spectra_01neg::_ArbitraryGraphLaplacian`](@ref) documentation for
+more details on the `{-1,0,1}`-spectral properties of this Laplacian type.
 
 See also the documentation for parent type [`_TypedLaplacian`](@ref) if seeking
 justification for typing the `matrix` field as `Matrix{Int}` rather than
@@ -271,8 +269,10 @@ function _cast_to_typed_laplacian(L::AbstractMatrix{<:Integer})
         TL = _NullGraphLaplacian(L_copy)
     elseif iszero(L_copy) # The graph has no edges
         TL = _EmptyGraphLaplacian(L_copy)
-        #= We have already verified symmetry, so equality of all strictly upper-triangular
-        elements is a sufficient condition for `L` to represent a complete graph. =#
+    #! format: off
+    #= We have already verified symmetry, so equality of all strictly upper-triangular
+    elements is a sufficient condition for `L` to represent a complete graph. =#
+    #! format: on
     elseif allequal(L_copy[i, j] for i in 1:(n - 1) for j in (i + 1):n)
         weight = L_copy[1, 2]
         TL = _CompleteGraphLaplacian(L_copy, weight)
