@@ -46,7 +46,9 @@ particular case, making every effort to include inline comments wherever clarifi
 be needed.
 """
 function _pot_kernel_eigvecs_01neg(n::Integer)
-    n < 0 && throw(DomainError(n, "Laplacian order must be non-negative"))
+    if n < 0
+        throw(DomainError(n, "Laplacian order must be non-negative"))
+    end
 
     # Cache to avoid redundant recomputations of the `leading` vector
     leading_cache = Dict{Int,Vector{Int}}()
@@ -126,7 +128,9 @@ particular case, making every effort to include inline comments wherever clarifi
 be needed.
 """
 function _pot_nonkernel_eigvecs_01neg(n::Integer)
-    n < 0 && throw(DomainError(n, "Laplacian order must be non-negative"))
+    if n < 0
+        throw(DomainError(n, "Laplacian order must be non-negative"))
+    end
 
     # Caches to avoid redundant recomputations of the `leading` and `entries` vectors
     leading_cache = Dict{Int,Vector{Int}}()
