@@ -55,8 +55,8 @@ A wrapper for the Laplacian matrix of the (unique) graph with no nodes.
 `_NullGraphLaplacian` <: [`_TypedLaplacian`](@ref) <: Any
 
 # Notes
-See the [`_typed_laplacian_spectra_01neg(::_NullGraphLaplacian)`](@ref) documentation for
-more details on the `{-1,0,1}`-spectral properties of this Laplacian type.
+See the [`_typed_laplacian_spectra_01neg`](@ref) documentation for more details on the
+`{-1,0,1}`-spectral properties of this Laplacian type.
 
 See also the documentation for parent type [`_TypedLaplacian`](@ref) if seeking
 justification for typing the `matrix` field as `Matrix{Int}` rather than
@@ -82,8 +82,8 @@ A wrapper for the Laplacian matrix of any graph with no edges on `n ≥ 1` nodes
 We are confident in the assumption that `n` is at least `1` because the only graph on zero
 nodes is the null graph, which is handled by the [`_NullGraphLaplacian`](@ref) type.
 
-See the [`_typed_laplacian_spectra_01neg::_EmptyGraphLaplacian`](@ref) documentation for
-more details on the `{-1,0,1}`-spectral properties of this Laplacian type.
+See the [`_typed_laplacian_spectra_01neg`](@ref) documentation for more details on the
+`{-1,0,1}`-spectral properties of this Laplacian type.
 
 See also the documentation for parent type [`_TypedLaplacian`](@ref) if seeking
 justification for typing the `matrix` field as `Matrix{Int}` rather than
@@ -113,8 +113,8 @@ type) and the only graph on one node is an empty graph (handled by the
 [`_EmptyGraphLaplacian`](@ref) type), so we are confident in the assumption that `n ≥ 2` for
 any `_CompleteGraphLaplacian` instance.
 
-See the [`_typed_laplacian_spectra_01neg::_CompleteGraphLaplacian`](@ref) documentation for
-more details on the `{-1,0,1}`-spectral properties of this Laplacian type.
+See the [`_typed_laplacian_spectra_01neg`](@ref) documentation for more details on the
+`{-1,0,1}`-spectral properties of this Laplacian type.
 
 See also the documentation for parent type [`_TypedLaplacian`](@ref) if seeking
 justification for typing the `matrix` field as `Matrix{Int}` rather than
@@ -145,8 +145,8 @@ type), the only graph on one node is an empty graph (handled by the
 and a complete graph (handled by the [`_CompleteGraphLaplacian`](@ref) type), so we are
 confident in the assumption that `n ≥ 3` for any `_ArbitraryGraphLaplacian` instance.
 
-See the [`_typed_laplacian_spectra_01neg::_ArbitraryGraphLaplacian`](@ref) documentation for
-more details on the `{-1,0,1}`-spectral properties of this Laplacian type.
+See the [`_typed_laplacian_spectra_01neg`](@ref) documentation for more details on the
+`{-1,0,1}`-spectral properties of this Laplacian type.
 
 See also the documentation for parent type [`_TypedLaplacian`](@ref) if seeking
 justification for typing the `matrix` field as `Matrix{Int}` rather than
