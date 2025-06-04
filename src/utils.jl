@@ -190,7 +190,7 @@ end
 decomposition. For compatibility with v1.10–1.11, we manually define it ourselves here. =#
 @static if VERSION < v"1.12"
     #! format: off
-    function LinearAlgebra.rank(A::QRPivoted; atol::Real=0, rtol::Real=min(size(A)...) * eps(real(float(eltype(A)))) * iszero(atol))
+    function rank(A::QRPivoted; atol::Real=0, rtol::Real=min(size(A)...) * eps(real(float(eltype(A)))) * iszero(atol))
         m = min(size(A)...)
         m == 0 && return 0
         tol = max(atol, rtol*abs(A.factors[1,1]))
@@ -203,12 +203,18 @@ decomposition. For compatibility with v1.10–1.11, we manually define it oursel
 
     Compute the numerical rank of the QR factorization `A` by counting how many diagonal entries of
     `A.factors` are greater than `max(atol, rtol*Δ₁)` where `Δ₁` is the largest calculated such entry.
-    This is equivalent to the default `rank(::AbstractMatrix)` method except that it re-uses an existing QR factorization.
+    This is similar to the `LinearAlgebra.rank(::AbstractMatrix)` method insofar as it counts the number of
+    (numerically) nonzero coefficients from a matrix factorization, although the default method uses an
+    SVD instead of a QR factorization. Like `LinearAlgebra.rank(::SVD)`, this method also re-uses an existing
+    matrix factorization.
+
+    Computing rank via QR factorization should almost always produce the same results as via SVD,
+    although this method may be more prone to overestimating the rank in pathological cases where the
+    matrix is ill-conditioned. It is also worth noting that it is generally faster to compute a QR
+    factorization than an SVD, so this method may be preferred when performance is a concern.
+
     `atol` and `rtol` are the absolute and relative tolerances, respectively.
     The default relative tolerance is `n*ϵ`, where `n` is the size of the smallest dimension of `A`
     and `ϵ` is the `eps` of the element type of `A`.
-
-    !!! compat "Julia 1.12"
-        The `rank(::QRPivoted)` method requires at least Julia 1.12.
-    """ -> LinearAlgebra.rank
+    """ -> rank
 end

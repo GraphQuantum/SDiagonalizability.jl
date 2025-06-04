@@ -22,7 +22,7 @@ values of `k`. For each family of values, we apply a separate algorithm to deter
 there exists a permutation of a given collection of vectors that induces `k`-orthogonality.
 
 # Interface
-Concrete subtypes of [`_KOrthogonality`](@ref) **must** implement the following properties:
+Concrete subtypes of `_KOrthogonality` **must** implement the following properties:
 - `k::Int`: the `k`-orthogonality parameter.
 
 `k` need not necessarily be a field of the subtype (especially in the case of single-value
@@ -42,8 +42,8 @@ minimization algorithm, it may seem prudent to ask why we do not type the `k` fi
 `UInt8` instead of `Int`. An equally compelling argument can be made to type it as `Integer`
 for genericity as well. However, many methods (both within this module and externally) often
 expect `Int`-typed parameters, so we settle on `Int` as our field type. However, in any
-constructors/factories of [`_KOrthogonality`](@ref) subtypes, we allow the `k`-orthogonality
-input parameter to be any generic `Integer`, simply casting it to an `Int` later on.
+constructors/factories of `_KOrthogonality` subtypes, we allow the `k`-orthogonality input
+parameter to be any generic `Integer`, simply casting it to an `Int` later on.
 
 On that note, the stipulation in the interface contract that `k` be an accessible property
 even for semantically unique types like [`_Orthogonality`](@ref) and
@@ -51,11 +51,11 @@ even for semantically unique types like [`_Orthogonality`](@ref) and
 by [`_find_k_orthogonal_basis`](@ref). (Rather, the type itself—which already implicitly
 encodes the value of `k`—directly informs the choice of algorithm in said function.)
 However, we require it nonetheless for the sake of consistency future extensibility, just in
-case the API is later modified to require more generic handling of [`_KOrthogonality`](@ref)
+case the API is later modified to require more generic handling of `_KOrthogonality`
 instances whose specific subtypes are not known based on their `k`-orthogonality parameter.
 
 Another design choice worth scrutinizing is the "`_WeakOrthogonality`" name. "Orthogonality"
-is a term as old as time and "quasi-orthogonality" too has risen to prominence in recent
+is a term as old as time, and "quasi-orthogonality" too has risen to prominence in recent
 years (e.g., [JP25; p. 313](@cite)), but "weak orthogonality," strictly speaking, is not
 standard terminology. We have taken the liberty of coining it here for `k > 2` to emphasize
 its weaker nature compared to orthogonality and quasi-orthogonality. That said, we make no
@@ -69,7 +69,7 @@ collection). Rather, we use it when determining whether a large, linearly depend
 vectors contains an `k`-orthogonal independent spanning subset. This is still related to the
 long-standing matrix bandwidth minimization problem, but it differs in that we can take
 advantage of dynamic programming techniques when recursively searching for such a subset.
-(See the documentation for [`_find_k_orthogonal_basis`](@ref) for further details.)
+(See the [`_find_k_orthogonal_basis`](@ref) documentation for more details.)
 """
 abstract type _KOrthogonality end
 
@@ -86,7 +86,7 @@ vectors is orthogonal). This is equivalent to the vectors' Gram matrix being dia
 - `k::Int`: the `k`-orthogonality parameter. (Necessarily `1`.)
 
 # Supertype Hierarchy
-[`_Orthogonality`](@ref) <: [`_KOrthogonality`](@ref) <: Any
+`_Orthogonality` <: [`_KOrthogonality`](@ref) <: Any
 
 # Notes
 Since this type is semantically unique inasmuch as it simply encodes the information
@@ -136,7 +136,7 @@ the vectors' Gram matrix being tridiagonal [JP25; p. 313](@cite).
 - `k::Int`: the `k`-orthogonality parameter. (Necessarily `2`.)
 
 # Supertype Hierarchy
-[`_QuasiOrthogonality`](@ref) <: [`_KOrthogonality`](@ref) <: Any
+`_QuasiOrthogonality` <: [`_KOrthogonality`](@ref) <: Any
 
 # Notes
 Since this type is semantically unique inasmuch as it simply encodes the information
@@ -188,12 +188,12 @@ orthogonal). This is equivalent to the vectors' Gram matrix having bandwidth at 
     `2`.)
 
 # Supertype Hierarchy
-[`_WeakOrthogonality`](@ref) <: [`_KOrthogonality`](@ref) <: Any
+`_WeakOrthogonality` <: [`_KOrthogonality`](@ref) <: Any
 
 # Constructors
-- `_WeakOrthogonality(k::Integer)`: constructs a [`_WeakOrthogonality`](@ref) object with
-    the given `k`-orthogonality parameter, casting it to an `Int` for type stability. Throws
-    a `DomainError` if `k <= 2`.
+- `_WeakOrthogonality(k)`: constructs a `_WeakOrthogonality` object with the given
+    `k`-orthogonality parameter, casting it to an `Int` for type stability. Throws a
+    `DomainError` if `k <= 2`.
 
 # Notes
 The term "weak orthogonality" is not standard terminology in the literature, but it is used
@@ -253,7 +253,7 @@ SDiagonalizability._WeakOrthogonality(13)
 ```
 
 # Notes
-See the documentation for [`_find_k_orthogonal_basis`](@ref) for further details on how this
+See the [`_find_k_orthogonal_basis`](@ref) documentation for more details on how this
 function is used in the context of finding a `k`-orthogonal basis.
 """
 function _classify_orthogonality_property(k::Integer)
