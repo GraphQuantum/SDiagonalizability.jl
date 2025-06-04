@@ -129,10 +129,9 @@ of this data is simply `nothing`.
     integral, this field is `nothing`.)
 
 # Constructors
-- `LaplacianSpectrum01Neg(
-    laplacian_matrix, diagonalizable_01neg, diagonalizable_1neg, eigspaces_01neg
-)`: constructs a `LaplacianSpectrum01Neg` instance from the given Laplacian matrix and
-    associated data on its `{-1,0,1}`-eigenspaces. When `eigspaces_01neg` is not `nothing`
+- `LaplacianSpectrum01Neg(::Matrix{Int}, ::Bool, ::Bool, ::Union{Nothing,OrderedDict{Int,_Eigenspace01Neg}})`:
+    constructs a `LaplacianSpectrum01Neg` instance from the given Laplacian matrix and
+    associated data on its `{-1,0,1}`-eigenspaces. When the last argument is not `nothing`
     (indicating spectrum integrality), this constructors flattens the data stored in the
     [`_Eigenspace01Neg`](@ref) instances and exposes it via top-level fields. (See the
     [`_Eigenspace01Neg`](@ref) documentation for more details.)
