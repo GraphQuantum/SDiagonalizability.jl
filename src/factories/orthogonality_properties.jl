@@ -191,9 +191,9 @@ orthogonal). This is equivalent to the vectors' Gram matrix having bandwidth at 
 `_WeakOrthogonality` <: [`_KOrthogonality`](@ref) <: Any
 
 # Constructors
-- `_WeakOrthogonality(k)`: constructs a `_WeakOrthogonality` object with the given
+- `_WeakOrthogonality(::Integer)`: constructs a `_WeakOrthogonality` object with the given
     `k`-orthogonality parameter, casting it to an `Int` for type stability. Throws a
-    `DomainError` if `k <= 2`.
+    `DomainError` if the argument is less than or equal to `2`.
 
 # Notes
 The term "weak orthogonality" is not standard terminology in the literature, but it is used
