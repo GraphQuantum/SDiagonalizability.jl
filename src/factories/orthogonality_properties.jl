@@ -257,7 +257,9 @@ See the [`_find_k_orthogonal_basis`](@ref) documentation for more details on how
 function is used in the context of finding a `k`-orthogonal basis.
 """
 function _classify_orthogonality_property(k::Integer)
-    k < 1 && throw(DomainError(k, "k-orthogonality parameter must be a positive integer"))
+    if k < 1
+        throw(DomainError(k, "k-orthogonality parameter must be a positive integer"))
+    end
 
     if k == 1
         prop = _ORTHOGONALITY

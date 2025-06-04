@@ -66,11 +66,16 @@ function _find_basis_with_property(
 )
     num_columns = size(column_space, 2)
 
-    num_columns == 1 && return column_space[:, 1]
+    if num_columns == 1
+        return column_space[:, 1]
+    end
 
     for root_index in 1:(num_columns - column_rank + 1)
         basis_indices = _find_basis_indices([root_index], column_space, column_rank, prop)
-        isnothing(basis_indices) || return column_space[:, basis_indices]
+
+        if !(isnothing(basis_indices))
+            return column_space[:, basis_indices]
+        end
     end
 
     return nothing
@@ -86,7 +91,9 @@ function _find_basis_with_property(
 )
     num_columns = size(column_space, 2)
 
-    num_columns <= 2 && return column_space[:, 1:column_rank]
+    if num_columns <= 2
+        return column_space[:, 1:column_rank]
+    end
 
     #= The current vertex degree and connected component of any root node (each
     `root_indices[1]` in the loop below) will always be 0 and 1 before the DFS begins. =#
@@ -97,7 +104,10 @@ function _find_basis_with_property(
         basis_indices = _find_basis_indices(
             root_indices, column_space, column_rank, nodes, union_find, prop
         )
-        isnothing(basis_indices) || return column_space[:, basis_indices]
+
+        if !(isnothing(basis_indices))
+            return column_space[:, basis_indices]
+        end
     end
 
     return nothing
@@ -115,7 +125,9 @@ function _find_basis_with_property(
     k = prop.k
     num_columns = size(column_space, 2)
 
-    num_columns <= k && return column_space[:, 1:column_rank]
+    if num_columns <= k
+        return column_space[:, 1:column_rank]
+    end
 
     #= Construct the orthogonality graph complement of the "least `k`-orthogonal" matrix in
     `Mₘ,ₙ` to apply a subgraph monomorphism search. (We later plan to replace this with a
@@ -149,14 +161,19 @@ function _find_basis_with_property(
             #= The aforementioned "resulting graph" from the Gram matrix is constructed by
             [TODO: Write here] =#
             for i in 1:(k - 1), j in (i + 1):k
-                ortho_graph_compl_adjacency[i, j] && add_edge!(H, i, j)
+                if ortho_graph_compl_adjacency[i, j]
+                    add_edge!(H, i, j)
+                end
             end
 
             basis_indices = _find_basis_indices(
                 root_indices, column_space, column_rank, G, H, prop
             )
+
             # If there is no monomorphism, terminate searching this branch of the tree
-            isnothing(basis_indices) || return column_space[:, basis_indices]
+            if !(isnothing(basis_indices))
+                return column_space[:, basis_indices]
+            end
         end
     end
 
@@ -181,9 +198,13 @@ function _find_basis_indices(
     parent_partial_basis = view(column_space, :, 1:(depth - 1))
     curr_column = view(column_space, :, depth)
 
-    iszero(parent_partial_basis' * curr_column) || return nothing
+    if !(iszero(parent_partial_basis' * curr_column))
+        return nothing
+    end
 
-    depth == column_rank && return copy(curr_indices)
+    if depth == column_rank
+        return copy(curr_indices)
+    end
 
     remaining_levels = column_rank - depth
 
@@ -191,7 +212,10 @@ function _find_basis_indices(
         push!(curr_indices, i)
         basis_indices = _find_basis_indices(curr_indices, column_space, column_rank, prop)
         pop!(curr_indices)
-        isnothing(basis_indices) || return basis_indices
+
+        if !(isnothing(basis_indices))
+            return basis_indices
+        end
     end
 
     return nothing
@@ -223,7 +247,9 @@ function _find_basis_indices(
     # Use a more robust tolerance (NumPy's and MATLAB's default) than Julia's default
     rtol = _rank_rtol(partial_basis)
 
-    rank(partial_basis; rtol=rtol) < depth && return nothing
+    if rank(partial_basis; rtol=rtol) < depth
+        return nothing
+    end
 
     parent_partial_basis = view(partial_basis, :, 1:(depth - 1))
     curr_column = view(partial_basis, :, depth)
@@ -236,16 +262,22 @@ function _find_basis_indices(
     elseif degree == 1
         neighbor = nodes[neighbor_indices[1]]
 
-        neighbor.degree == 2 && return nothing
+        if neighbor.degree == 2
+            return nothing
+        end
 
         neighbor.degree += 1
         component = neighbor.component
     elseif degree == 2
         neighbor1, neighbor2 = nodes[neighbor_indices]
 
-        neighbor1.component == neighbor2.component && return nothing
+        if neighbor1.component == neighbor2.component
+            return nothing
+        end
 
-        neighbor1.degree == 2 || neighbor2.degree == 2 && return nothing
+        if neighbor1.degree == 2 || neighbor2.degree == 2
+            return nothing
+        end
 
         neighbor1.degree += 1
         neighbor2.degree += 1
@@ -286,7 +318,10 @@ function _find_basis_indices(
         )
 
         pop!(curr_indices)
-        isnothing(basis_indices) || return basis_indices
+
+        if !(isnothing(basis_indices))
+            return basis_indices
+        end
     end
 
     return nothing
@@ -319,13 +354,17 @@ function _find_basis_indices(
     # Use a more robust tolerance (NumPy's and MATLAB's default) than Julia's default
     rtol = _rank_rtol(partial_basis)
 
-    rank(partial_basis; rtol=rtol) < depth && return nothing
+    if rank(partial_basis; rtol=rtol) < depth
+        return nothing
+    end
 
     parent_partial_basis = view(partial_basis, :, 1:(depth - 1))
     curr_column = view(partial_basis, :, depth)
     neighbor_indices = findall(!iszero, parent_partial_basis' * curr_column)
 
-    length(neighbor_indices) > 2k - 2 && return nothing
+    if length(neighbor_indices) > 2k - 2
+        return nothing
+    end
 
     for u in neighbor_indices
         add_edge!(H, depth, u)
@@ -333,7 +372,9 @@ function _find_basis_indices(
 
     monomorphism = iterate(subgraph_monomorphisms(G, H))
 
-    isnothing(monomorphism) && return nothing
+    if isnothing(monomorphism)
+        return nothing
+    end
 
     if depth == column_rank
         basis_indices = copy(curr_indices)
@@ -350,7 +391,10 @@ function _find_basis_indices(
             curr_indices, column_space, column_rank, G, H, prop
         )
         pop!(curr_indices)
-        isnothing(basis_indices) || return basis_indices
+
+        if !(isnothing(basis_indices))
+            return basis_indices
+        end
     end
 
     return nothing
