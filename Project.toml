@@ -1,0 +1,13 @@
+name = "SDiagonalizability"
+uuid = "addecc1e-711d-4b49-877e-3152f1574f63"
+authors = ["Luis M. B. Varona <lbvarona@mta.ca>"]
+version = "1.0.0-DEV"
+
+[compat]
+julia = "1.10"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
