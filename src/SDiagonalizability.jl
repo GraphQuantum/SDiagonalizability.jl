@@ -13,7 +13,7 @@ A dynamic algorithm to minimize or recognize a graph's S-bandwidth.
 """
 module SDiagonalizability
 
-# using Combinatorics
+using Combinatorics
 using DataStructures
 # using ElasticArrays
 using Graphs
@@ -21,6 +21,11 @@ using LinearAlgebra
 
 include("utils.jl")
 include("types.jl")
+
+include("eigenvector_generation.jl")
+# include("laplacian_spectra.jl")
+# include("basis_search.jl")
+
 # include("core.jl")
 
 # export minimize_s_bandwidths, has_s_bands_at_most_k, is_s_diagonalizable
