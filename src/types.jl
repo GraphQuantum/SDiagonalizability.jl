@@ -46,9 +46,7 @@ end
 [TODO: Write here]
 """
 struct SBandRecognitionResult{
-    A<:Union{AbstractGraph,AbstractMatrix{<:Integer}},
-    B<:Tuple,
-    C<:Union{Nothing,Eigen},
+    A<:Union{AbstractGraph,AbstractMatrix{<:Integer}},B<:Tuple,C<:Union{Nothing,Eigen}
 } <: AbstractSBandResult
     network::A
     S::B
@@ -89,12 +87,7 @@ end
 
 [TODO: Write here]
 """
-struct _SSpectra{
-    A<:Tuple,
-    B<:Union{Nothing,OrderedDict{Int}},
-    C<:B,
-    D<:B,
-}
+struct _SSpectra{A<:Tuple,B<:Union{Nothing,OrderedDict{Int}},C<:B,D<:B}
     matrix::AbstractMatrix{<:Integer}
     S::A
     multiplicities::B
