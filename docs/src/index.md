@@ -1,9 +1,6 @@
 ```@raw html
-<p align="center">
-  <img src="https://github.com/GraphQuantum/SDiagonalizability.jl/raw/main/docs/src/assets/logo.jpg" alt="GraphQuantum logo by Madiha Waqar" style="max-width:200px"/>
-  <br>
-  <sup><sub><em>GraphQuantum</em> logo by <a href="https://github.com/madihaahmed1">Madiha Waqar</a></sub></sup>
-</p>
+<img src="https://github.com/GraphQuantum/SDiagonalizability.jl/raw/main/docs/src/assets/logo.jpg" alt="GraphQuantum logo by Madiha Waqar" height="175"/>
+<sup><sub><em>GraphQuantum</em> logo by <a href="https://github.com/madihaahmed1">Madiha Waqar</a></sub></sup>
 ```
 
 ```@meta
