@@ -54,6 +54,21 @@ struct SBandRecognitionResult{
     k::Int
     has_band_k_diag::Bool
 end
+
+"""
+    SSpectra{A,B,C,D}
+
+[TODO: Write here]
+"""
+struct SSpectra{A<:Tuple,B<:Union{Nothing,OrderedDict{Int}},C<:B,D<:B}
+    matrix::AbstractMatrix{<:Integer}
+    S::A
+    multiplicities::B
+    s_eigenspaces::C
+    s_eigenbases::D
+    s_diagonalizable::Bool
+end
+
 """
     struct SpectrumIntegralResult
 
@@ -71,8 +86,8 @@ eigenvalues are indeed all integers. (Otherwise, the associated field is simply 
     non-integer eigenvalues to data.)
 
 # Notes
-If an undirected graph with integer edge weights is `{-1,0,1}`-diagonalizable (or, more
-restrictively, `{-1,1}`-diagonalizable), then its Laplacian matrix has integer eigenvalues
+If an undirected graph with integer edge weights is ``{-1,0,1}``-diagonalizable (or, more
+restrictively, ``{-1,1}``-diagonalizable), then its Laplacian matrix has integer eigenvalues
 [JP25; p. 312](@cite). Hence, validating Laplacian integrality serves as a useful screening
 step in this package's principal *S*-bandwidth minimization algorithm.
 """
@@ -80,20 +95,6 @@ struct SpectrumIntegralResult{T<:Union{Nothing,OrderedDict{Int,Int}}}
     matrix::AbstractMatrix{<:Integer}
     spectrum_integral::Bool
     multiplicities::T
-end
-
-"""
-    _SSpectra{A,B,C,D}
-
-[TODO: Write here]
-"""
-struct _SSpectra{A<:Tuple,B<:Union{Nothing,OrderedDict{Int}},C<:B,D<:B}
-    matrix::AbstractMatrix{<:Integer}
-    S::A
-    multiplicities::B
-    s_eigenspaces::C
-    s_eigenbases::D
-    s_diagonalizable::Bool
 end
 
 """

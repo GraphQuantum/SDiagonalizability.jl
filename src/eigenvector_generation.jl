@@ -5,14 +5,23 @@
 # distributed except according to those terms.
 
 """
-    pot_kernel_s_eigvecs(S, n)
+    pot_kernel_s_eigvecs(n, S) -> Iterators.Flatten{<:Base.Generator}
 
+[TODO: Write here]
+
+# Arguments
+[TODO: Write here]
+
+# Returns
 [TODO: Write here]
 
 # Throws
 - `DomainError`: if `n` is negative.
+
+# Examples
+[TODO: Write here]
 """
-function pot_kernel_s_eigvecs(S::Tuple, n::Integer)
+function pot_kernel_s_eigvecs(n::Integer, S::Tuple)
     if n < 0
         throw(DomainError(n, "Laplacian order must be non-negative"))
     end
@@ -29,14 +38,23 @@ function pot_kernel_s_eigvecs(S::Tuple, n::Integer)
 end
 
 """
-    pot_nonkernel_s_eigvecs(S, n)
+    pot_nonkernel_s_eigvecs(n, S) -> Iterators.Flatten{<:Base.Generator}
 
+[TODO: Write here]
+
+# Arguments
+[TODO: Write here]
+
+# Returns
 [TODO: Write here]
 
 # Throws
 - `DomainError`: if `n` is negative.
+
+# Examples
+[TODO: Write here]
 """
-function pot_nonkernel_s_eigvecs(S::Tuple, n::Integer)
+function pot_nonkernel_s_eigvecs(n::Integer, S::Tuple)
     if n < 0
         throw(DomainError(n, "Laplacian order must be non-negative"))
     end
@@ -53,12 +71,12 @@ function pot_nonkernel_s_eigvecs(S::Tuple, n::Integer)
 end
 
 """
-    _pot_kernel_01neg_eigvecs(n)
+    _pot_kernel_01neg_eigvecs(n) -> Iterators.Flatten{<:Base.Generator}
 
-Lazily generate all potential kernel `{-1,0,1}`-eigenvectors of an order `n` Laplacian.
+Lazily compute all potential kernel ``{-1,0,1}``-eigenvectors of an ``n×n`` Laplacian.
 
-Each vector is normalized so that its first nonzero entry is `1`, enforcing pairwise linear
-independence between all generated vectors.
+Each vector is normalized so that its first nonzero entry is ``1``, enforcing pairwise
+linear independence between all generated vectors.
 
 # Arguments
 - `n::Integer`: the order of the Laplacian matrix of some undirected graph for which to find
@@ -66,11 +84,11 @@ independence between all generated vectors.
 
 # Returns
 - `eigvec_generator::Iterators.Flatten{<:Base.Generator}`: a lazily evaluated iterator over
-    all `{-1,0,1}`-vectors in `ℝⁿ`, unique up to span.
+    all ``{-1,0,1}``-vectors in ``ℝⁿ``, unique up to span.
 
 # Examples
-Generate all potential kernel eigenvectors for an order `3` Laplacian matrix:
-```jldoctest; setup = :(using SDiagonalizability)
+Generate all potential kernel eigenvectors for an order ``3`` Laplacian matrix:
+```jldoctest
 julia> hcat(SDiagonalizability._pot_kernel_01neg_eigvecs(3)...)
 3×13 Matrix{Int64}:
   1   1   1   1  1  1   1  1  1   0  0  0  0
@@ -79,8 +97,8 @@ julia> hcat(SDiagonalizability._pot_kernel_01neg_eigvecs(3)...)
 ```
 
 # Notes
-The number of potential kernel eigenvectors (unique up to span) for an order `n` Laplacian
-matrix is given by `(3ⁿ - 1) / 2`. See also the relevant OEIS sequence [Slo25](@cite).
+The number of potential kernel eigenvectors (unique up to span) for an order ``n`` Laplacian
+matrix is given by ``(3ⁿ - 1) / 2``. See also the relevant OEIS sequence [Slo25](@cite).
 
 Regrettably, the implementation here is rather clunky and unidiomatic, but it is worth
 noting that eigenvector generation is one of two major bottlenecks in the overall
@@ -121,7 +139,7 @@ end
 Base.eltype(::typeof(_pot_kernel_01neg_eigvecs(0))) = Vector{Int}
 
 """
-    _pot_kernel_1neg_eigvecs(n)
+    _pot_kernel_1neg_eigvecs(n) -> Iterators.Flatten{<:Base.Generator}
 
 [TODO: Write here. Also, comment inline]
 """
@@ -142,14 +160,14 @@ end
 Base.eltype(::typeof(_pot_kernel_1neg_eigvecs(0))) = Vector{Int}
 
 """
-    _pot_nonkernel_01neg_eigvecs(n)
+    _pot_nonkernel_01neg_eigvecs(n) -> Iterators.Flatten{<:Base.Generator}
 
-Lazily generate all potential non-kernel `{-1,0,1}`-eigenvectors of an order `n` Laplacian.
+Lazily compute all potential non-kernel ``{-1,0,1}``-eigenvectors of an ``n×n`` Laplacian.
 
-Each vector is normalized so that its first nonzero entry is `1`, enforcing pairwise linear
-independence between all generated vectors. Since all Laplacian matrices have pairwise
-orthogonal eigenspaces and the all-ones vector is always in the kernel, every non-kernel
-`{-1,0,1}`-eigenvector must also have an equal number of `-1`'s and `1`'s.
+Each vector is normalized so that its first nonzero entry is ``1``, enforcing pairwise
+linear independence between all generated vectors. Since all Laplacian matrices have
+pairwise orthogonal eigenspaces and the all-ones vector is always in the kernel, every
+non-kernel ``{-1,0,1}``-eigenvector must also have an equal number of ``-1``'s and ``1``'s.
 
 # Arguments
 - `n::Integer`: the order of the Laplacian matrix of some undirected graph for which to find
@@ -157,12 +175,12 @@ orthogonal eigenspaces and the all-ones vector is always in the kernel, every no
 
 # Returns
 - `eigvec_generator::Iterators.Flatten{<:Base.Generator}`: a lazily evaluated iterator over
-    all `{-1,0,1}`-vectors in `ℝⁿ` orthogonal to the all-ones kernel vector, unique up to
-    span.
+    all ``{-1,0,1}``-vectors in ``ℝⁿ`` orthogonal to the all-ones kernel vector, unique up
+    to span.
 
 # Examples
-Generate all potential non-kernel eigenvectors of an order `4` Laplacian matrix:
-```jldoctest; setup = :(using SDiagonalizability)
+Generate all potential non-kernel eigenvectors of an order ``4`` Laplacian matrix:
+```jldoctest
 julia> hcat(SDiagonalizability._pot_nonkernel_01neg_eigvecs(4)...)
 4×9 Matrix{Int64}:
   1   1   1   1   1   1   0   0   0
@@ -172,9 +190,9 @@ julia> hcat(SDiagonalizability._pot_nonkernel_01neg_eigvecs(4)...)
 ```
 
 # Notes
-The number of potential non-kernel eigenvectors (unique up to span) for an order `n`
+The number of potential non-kernel eigenvectors (unique up to span) for an order ``n``
 Laplacian matrix is, by non-trivial combinatorial arguments, equal to the number of humps in
-all Motzkin paths of length `n`. See also the relevant OEIS sequence [Deu25](@cite).
+all Motzkin paths of length ``n``. See also the relevant OEIS sequence [Deu25](@cite).
 
 Regrettably, the implementation here is rather clunky and unidiomatic, but it is worth
 noting that eigenvector generation is one of two major bottlenecks in the overall
