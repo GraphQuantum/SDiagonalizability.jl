@@ -15,15 +15,18 @@ module SDiagonalizability
 
 using Combinatorics
 using DataStructures
-# using ElasticArrays
+using ElasticArrays
 using Graphs
 using LinearAlgebra
 
 include("utils.jl")
 include("types.jl")
 
+include("factories/laplacian_factory.jl")
+# include("factories/orthogonality_factory.jl")
+
 include("eigenvector_generation.jl")
-# include("laplacian_spectra.jl")
+include("laplacian_s_spectra.jl")
 # include("basis_search.jl")
 
 # include("core.jl")
