@@ -43,7 +43,9 @@ CurrentModule = SDiagonalizability
 
 ## Overview
 
-[TODO: Write here]
+*SDiagonalizability.jl* implements the first non-naïve deterministic algorithm to minimize the ``S``-bandwidth of a quantum network (or, to be more precise, its graph representation). Given an undirected, possibly weighted graph ``G`` and finite set of integers ``S \subset \mathbb{Z}``, ``G`` is said to be "``S``-diagonalizable" if there exists some diagonal matrix ``D`` and matrix ``P`` with all entries from ``S`` such that ``G``'s Laplacian matrix ``L(G) = PDP^{-1}``. If ``G`` is ``S``-diagonalizable, then its ``S``-bandwidth is the minimum integer ``k \in \{1, 2, \ldots, |V(G)|\}`` such that there exists some diagonal matrix ``D`` and matrix ``P`` with all entries from ``S`` such that ``L(G) = PDP^{-1}`` and ``[P^\mathsf{T}P]_{i,j} = 0`` whenever ``|i - j| \geq k``; otherwise, its ``S``-bandwidth is simply ``\infty``.
+
+For specific choices of ``S`` (namely ``S = \{-1, 1\}`` and ``S = \{-1, 0, 1\}``), the ``S``-bandwidth of a quantum network's graph representation has been shown to be an indicator of high state transfer fidelity due to automorphic properties of the graph. As such, the relatively nascent study of ``S``-diagonalizability and ``S``-bandwidth is of interest in the broader context of quantum information theory.
 
 ## Installation
 
@@ -75,7 +77,7 @@ The latest citation information may be found in the [CITATION.bib](https://raw.g
 
 ## Project status
 
-[TODO: Write here]
+We aim to release the first stable version of *SDiagonalizability.jl* sometime in early August 2025. The current codebase is a work-in-progress, with the main `SDiagonalizability` module not yet functional and comprehensive documentation/tests not yet available.
 
 ## Credits
 
