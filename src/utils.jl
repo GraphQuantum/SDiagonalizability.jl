@@ -5,7 +5,7 @@
 # distributed except according to those terms.
 
 """
-    _assert_matrix_is_undirected_laplacian(L)
+    _assert_matrix_is_undirected_laplacian(L) -> Nothing
 
 Validate that `L` is the Laplacian matrix of an undirected, possibly weighted graph.
 
@@ -19,7 +19,7 @@ Validate that `L` is the Laplacian matrix of an undirected, possibly weighted gr
 - `DomainError`: if `L` is not symmetric or has nonzero row sums.
 
 # Examples
-The Laplacian matrix of the (undirected) star graph on `5` vertices passes the check:
+The Laplacian matrix of the (undirected) star graph on ``5`` vertices passes the check:
 ```jldoctest
 julia> L = [ 4  -1  -1  -1  -1;
             -1   1   0   0   0;
@@ -37,7 +37,7 @@ julia> isnothing(SDiagonalizability._assert_matrix_is_undirected_laplacian(L))
 true
 ```
 
-The adjacency matrix of the (undirected) cycle graph on `4` vertices is symmetric but has
+The adjacency matrix of the (undirected) cycle graph on ``4`` vertices is symmetric but has
 nonzero row sums, so it fails the check:
 ```jldoctest
 julia> A = [0  1  0  1;
@@ -90,16 +90,16 @@ Matrix is not symmetric; cannot be an (undirected) Laplacian
 
 # Notes
 If edges are to be bidirectional, then `L` must be symmetric. `L` must also have zero row
-sums, since the `(i, i)`-th entry is the weighted degree of node `i` (the sum of all
-incident edges' weights) and the `(i, j)`-th entry for `i ≠ j` is the negation of the weight
-of edge `(i, j)` (or simply `0`, if no such edge exists).
+sums, since the ``(i, i)``-th entry is the weighted degree of node ``i`` (the sum of all
+incident edges' weights) and the ``(i, j)``-th entry for ``i ≠ j`` is the negation of the
+weight of edge ``(i, j)`` (or simply ``0``, if no such edge exists).
 
 Given the highly optimized, lazy, zero-allocation implementation of
-`LinearAlgebra.issymmetric`, the symmetry check is performed first. (Both steps are `O(n²)`
-in the worst case, but testing for symmetry is far more performant in practice.) This also
-allows us to (also lazily) check for nonzero column sums rather than nonzero row sums (since
-these are equivalent for symmetric matrices) in the second step, taking advantage of Julia's
-column-major storage model.
+`LinearAlgebra.issymmetric`, the symmetry check is performed first. (Both steps are
+``O(n²)`` in the worst case, but testing for symmetry is far more performant in practice.)
+This also allows us to (also lazily) check for nonzero column sums rather than nonzero row
+sums (since these are equivalent for symmetric matrices) in the second step, taking
+advantage of Julia's column-major storage model.
 
 At first blush, it may seem as though the choice of `DomainError` over something like
 `ArgumentError` (or even simply the return of a boolean) constitutes poor design. However,
@@ -127,7 +127,7 @@ function _assert_matrix_is_undirected_laplacian(L::AbstractMatrix{<:Integer})
 end
 
 """
-    function _rank_rtol(A::AbstractMatrix{<:Real})
+    function _rank_rtol(A::AbstractMatrix{<:Real}) -> Float64
 
 Return a reasonable relative tolerance for computing matrix rank via SVD or QRD.
 
@@ -143,11 +143,11 @@ type of `A` when `eltype(A)` is not an `AbstractFloat`.
     This scales proportionally to the maximum dimension of `A`.
 
 # Notes
-`LinearAlgebra.rank`'s default `rtol` of `min(m,n) * ϵ` for computing the rank of an `m × n`
-matrix may result in overestimating rank when `|m - n| ≫ 0`, since condition number (which
-determines how numerically stable SVD and QRD are) grows with both dimensions
+`LinearAlgebra.rank`'s default `rtol` of `min(m,n) * ϵ` for computing the rank of an
+``m×n`` matrix may result in overestimating rank when ``|m - n| ≫ 0``, since condition
+number (which determines how numerically stable SVD and QRD are) grows with both dimensions
 [CD05; p. 603](@cite). Given that we often deal with short-and-fat matrices in this package
-(particularly when processing all `{-1,0,1}`-eigenvectors of a Laplacian matrix), we turn
+(particularly when processing all ``{-1,0,1}``-eigenvectors of a Laplacian matrix), we turn
 instead to the same relative tolerance used by NumPy's and MATLAB's rank
 functions—`max(m,n) * ϵ` [Num25, MAT25](@cite). (Indeed, this is a widely adopted standard
 across the field of numerical analysis [PTVF07; p. 795](@cite).)
@@ -186,5 +186,10 @@ decomposition. For compatibility with v1.10–1.11, we manually define it oursel
     `atol` and `rtol` are the absolute and relative tolerances, respectively.
     The default relative tolerance is `n*ϵ`, where `n` is the size of the smallest dimension of `A`
     and `ϵ` is the `eps` of the element type of `A`.
+
+    !!! note
+        When accessed directly via `LinearAlgebra`, the `rank(::QRPivoted)` method requires at least
+        Julia 1.12, so `SDiagonalizability` defines this method manually for compatibility with
+        v1.10–1.11.
     """ -> rank
 end
