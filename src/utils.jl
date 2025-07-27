@@ -147,8 +147,8 @@ type of `A` when `eltype(A)` is not an `AbstractFloat`.
 ``m×n`` matrix may result in overestimating rank when ``|m - n| ≫ 0``, since condition
 number (which determines how numerically stable SVD and QRD are) grows with both dimensions
 [CD05; p. 603](@cite). Given that we often deal with short-and-fat matrices in this package
-(particularly when processing all ``{-1,0,1}``-eigenvectors of a Laplacian matrix), we turn
-instead to the same relative tolerance used by NumPy's and MATLAB's rank
+(particularly when processing all ``\\{-1, 0, 1\\}``-eigenvectors of a Laplacian matrix), we
+turn instead to the same relative tolerance used by NumPy's and MATLAB's rank
 functions—`max(m,n) * ϵ` [Num25, MAT25](@cite). (Indeed, this is a widely adopted standard
 across the field of numerical analysis [PTVF07; p. 795](@cite).)
 """

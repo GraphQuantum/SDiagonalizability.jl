@@ -86,10 +86,10 @@ eigenvalues are indeed all integers. (Otherwise, the associated field is simply 
     non-integer eigenvalues to data.)
 
 # Notes
-If an undirected graph with integer edge weights is ``{-1,0,1}``-diagonalizable (or, more
-restrictively, ``{-1,1}``-diagonalizable), then its Laplacian matrix has integer eigenvalues
-[JP25; p. 312](@cite). Hence, validating Laplacian integrality serves as a useful screening
-step in this package's principal *S*-bandwidth minimization algorithm.
+If an undirected graph with integer edge weights is ``\\{-1, 0, 1\\}``-diagonalizable (or,
+more restrictively, ``\\{-1, 1\\}``-diagonalizable), then its Laplacian matrix has integer
+eigenvalues [JP25; p. 312](@cite). Hence, validating Laplacian integrality serves as a
+useful screening step in this package's principal *S*-bandwidth minimization algorithm.
 """
 struct SpectrumIntegralResult{T<:Union{Nothing,OrderedDict{Int,Int}}}
     matrix::AbstractMatrix{<:Integer}

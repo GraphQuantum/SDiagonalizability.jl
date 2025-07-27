@@ -73,7 +73,7 @@ end
 """
     _pot_kernel_01neg_eigvecs(n) -> Iterators.Flatten{<:Base.Generator}
 
-Lazily compute all potential kernel ``{-1,0,1}``-eigenvectors of an ``n×n`` Laplacian.
+Lazily compute all potential kernel ``\\{-1, 0 ,1\\}``-eigenvectors of an ``n×n`` Laplacian.
 
 Each vector is normalized so that its first nonzero entry is ``1``, enforcing pairwise
 linear independence between all generated vectors.
@@ -84,7 +84,7 @@ linear independence between all generated vectors.
 
 # Returns
 - `eigvec_generator::Iterators.Flatten{<:Base.Generator}`: a lazily evaluated iterator over
-    all ``{-1,0,1}``-vectors in ``ℝⁿ``, unique up to span.
+    all ``\\{-1, 0, 1\\}``-vectors in ``ℝⁿ``, unique up to span.
 
 # Examples
 Generate all potential kernel eigenvectors for an order ``3`` Laplacian matrix:
@@ -121,7 +121,7 @@ function _pot_kernel_01neg_eigvecs(n::Integer)
             body,
         ) # Append the permuted entries to the leading [0, ..., 0, 1] vector
         for k in 1:n # Iterate over possible indices of first nonzero entry
-        # Iterate over permutations taken from the `r`-th Cartesian power of {-1,0,1}
+        # Iterate over permutations taken from the `r`-th Cartesian power of {-1, 0, 1}
         for body in multiset_permutations(
             let r = n - k
                 entries = Vector{Int}(undef, 3r)
@@ -162,12 +162,13 @@ Base.eltype(::typeof(_pot_kernel_1neg_eigvecs(0))) = Vector{Int}
 """
     _pot_nonkernel_01neg_eigvecs(n) -> Iterators.Flatten{<:Base.Generator}
 
-Lazily compute all potential non-kernel ``{-1,0,1}``-eigenvectors of an ``n×n`` Laplacian.
+Lazily compute all potential non-kernel ``\\{-1, 0, 1\\}``-eigenvectors of an ``n×n`` Laplacian.
 
 Each vector is normalized so that its first nonzero entry is ``1``, enforcing pairwise
 linear independence between all generated vectors. Since all Laplacian matrices have
 pairwise orthogonal eigenspaces and the all-ones vector is always in the kernel, every
-non-kernel ``{-1,0,1}``-eigenvector must also have an equal number of ``-1``'s and ``1``'s.
+non-kernel ``\\{-1, 0, 1\\}``-eigenvector must also have an equal number of ``-1``'s and
+``1``'s.
 
 # Arguments
 - `n::Integer`: the order of the Laplacian matrix of some undirected graph for which to find
@@ -175,8 +176,8 @@ non-kernel ``{-1,0,1}``-eigenvector must also have an equal number of ``-1``'s a
 
 # Returns
 - `eigvec_generator::Iterators.Flatten{<:Base.Generator}`: a lazily evaluated iterator over
-    all ``{-1,0,1}``-vectors in ``ℝⁿ`` orthogonal to the all-ones kernel vector, unique up
-    to span.
+    all ``\\{-1, 0, 1\\}``-vectors in ``ℝⁿ`` orthogonal to the all-ones kernel vector,
+    unique up to span.
 
 # Examples
 Generate all potential non-kernel eigenvectors of an order ``4`` Laplacian matrix:
