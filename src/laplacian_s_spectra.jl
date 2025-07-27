@@ -66,7 +66,7 @@ true
 ```
 
 Confirm that the adjacency matrix of the Petersen graph is spectrum integral, with correct
-eigenvalues and multiplicities of ``{3: 1, -2: 4, 1: 5}`` [Fox09; p. 2](@cite):
+eigenvalues and multiplicities of ``\\{3: 1, -2: 4, 1: 5\\}`` [Fox09; p. 2](@cite):
 ```jldoctest
 julia> using Graphs
 
@@ -112,10 +112,10 @@ OrderedCollections.OrderedDict{Int64, Int64} with 3 entries:
 ```
 
 # Notes
-If an undirected graph with integer edge weights is ``{-1,0,1}``-diagonalizable (or, more
-restrictively, ``{-1,1}``-diagonalizable), then its Laplacian matrix has integer eigenvalues
-[JP25; p. 312](@cite). Hence, validating Laplacian integrality serves as a useful screening
-step in this package's principal *S*-bandwidth minimization algorithm.
+If an undirected graph with integer edge weights is ``\\{-1, 0, 1\\}``-diagonalizable (or,
+more restrictively, ``\\{-1, 1\\}``-diagonalizable), then its Laplacian matrix has integer
+eigenvalues [JP25; p. 312](@cite). Hence, validating Laplacian integrality serves as a
+useful screening step in this package's principal *S*-bandwidth minimization algorithm.
 """
 function check_spectrum_integrality(A::AbstractMatrix{<:Integer})
     A_copy = Matrix{Int}(A) # Avoid shared mutability and cast to `Matrix{Int}`
@@ -157,7 +157,7 @@ function _laplacian_1neg_spectra(spec::SSpectra)
     if spec.S != (-1, 0, 1)
         throw(
             ArgumentError(
-                "Expected `{-1,0,1}`-spectra` to compute `{-1,1}`-spectra, got $(spec.S)-spectra",
+                "Expected `{-1, 0, 1}`-spectra` to compute `{-1, 1}`-spectra, got $(spec.S)-spectra",
             ),
         )
     end
@@ -301,10 +301,10 @@ computation. Further discussion can be found in the [`_rank_rtol`](@ref) documen
 in short, a critical part of the formula for `LinearAlgebra.rank`'s default `rtol`
 uses the minimum dimension of the input matrix. This may result in rank overestimation for
 tall-and-skinny and short-and-fat matrices (precisely the type we expect to encounter when
-dealing with all ``{-1,0,1}``-eigenvectors of a Laplacian matrix, which is the intended use
-case of this helper function in this package). Our replacement tolerance, on the other hand,
-is a widely accepted standard in numerical analysis which uses the maximum dimension instead
-[PTVF07; p. 795](@cite).
+dealing with all ``\\{-1, 0, 1\\}``-eigenvectors of a Laplacian matrix, which is the
+intended use case of this helper function in this package). Our replacement tolerance, on
+the other hand, is a widely accepted standard in numerical analysis which uses the maximum
+dimension instead [PTVF07; p. 795](@cite).
 """
 function _extract_independent_cols(A::AbstractMatrix{<:Integer})
     F = qr(A, ColumnNorm())

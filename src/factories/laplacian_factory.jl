@@ -60,7 +60,7 @@ Classify the Laplacian matrix `L` and wrap it in a [`ClassifiedLaplacian`](@ref)
 It is first verified that `L` is indeed a Laplacian matrix by
 [`_assert_matrix_is_undirected_laplacian`](@ref), which throws a `DomainError` otherwise. It
 is then classified based on any properties which may be exploited in computing data on its
-`{-1,0,1}`-spectrum.
+`\\{-1, 0, 1\\}`-spectrum.
 
 # Arguments
 - `L::AbstractMatrix{<:Integer}`: the Laplacian matrix to classify.
@@ -147,7 +147,7 @@ represent) are:
 - [`CompleteGraphLaplacian`](@ref): any graph on ``n ≥ 2`` nodes where every pair of nodes is
     connected by an edge and all edges possess the same weight.
 - [`ArbitraryGraphLaplacian`](@ref): any graph on ``n ≥ 3`` nodes with no particular
-    strcuture of relevance in the context of investigating ``{-1,0,1}``-spectra.
+    strcuture of relevance in the context of investigating ``\\{-1, 0, 1\\}``-spectra.
 """
 function classify_laplacian(L::AbstractMatrix{<:Integer})
     #= Verify that `L` is symmetric (thus representing an undirected graph) and has zero row
