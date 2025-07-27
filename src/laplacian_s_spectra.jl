@@ -192,13 +192,48 @@ function _classified_laplacian_01neg_spectra(CL::NullGraphLaplacian)
 end
 
 function _classified_laplacian_01neg_spectra(CL::EmptyGraphLaplacian)
-    # TODO: Write here
-    return nothing
+    L = CL.matrix
+    n = size(L, 1)
+    S = (-1, 0, 1)
+
+    kernel = stack(pot_kernel_s_eigvecs(n, S))
+    # TODO: Justify why this always spans the kernel?
+    null_basis = _extract_independent_cols(kernel)
+
+    multiplicities = OrderedDict(0 => n)
+    s_eigenspaces = OrderedDict(0 => kernel)
+    s_eigenbases = OrderedDict(0 => null_basis)
+    s_diagonalizable = true
+
+    return SSpectra(L, S, multiplicities, s_eigenspaces, s_eigenbases, s_diagonalizable)
 end
 
 function _classified_laplacian_01neg_spectra(CL::CompleteGraphLaplacian)
-    # TODO: Write here
-    return nothing
+    L = CL.matrix
+    n = size(L, 1)
+    S = (-1, 0, 1)
+
+    #= For every `n ≥ 2`, `Kₙ` (assuming a uniform edge weight of `w`) has eigenvalues 0
+    with multiplicity 1 and `n * w` with multiplicity `n - 1`. (`n` is guaranteed to be at
+    least 2 in this context due to the Laplacian type casting logic.) =#
+    eigenval_nonzero = n * CL.weight
+
+    kernel = ones(Int, n, 1) # The all-ones vector spans the kernel
+    null_basis = copy(kernel)
+
+    #= The non-kernel eigenspace necessarily contains all vectors orthogonal to the kernel,
+    so we need not filter the output of the generator. =#
+    nonkernel_space = stack(pot_nonkernel_s_eigvecs(n, S))
+    #= The complete graph is always {-1, 0, 1}-diagonalizable (Johnston and Plosker 2025, p.
+    320), so we know that this basis indeed spans the eigenspace. =#
+    nonnull_basis = _extract_independent_cols(nonkernel_space)
+
+    multiplicities = OrderedDict(0 => 1, eigenval_nonzero => n - 1)
+    s_eigenspaces = OrderedDict(0 => kernel, eigenval_nonzero => nonkernel_space)
+    s_eigenbases = OrderedDict(0 => null_basis, eigenval_nonzero => nonnull_basis)
+    s_diagonalizable = true
+
+    return SSpectra(L, S, multiplicities, s_eigenspaces, s_eigenbases, s_diagonalizable)
 end
 
 function _classified_laplacian_01neg_spectra(CL::ArbitraryGraphLaplacian)
@@ -231,13 +266,61 @@ function _classified_laplacian_1neg_spectra(CL::NullGraphLaplacian)
 end
 
 function _classified_laplacian_1neg_spectra(CL::EmptyGraphLaplacian)
-    # TODO: Write here
-    return nothing
+    L = CL.matrix
+    S = (-1, 1)
+    n = size(L, 1)
+
+    kernel = stack(pot_kernel_s_eigvecs(n, S))
+
+    #= There exists a {-1, 1}-basis of ℝⁿ if and only if `n = 1` or `n` is even (Johnston
+    and Plosker 2025, p. 319). =#
+    if n == 1 || iseven(n)
+        null_basis = _extract_independent_cols(kernel)
+        s_diagonalizable = true
+    else
+        null_basis = nothing
+        s_diagonalizable = false
+    end
+
+    multiplicities = OrderedDict(0 => n)
+    s_eigenspaces = OrderedDict(0 => kernel)
+    s_eigenbases = OrderedDict(0 => null_basis)
+
+    return SSpectra(L, S, multiplicities, s_eigenspaces, s_eigenbases, s_diagonalizable)
 end
 
 function _classified_laplacian_1neg_spectra(CL::CompleteGraphLaplacian)
-    # TODO: Write here
-    return nothing
+    L = CL.matrix
+    n = size(L, 1)
+    S = (-1, 1)
+
+    #= For every `n ≥ 2`, `Kₙ` (assuming a uniform edge weight of `w`) has eigenvalues 0
+    with multiplicity 1 and `n * w` with multiplicity `n - 1`. (`n` is guaranteed to be at
+    least 2 in this context due to the Laplacian type casting logic.) =#
+    eigenval_nonzero = n * CL.weight
+
+    kernel = ones(Int, n, 1) # The all-ones vector spans the kernel
+    null_basis = copy(kernel)
+
+    #= The non-kernel eigenspace necessarily contains all vectors orthogonal to the kernel,
+    so we need not filter the output of the generator. =#
+    nonkernel_space = stack(pot_nonkernel_s_eigvecs(n, S))
+
+    #= The complete graph is {-1, 1}-diagonalizable if and only if `n = 1` or `n` is even
+    (Johnston and Plosker 2025, p. 320). =#
+    if n == 1 || iseven(n)
+        nonnull_basis = _extract_independent_cols(nonkernel_space)
+        s_diagonalizable = true
+    else
+        nonnull_basis = nothing
+        s_diagonalizable = false
+    end
+
+    multiplicities = OrderedDict(0 => 1, eigenval_nonzero => n - 1)
+    s_eigenspaces = OrderedDict(0 => kernel, eigenval_nonzero => nonkernel_space)
+    s_eigenbases = OrderedDict(0 => null_basis, eigenval_nonzero => nonnull_basis)
+
+    return SSpectra(L, S, multiplicities, s_eigenspaces, s_eigenbases, s_diagonalizable)
 end
 
 function _classified_laplacian_1neg_spectra(CL::ArbitraryGraphLaplacian)
