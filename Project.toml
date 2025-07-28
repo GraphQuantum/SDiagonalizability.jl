@@ -6,7 +6,7 @@ authors=[
     "Luis M. B. Varona <lm.varona@outlook.com>",
     "Nathaniel Johnston <nathaniel.johnston@gmail.com>",
 ]
-description = "A dynamic algorithm to minimize or recognize a graph's S-bandwidth."
+description = "A dynamic algorithm to minimize the S-bandwidth of an undirected graph, written in Julia."
 maintainers = ["Luis M. B. Varona <lm.varona@outlook.com>"]
 readme = "README.md"
 repository = "https://github.com/GraphQuantum/SDiagonalizability.jl"

@@ -7,7 +7,7 @@
 """
     SDiagonalizability
 
-A dynamic algorithm to minimize or recognize a graph's S-bandwidth.
+A dynamic algorithm to minimize the S-bandwidth of an undirected graph.
 
 [TODO: Write here]
 """

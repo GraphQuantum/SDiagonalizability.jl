@@ -42,9 +42,11 @@
 
 ## Overview
 
-*SDiagonalizability.jl* implements the first non-naïve deterministic algorithm to minimize the *S*-bandwidth of a quantum network (or, to be more precise, its graph representation). Given an undirected, possibly weighted graph *G* and finite set of integers *S* &subset; **Z**, *G* is said to be "*S*-diagonalizable" if there exists some diagonal matrix *D* and matrix *P* with all entries from *S* such that *G*'s Laplacian matrix *L*(*G*) = *PDP*<sup>-1</sup>. If *G* is *S*-diagonalizable, then its "*S*-bandwidth" is the minimum integer *k* &isin; {1, 2, &hellip;, |*V*(*G*)|} such that there exists some diagonal matrix *D* and matrix *P* with all entries from *S* such that *L*(*G*) = *PDP*<sup>-1</sup> and [*P*<sup>T</sup>*P*]<sub>*i,j*</sub> = 0 whenever |*i* - *j*| &ge; *k*; otherwise, its *S*-bandwidth is simply &infin;.
+*SDiagonalizability.jl* implements the first non-naïve deterministic algorithm to minimize the ``S``-bandwidth of an undirected graph with integer edge weights.
 
-For specific choices of *S* (namely *S* = {-1, 1} and *S* = {-1, 0, 1}), the *S*-bandwidth of a quantum network's graph representation has been shown to be an indicator of high state transfer fidelity due to automorphic properties of the graph. As such, the relatively nascent study of *S*-diagonalizability and *S*-bandwidth is of interest in the broader context of quantum information theory.
+Given an undirected, possibly weighted graph *G* and finite set of integers *S* &subset; **Z**, *G* is said to be "*S*-diagonalizable" if there exists some diagonal matrix *D* and matrix *P* with all entries from *S* such that *G*'s Laplacian matrix *L*(*G*) = *PDP*<sup>-1</sup>. If *G* is *S*-diagonalizable, then its "*S*-bandwidth" is the minimum integer *k* &isin; {1, 2, &hellip;, |*V*(*G*)|} such that there exists some diagonal matrix *D* and matrix *P* with all entries from *S* such that *L*(*G*) = *PDP*<sup>-1</sup> and [*P*<sup>T</sup>*P*]<sub>*i,j*</sub> = 0 whenever |*i* - *j*| &ge; *k*; otherwise, its *S*-bandwidth is simply &infin;.
+
+For specific choices of *S* (namely {-1, 1} and {-1, 0, 1}), the *S*-bandwidth of a quantum network has been shown to be an indicator of high state transfer fidelity due to automorphic properties of the graph. As such, the nascent study of *S*-diagonalizability and *S*-bandwidth is of interest in the broader context of quantum information theory.
 
 ## Installation
 
