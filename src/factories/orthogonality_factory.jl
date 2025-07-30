@@ -105,7 +105,7 @@ be formally introduced in the broader literature.
 struct WeakOrthogonality <: KOrthogonality
     k::Int
 
-    function _WeakOrthogonality(k::Integer)
+    function WeakOrthogonality(k::Integer)
         if k <= 2
             throw(DomainError(k, "k-orthogonality parameter must be greater than 2"))
         end
@@ -135,10 +135,10 @@ of values to which our ``k`` parameter belongs informs our choice of algorithm.
 # Examples
 ```jldoctest
 julia> SDiagonalizability.classify_k_orthogonality(1)
-SDiagonalizability.Orthogonality()
+SDiagonalizability.Orthogonality(1)
 
 julia> SDiagonalizability.classify_k_orthogonality(2)
-SDiagonalizability.QuasiOrthogonality()
+SDiagonalizability.QuasiOrthogonality(2)
 
 julia> SDiagonalizability.classify_k_orthogonality(3)
 SDiagonalizability.WeakOrthogonality(3)
