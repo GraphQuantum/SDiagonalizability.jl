@@ -56,16 +56,22 @@ struct SBandRecognitionResult{
 end
 
 """
-    SSpectra{A,B,C,D}
+    SSpectra{A,B,C,D,E}
 
 [TODO: Write here]
 """
-struct SSpectra{A<:Tuple,B<:Union{Nothing,OrderedDict{Int}},C<:B,D<:B}
-    matrix::AbstractMatrix{<:Integer}
-    S::A
-    multiplicities::B
-    s_eigenspaces::C
-    s_eigenbases::D
+struct SSpectra{
+    A<:AbstractMatrix{<:Integer},
+    B<:Tuple,
+    C<:Union{Nothing,OrderedDict{Int,Int}},
+    D<:Union{Nothing,OrderedDict{Int,AbstractMatrix{Int}}},
+    E<:Union{Nothing,OrderedDict{Int,Matrix{Int}}},
+}
+    matrix::A
+    S::B
+    multiplicities::C
+    s_eigenspaces::D
+    s_eigenbases::E
     s_diagonalizable::Bool
 end
 
