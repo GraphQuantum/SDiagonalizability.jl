@@ -162,9 +162,77 @@ function _laplacian_1neg_spectra(spec::SSpectra)
         )
     end
 
-    # TODO: Write here. Remember to copy to avoid shared mutability. Fold
-    # `_find_indices_1neg` logic from old code into this function.
-    return nothing
+    L = copy(spec.matrix)
+    n = size(L, 1)
+    S = (-1, 1)
+    multiplicities = copy(spec.multiplicities)
+
+    eigenspaces_01neg = spec.s_eigenspaces
+
+    #= If `n > 1` is odd, then all non-kernel eigenvectors must be orthogonal to the
+    all-ones vector and thus are precluded from having all entries from {-1, 1}. If `n = 1`,
+    then the kernel is the only eigenspace, so we need not handle that case separately. =#
+    if iseven(n)
+        s_eigenspaces = OrderedDict{Int,Matrix{Int}}()
+        s_eigenbases = OrderedDict{Int,Union{Nothing,Matrix{Int}}}()
+
+        for eigval in keys(multiplicities)
+            multi = multiplicities[eigval]
+            eigvecs = Iterators.filter(
+                col -> !any(iszero, col), eachcol(eigenspaces_01neg[eigval])
+            )
+
+            if isempty(eigvecs)
+                eigenspace = Matrix{Int}(undef, n, 0)
+                eigenbasis = nothing
+            else
+                eigenspace = stack(eigvecs)
+                pot_eigenbasis = _extract_independent_cols(eigenspace)
+
+                if size(pot_eigenbasis, 2) < multi
+                    eigenbasis = nothing
+                else
+                    eigenbasis = pot_eigenbasis
+                end
+            end
+
+            s_eigenspaces[eigval] = eigenspace
+            s_eigenbases[eigval] = eigenbasis
+        end
+    else
+        dim_kernel = multiplicities[0]
+        kernel_vecs = Iterators.filter(
+            col -> !any(iszero, col), eachcol(eigenspaces_01neg[0])
+        )
+
+        if isempty(kernel_vecs)
+            kernel = Matrix{Int}(undef, n, 0)
+            null_basis = nothing
+        else
+            kernel = stack(kernel_vecs)
+            pot_null_basis = _extract_independent_cols(kernel)
+
+            if size(pot_null_basis, 2) < dim_kernel
+                null_basis = nothing
+            else
+                null_basis = pot_null_basis
+            end
+        end
+
+        s_eigenspaces = OrderedDict(
+            eigval => Matrix{Int}(undef, n, 0) for eigval in keys(multiplicities)
+        )
+        s_eigenspaces[0] = kernel
+
+        s_eigenbases = OrderedDict{Int,Union{Nothing,Matrix{Int}}}(
+            eigval => nothing for eigval in keys(multiplicities)
+        )
+        s_eigenbases[0] = null_basis
+    end
+
+    s_diagonalizable = all(!isnothing, values(s_eigenbases))
+
+    return SSpectra(L, S, multiplicities, s_eigenspaces, s_eigenbases, s_diagonalizable)
 end
 
 """
@@ -185,8 +253,8 @@ function _classified_laplacian_01neg_spectra(CL::NullGraphLaplacian)
         CL.matrix,
         (-1, 0, 1),
         OrderedDict{Int,Int}(),
-        OrderedDict{Int,Vector{Int}}(),
-        OrderedDict{Int,Vector{Int}}(),
+        OrderedDict{Int,Matrix{Int}}(),
+        OrderedDict{Int,Matrix{Int}}(),
         true,
     )
 end
@@ -197,8 +265,7 @@ function _classified_laplacian_01neg_spectra(CL::EmptyGraphLaplacian)
     S = (-1, 0, 1)
 
     kernel = stack(pot_kernel_s_eigvecs(n, S))
-    # TODO: Justify why this always spans the kernel?
-    null_basis = _extract_independent_cols(kernel)
+    null_basis = _extract_independent_cols(kernel) # This will always form a basis of ℝⁿ
 
     multiplicities = OrderedDict(0 => n)
     s_eigenspaces = OrderedDict(0 => kernel)
@@ -237,8 +304,8 @@ function _classified_laplacian_01neg_spectra(CL::CompleteGraphLaplacian)
 end
 
 function _classified_laplacian_01neg_spectra(CL::ArbitraryGraphLaplacian)
-    # TODO: Write here
-    return nothing
+    # The logic for arbitrary graphs is identical for both `{-1, 0, 1}` and `{-1, 1}`
+    return _classified_laplacian_s_spectra(CL.matrix, (-1, 1))
 end
 
 """
@@ -259,8 +326,8 @@ function _classified_laplacian_1neg_spectra(CL::NullGraphLaplacian)
         CL.matrix,
         (-1, 1),
         OrderedDict{Int,Int}(),
-        OrderedDict{Int,Vector{Int}}(),
-        OrderedDict{Int,Vector{Int}}(),
+        OrderedDict{Int,Matrix{Int}}(),
+        OrderedDict{Int,Matrix{Int}}(),
         true,
     )
 end
@@ -324,8 +391,89 @@ function _classified_laplacian_1neg_spectra(CL::CompleteGraphLaplacian)
 end
 
 function _classified_laplacian_1neg_spectra(CL::ArbitraryGraphLaplacian)
-    # TODO: Write here
-    return nothing
+    # The logic for arbitrary graphs is identical for both `{-1, 0, 1}` and `{-1, 1}`
+    return _classified_laplacian_s_spectra(CL.matrix, (-1, 1))
+end
+
+"""
+    _classified_laplacian_s_spectra(CL, S) -> SSpectra
+
+[TODO: Write here]
+"""
+function _classified_laplacian_s_spectra(CL::ArbitraryGraphLaplacian, S::Tuple)
+    L = CL.matrix
+    res = check_spectrum_integrality(L)
+
+    if !res.spectrum_integral
+        return SSpectra(
+            L,
+            S,
+            OrderedDict{Int,Int}(),
+            OrderedDict{Int,Matrix{Int}}(),
+            OrderedDict{Int,Matrix{Int}}(),
+            false,
+        )
+    end
+
+    n = size(L, 1)
+
+    #= `multiplicities` is only `nothing` when `spectrum_integral` is false, so we
+    explicitly assert its type here for compiler inference during static analysis. =#
+    multiplicities = res.multiplicities
+    @assert !isnothing(multiplicities)
+
+    eigvals_nonzero = filter(!iszero, keys(multiplicities))
+    s_eigenspaces = OrderedDict{Int,AbstractMatrix{Int}}(
+        # Initialize resizeable matrices to store an unknown number of eigenvectors
+        eigval => ElasticMatrix{Int}(undef, n, 0) for eigval in eigvals_nonzero
+    )
+    s_eigenbases = OrderedDict{Int,Union{Nothing,Matrix{Int}}}()
+
+    # The kernel is simpler and handled differently from the other eigenspaces
+    if multiplicities[0] == 1 # The all-ones vector spans the kernel
+        kernel = ones(Int, n, 1)
+    else # Check all `S`-vectors in ℝⁿ, unique up to span
+        kernel_vecs = Iterators.filter(v -> iszero(L * v), pot_kernel_s_eigvecs(n, S))
+
+        if isempty(kernel_vecs)
+            kernel = Matrix{Int}(undef, n, 0)
+        else
+            kernel = stack(kernel_vecs)
+        end
+    end
+
+    s_eigenspaces[0] = kernel
+
+    for v in pot_nonkernel_s_eigvecs(n, S)
+        for eigval in eigvals_nonzero
+            if L * v == eigval * v
+                append!(s_eigenspaces[eigval], v)
+                break
+            end
+        end
+    end
+
+    for eigval in keys(multiplicities)
+        eigenspace = s_eigenspaces[eigval]
+
+        if isempty(eigenspace)
+            eigenbasis = nothing
+        else
+            pot_eigenbasis = _extract_independent_cols(eigenspace)
+
+            if size(pot_eigenbasis, 2) < multiplicities[eigval]
+                eigenbasis = nothing
+            else
+                eigenbasis = pot_eigenbasis
+            end
+        end
+
+        s_eigenbases[eigval] = eigenbasis
+    end
+
+    s_diagonalizable = all(!isnothing, values(s_eigenbases))
+
+    return SSpectra(L, S, multiplicities, s_eigenspaces, s_eigenbases, s_diagonalizable)
 end
 
 """
