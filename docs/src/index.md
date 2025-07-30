@@ -43,7 +43,7 @@ CurrentModule = SDiagonalizability
 
 ## Overview
 
-*SDiagonalizability.jl* implements the first non-naïve deterministic algorithm to minimize the ``S``-bandwidth of an undirected graph with integer edge weights.
+*SDiagonalizability.jl* implements the first non-naïve deterministic algorithm to minimize the ``S``-bandwidth of an undirected graph with integer edge weights. Capabilities also exist for determining whether a graph has ``S``-bandwidth less than or equal to a fixed integer ``k \ge 1`` without necessarily caring about the true minimum value.
 
 Given an undirected, possibly weighted graph ``G`` and finite set of integers ``S \subset \mathbb{Z}``, ``G`` is said to be "``S``-diagonalizable" if there exists some diagonal matrix ``D`` and matrix ``P`` with all entries from ``S`` such that ``G``'s Laplacian matrix ``L(G) = PDP^{-1}``. If ``G`` is ``S``-diagonalizable, then its "``S``-bandwidth" is the minimum integer ``k \in \{1, 2, \ldots, |V(G)|\}`` such that there exists some diagonal matrix ``D`` and matrix ``P`` with all entries from ``S`` such that ``L(G) = PDP^{-1}`` and ``[P^\mathsf{T}P]_{i,j} = 0`` whenever ``|i - j| \geq k``; otherwise, its ``S``-bandwidth is simply ``\infty``.
 
