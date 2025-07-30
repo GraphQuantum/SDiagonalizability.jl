@@ -19,6 +19,9 @@ abstract type ClassifiedLaplacian end
     NullGraphLaplacian <: ClassifiedLaplacian
 
 [TODO: Write here]
+
+# Supertype Hierarchy
+`NullGraphLaplacian` <: [`ClassifiedLaplacian`](@ref)
 """
 struct NullGraphLaplacian <: ClassifiedLaplacian
     matrix::Matrix{Int}
@@ -28,6 +31,9 @@ end
     EmptyGraphLaplacian <: ClassifiedLaplacian
 
 [TODO: Write here]
+
+# Supertype Hierarchy
+`EmptyGraphLaplacian` <: [`ClassifiedLaplacian`](@ref)
 """
 struct EmptyGraphLaplacian <: ClassifiedLaplacian
     matrix::Matrix{Int}
@@ -37,6 +43,9 @@ end
     CompleteGraphLaplacian <: ClassifiedLaplacian
 
 [TODO: Write here]
+
+# Supertype Hierarchy
+`CompleteGraphLaplacian` <: [`ClassifiedLaplacian`](@ref)
 """
 struct CompleteGraphLaplacian <: ClassifiedLaplacian
     matrix::Matrix{Int}
@@ -47,6 +56,9 @@ end
     ArbitraryGraphLaplacian <: ClassifiedLaplacian
 
 [TODO: Write here]
+
+# Supertype Hierarchy
+`ArbitraryGraphLaplacian` <: [`ClassifiedLaplacian`](@ref)
 """
 struct ArbitraryGraphLaplacian <: ClassifiedLaplacian
     matrix::Matrix{Int}
