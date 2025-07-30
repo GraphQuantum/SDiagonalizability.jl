@@ -9,7 +9,7 @@
 
 [TODO: Write here. Also, comment inline]
 """
-function laplacian_s_spectra(L::AbstractMatrix{<:Integer}, S::Tuple{Vararg{Int}})
+function laplacian_s_spectra(L::AbstractMatrix{<:Integer}, S::Tuple{Vararg{Integer}})
     _assert_matrix_is_undirected_laplacian(L)
 
     if S == (-1, 0, 1)
@@ -240,12 +240,8 @@ end
 
 [TODO: Write here. Also, comment inline]
 """
-function _classified_laplacian_01neg_spectra(CL::ClassifiedLaplacian)
-    throw(
-        NotImplementedError(
-            _classified_laplacian_01neg_spectra, typeof(CL), ClassifiedLaplacian
-        ),
-    )
+function _classified_laplacian_01neg_spectra(::T) where {T<:ClassifiedLaplacian}
+    throw(NotImplementedError(_classified_laplacian_01neg_spectra, T, ClassifiedLaplacian))
 end
 
 function _classified_laplacian_01neg_spectra(CL::NullGraphLaplacian)
@@ -313,12 +309,8 @@ end
 
 [TODO: Write here. Also, comment inline]
 """
-function _classified_laplacian_1neg_spectra(CL::ClassifiedLaplacian)
-    throw(
-        NotImplementedError(
-            _classified_laplacian_1neg_spectra, typeof(CL), ClassifiedLaplacian
-        ),
-    )
+function _classified_laplacian_1neg_spectra(::T) where {T<:ClassifiedLaplacian}
+    throw(NotImplementedError(_classified_laplacian_1neg_spectra, T, ClassifiedLaplacian))
 end
 
 function _classified_laplacian_1neg_spectra(CL::NullGraphLaplacian)
@@ -400,7 +392,9 @@ end
 
 [TODO: Write here]
 """
-function _classified_laplacian_s_spectra(CL::ArbitraryGraphLaplacian, S::Tuple{Vararg{Int}})
+function _classified_laplacian_s_spectra(
+    CL::ArbitraryGraphLaplacian, S::Tuple{Vararg{Integer}}
+)
     L = CL.matrix
     res = check_spectrum_integrality(L)
 
@@ -474,78 +468,4 @@ function _classified_laplacian_s_spectra(CL::ArbitraryGraphLaplacian, S::Tuple{V
     s_diagonalizable = all(!isnothing, values(s_eigenbases))
 
     return SSpectra(L, S, multiplicities, s_eigenspaces, s_eigenbases, s_diagonalizable)
-end
-
-"""
-    _extract_independent_cols(A) -> Matrix{Int}
-
-Return a (not necessarily unique) independent spanning subset of the columns of `A`.
-
-Computing a rank-revealing (pivoted) QR decomposition of `A`, the scaling coefficients from
-the orthogonalization process are used to determine the rank (rather than recompute it with
-an SVD), while the pivots are used to extract a spanning set of independent columns.
-
-The rank-revealing Businger–Golub QR algorithm is used for the pivoting strategy, appending
-the "most independent" column with respect to the current set of pivots at each step via
-Householder transformations [BG65; pp. 269--70](@cite).
-
-# Arguments
-- `A::AbstractMatrix{T<:Integer}`: the matrix whose independent columns to extract.
-
-# Returns
-- `::Matrix{Int}`: a spanning set of independent columns of `A`.
-
-# Examples
-Observe how columns with greater Euclidean norms are given priority in the pivot ordering:
-```jldoctest
-julia> A = [3  0  0  0  2  1   5   0
-            0  3  0  0  2  1  -5   0
-            0  0  3  0  2  1   5   4
-            0  0  0  3  2  1   0  -4
-            0  0  0  0  0  0   0   0]
-5×8 Matrix{Int64}:
- 3  0  0  0  2  1   5   0
- 0  3  0  0  2  1  -5   0
- 0  0  3  0  2  1   5   4
- 0  0  0  3  2  1   0  -4
- 0  0  0  0  0  0   0   0
-
-julia> SDiagonalizability._extract_independent_cols(A)
-5×4 Matrix{Int64}:
-  5   0  2  3
- -5   0  2  0
-  5   4  2  0
-  0  -4  2  0
-  0   0  0  0
-```
-
-# Notes
-Since we already need a pivoted QR decomposition to identify independent columns of `A` (or,
-rather, to order the columns in such a way that the first `rank(A)` ones are guaranteed to
-be independent), it makes sense to use data from the resulting factorization object to
-compute the rank of `A` rather than compute a separate SVD. We thus count the nonzero scaling
-coefficients—that is, the diagonal entries of the `R` matrix in `A = QR`—to determine the
-rank, similarly to how we count the nonzero singular values in an SVD.
-
-It is worth noting that we manually specify a higher relative tolerance for this rank
-computation. Further discussion can be found in the [`_rank_rtol`](@ref) documentation, but
-in short, a critical part of the formula for `LinearAlgebra.rank`'s default `rtol`
-uses the minimum dimension of the input matrix. This may result in rank overestimation for
-tall-and-skinny and short-and-fat matrices (precisely the type we expect to encounter when
-dealing with all ``\\{-1, 0, 1\\}``-eigenvectors of a Laplacian matrix, which is the
-intended use case of this helper function in this package). Our replacement tolerance, on
-the other hand, is a widely accepted standard in numerical analysis which uses the maximum
-dimension instead [PTVF07; p. 795](@cite).
-"""
-function _extract_independent_cols(A::AbstractMatrix{<:Integer})
-    F = qr(A, ColumnNorm())
-    rtol = _rank_rtol(A) # Use a higher tolerance (NumPy's/MATLAB's) than Julia's default
-
-    #= In Julia 1.12+, `LinearAlgebra.rank` dispatches to a method that re-uses an existing
-    QR decomposition. For compatibility with v1.10–1.11, we manually define it ourselves in
-    `src/utils.jl`. =#
-    r = rank(F; rtol=rtol)
-    pivots = F.p[1:r] # The first `rank(A)` pivots correspond to independent columns of `A`
-
-    return Matrix{Int}(A[:, pivots]) # Copy to avoid shared mutability
 end

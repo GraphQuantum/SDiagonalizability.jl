@@ -12,7 +12,7 @@ Abstract base type for all *S*-bandwidth problem results.
 # Interface
 Concrete subtypes of `AbstractSBandResult` *must* implement parametric types
 - `A<:Union{AbstractGraph,AbstractMatrix{<:Integer}}`;
-- `B<:Tuple{Vararg{Int}}`; and
+- `B<:Tuple{Vararg{Integer}}`; and
 - `C<:Union{Nothing,Eigen}`,
 
 alongside the following fields:
@@ -33,7 +33,7 @@ abstract type AbstractSBandResult end
 """
 struct SBandMinimizationResult{
     A<:Union{AbstractGraph,AbstractMatrix{<:Integer}},
-    B<:Tuple{Vararg{Int}},
+    B<:Tuple{Vararg{Integer}},
     C<:Union{Nothing,Eigen},
     D<:Union{Int,Float64},
 } <: AbstractSBandResult
@@ -53,13 +53,13 @@ end
 """
 struct SBandRecognitionResult{
     A<:Union{AbstractGraph,AbstractMatrix{<:Integer}},
-    B<:Tuple{Vararg{Int}},
+    B<:Tuple{Vararg{Integer}},
     C<:Union{Nothing,Eigen},
 } <: AbstractSBandResult
     network::A
     S::B
     diagonalization::C
-    k::Int
+    k::Integer
     has_band_k_diag::Bool
 end
 
@@ -70,7 +70,7 @@ end
 """
 struct SSpectra{
     A<:AbstractMatrix{<:Integer},
-    B<:Tuple{Vararg{Int}},
+    B<:Tuple{Vararg{Integer}},
     C<:Union{Nothing,OrderedDict{Int,Int}},
     D<:Union{Nothing,OrderedDict{Int,AbstractMatrix{Int}}},
     E<:Union{Nothing,OrderedDict{Int,Matrix{Int}}},
