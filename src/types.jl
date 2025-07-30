@@ -27,6 +27,9 @@ abstract type AbstractSBandResult end
     SBandMinimizationResult{A,B,C,D} <: AbstractSBandResult
 
 [TODO: Write here]
+
+# Supertype Hierarchy
+`SBandMinimizationResult` <: [`AbstractSBandResult`](@ref)
 """
 struct SBandMinimizationResult{
     A<:Union{AbstractGraph,AbstractMatrix{<:Integer}},
@@ -44,6 +47,9 @@ end
     SBandRecognitionResult{A,B,C} <: AbstractSBandResult
 
 [TODO: Write here]
+
+# Supertype Hierarchy
+`SBandRecognitionResult` <: [`AbstractSBandResult`](@ref)
 """
 struct SBandRecognitionResult{
     A<:Union{AbstractGraph,AbstractMatrix{<:Integer}},B<:Tuple,C<:Union{Nothing,Eigen}
@@ -124,6 +130,9 @@ called on a newly created subtype for which no method has been defined.
     hierarchy `A <: B <: C` and the `abstracttype` field is `C`, then both `A` and `B` are
     perfectly valid choices for `subtype`.)
 - `abstracttype::Type`: the abstract type under which the argument is meant to fall.
+
+# Supertype Hierarchy
+`NotImplementedError` <: `Exception`
 
 # Constructors
 - `NotImplementedError(::Function, ::Type, ::Type)`: constructs a new `NotImplementedError`
