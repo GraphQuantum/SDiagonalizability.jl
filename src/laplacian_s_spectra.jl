@@ -9,7 +9,7 @@
 
 [TODO: Write here. Also, comment inline]
 """
-function laplacian_s_spectra(L::AbstractMatrix{<:Integer}, S::Tuple)
+function laplacian_s_spectra(L::AbstractMatrix{<:Integer}, S::Tuple{Vararg{Int}})
     _assert_matrix_is_undirected_laplacian(L)
 
     if S == (-1, 0, 1)
@@ -400,7 +400,7 @@ end
 
 [TODO: Write here]
 """
-function _classified_laplacian_s_spectra(CL::ArbitraryGraphLaplacian, S::Tuple)
+function _classified_laplacian_s_spectra(CL::ArbitraryGraphLaplacian, S::Tuple{Vararg{Int}})
     L = CL.matrix
     res = check_spectrum_integrality(L)
 

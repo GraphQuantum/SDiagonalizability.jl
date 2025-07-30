@@ -127,6 +127,28 @@ function _assert_matrix_is_undirected_laplacian(L::AbstractMatrix{<:Integer})
 end
 
 """
+    _assert_graph_has_defined_s_bandwidth(g) -> Nothing
+
+[TODO: Write here]
+"""
+function _assert_graph_has_defined_s_bandwidth(g::AbstractGraph)
+    if is_directed(g)
+        throw(DomainError(g, "*S*-bandwidth is not defined for directed graphs"))
+    end
+
+    if has_self_loops(g)
+        throw(
+            DomainError(
+                graph,
+                "*S*-bandwidth is not defined for multigraphs; got a graph with self-loops",
+            ),
+        )
+    end
+
+    return nothing
+end
+
+"""
     function _rank_rtol(A::AbstractMatrix{<:Real}) -> Float64
 
 Return a reasonable relative tolerance for computing matrix rank via SVD or QRD.

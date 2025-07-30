@@ -7,7 +7,7 @@
 """
     SDiagonalizability
 
-A dynamic algorithm to minimize the S-bandwidth of an undirected graph.
+A dynamic algorithm to minimize or recognize the S-bandwidth of an undirected graph.
 
 [TODO: Write here]
 """
@@ -18,19 +18,20 @@ using DataStructures
 using ElasticArrays
 using Graphs
 using LinearAlgebra
+using MatrixBandwidth
 
 include("utils.jl")
 include("types.jl")
 
 include("factories/laplacian_factory.jl")
-# include("factories/orthogonality_factory.jl")
+include("factories/orthogonality_factory.jl")
 
 include("eigenvector_generation.jl")
 include("laplacian_s_spectra.jl")
-# include("basis_search.jl")
+include("basis_search.jl")
 
-# include("core.jl")
+include("core.jl")
 
-# export minimize_s_bandwidths, has_s_bands_at_most_k, is_s_diagonalizable
+export minimize_s_bandwidth, has_s_bandwidth_at_most_k, is_s_diagonalizable
 
 end
