@@ -286,7 +286,14 @@ function _classified_laplacian_01neg_spectra(CL::CompleteGraphLaplacian)
 
     #= The non-kernel eigenspace necessarily contains all vectors orthogonal to the kernel,
     so we need not filter the output of the generator. =#
-    nonkernel_space = stack(pot_nonkernel_s_eigvecs(n, S))
+    nonkernel_vecs = pot_nonkernel_s_eigvecs(n, S)
+
+    if isempty(nonkernel_vecs) # In case `S = (-1, 0, 1)` and `n` is odd
+        nonkernel_space = Matrix{Int}(undef, n, 0)
+    else
+        nonkernel_space = stack(pot_nonkernel_s_eigvecs(n, S))
+    end
+
     #= The complete graph is always {-1, 0, 1}-diagonalizable (Johnston and Plosker 2025, p.
     320), so we know that this basis indeed spans the eigenspace. =#
     nonnull_basis = _extract_independent_cols(nonkernel_space)
@@ -363,7 +370,13 @@ function _classified_laplacian_1neg_spectra(CL::CompleteGraphLaplacian)
 
     #= The non-kernel eigenspace necessarily contains all vectors orthogonal to the kernel,
     so we need not filter the output of the generator. =#
-    nonkernel_space = stack(pot_nonkernel_s_eigvecs(n, S))
+    nonkernel_vecs = pot_nonkernel_s_eigvecs(n, S)
+
+    if isempty(nonkernel_vecs) # In case `S = (-1, 1)` and `n` is odd
+        nonkernel_space = Matrix{Int}(undef, n, 0)
+    else
+        nonkernel_space = stack(pot_nonkernel_s_eigvecs(n, S))
+    end
 
     #= The complete graph is {-1, 1}-diagonalizable if and only if `n = 1` or `n` is even
     (Johnston and Plosker 2025, p. 320). =#

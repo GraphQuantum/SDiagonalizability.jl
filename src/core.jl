@@ -25,9 +25,9 @@ function minimize_s_bandwidth(L::AbstractMatrix{<:Integer}, S::Tuple{Vararg{Inte
         return SBandMinimizationResult(copy(L), S, nothing, Inf)
     end
 
-    pre_diagonalization = hcat(values(spec.s_eigenbases)...)
+    pre_eigvecs = hcat(values(spec.s_eigenbases)...)
     # `MatrixBandwidth.jl` uses zero-based indexing, not one-based, so we add 1 here
-    band_max = bandwidth(pre_diagonalization'pre_diagonalization) + 1
+    band_max = bandwidth(pre_eigvecs'pre_eigvecs) + 1
 
     k_diag_found = false
     band = 1
@@ -44,7 +44,9 @@ function minimize_s_bandwidth(L::AbstractMatrix{<:Integer}, S::Tuple{Vararg{Inte
     end
 
     if !k_diag_found
-        diagonalization = pre_diagonalization
+        multiplicities = spec.multiplicities
+        eigvals = vcat(fill.(keys(multiplicities), values(multiplicities))...)
+        diagonalization = Eigen(eigvals, pre_eigvecs)
     end
 
     return SBandMinimizationResult(copy(L), S, diagonalization, band)
@@ -93,7 +95,7 @@ end
 """
     _s_spectra_has_bandwidth_at_most_k(spec, k) -> SBandRecognitionResult
 
-[TODO: Write here. Also, comment inline]
+[TODO: Write here. Also, comment inline and cite [JP25](@cite)]
 """
 function _s_spectra_has_bandwidth_at_most_k(spec::SSpectra, k::Integer)
     L = copy(spec.matrix)
@@ -103,20 +105,35 @@ function _s_spectra_has_bandwidth_at_most_k(spec::SSpectra, k::Integer)
         return SBandRecognitionResult(L, S, nothing, k, false)
     end
 
-    n = size(spec.matrix, 1)
-    eigvecs = Matrix{Int}(undef, n, n)
+    n = size(L, 1)
 
     multiplicities = spec.multiplicities
-    s_eigenspaces = spec.s_eigenspaces
     s_eigenbases = spec.s_eigenbases
+
+    eigvals = vcat(fill.(keys(multiplicities), values(multiplicities))...)
+
+    # This follows from Johnston and Plosker (2025, p. 320)
+    if S == (-1, 1) && n % 4 == 2 && classify_laplacian(L) isa CompleteGraphLaplacian
+        if k < n - 1
+            res = SBandRecognitionResult(L, S, nothing, k, false)
+        else
+            eigvecs = hcat(values(s_eigenbases)...)
+            diagonalization = Eigen(eigvals, eigvecs)
+            res = SBandRecognitionResult(L, S, diagonalization, k, true)
+        end
+
+        return res
+    end
+
+    s_eigenspaces = spec.s_eigenspaces
+
+    eigvecs = Matrix{Int}(undef, n, n)
 
     res = iterate(multiplicities)
     k_basis_found = true
     idx = 1
 
-    while if k_basis_found
-        idx <= n
-    end
+    while (k_basis_found && idx <= n)
         ((eigval, multi), state) = res
         k_basis = find_k_orthogonal_basis(
             s_eigenspaces[eigval], multi, k, s_eigenbases[eigval]
@@ -125,14 +142,13 @@ function _s_spectra_has_bandwidth_at_most_k(spec::SSpectra, k::Integer)
         if isnothing(k_basis)
             k_basis_found = false
         else
-            eigvecs[:, idx:(idx + multi - 1)] = k_basis
+            eigvecs[:, idx:(idx + multi - 1)] .= k_basis
             res = iterate(multiplicities, state)
             idx += multi
         end
     end
 
     if k_basis_found
-        eigvals = vcat(fill.(keys(multiplicities), values(multiplicities))...)
         diagonalization = Eigen(eigvals, eigvecs)
         has_band_k_diag = true
     else
