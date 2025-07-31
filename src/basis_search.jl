@@ -6,7 +6,7 @@
 
 """
     find_k_orthogonal_basis(
-        col_space, col_rank, k, precomputed_basis=nothing
+        col_space, col_rank, k, pre_basis=nothing
     ) -> Union{Nothing,AbstractMatrix{<:Integer}}
 
 Find a `k`-orthogonal spanning subset of the column set of a matrix.
@@ -23,28 +23,30 @@ already in `col_space`, returning `nothing` if no such basis exists.
     efficiency.
 - `k::Integer`: the minimum ``k``-orthogonality parameter of the desired basis. Must be a
     positive integer.
-- `precomputed_basis::Union{Nothing,AbstractMatrix{<:Integer}}=nothing`: an optionally
-    precomputed submatrix of `col_space` whose columns form a spanning subset of the column
-    space of `col_space`. In case `col_space` has at most `k` columns, `existing_basis` is
-    guaranteed to already be a `k`-orthogonal basis and thus is used to skip unnecessary
-    computations.
+- `pre_basis::Union{Nothing,AbstractMatrix{<:Integer}}=nothing`: an optional precomputed
+    submatrix of `col_space` whose columns form a spanning subset of the column space of
+    `col_space`. In case `col_space` has at most `k` columns, `existing_basis` is guaranteed
+    to already be a `k`-orthogonal basis and thus is used to skip unnecessary computations.
 
 # Returns
 - `::Union{Nothing,AbstractMatrix{<:Integer}}`: a `k`-orthogonal spanning subset of the
-    columns of `column_space`, if one exists; otherwise, `nothing`.
+    columns of `col_space`, if one exists; otherwise, `nothing`.
 """
 function find_k_orthogonal_basis(
     col_space::AbstractMatrix{<:Integer},
     col_rank::Integer,
     k::Integer,
-    precomputed_basis::Union{Nothing,AbstractMatrix{<:Integer}}=nothing,
+    pre_basis::Union{Nothing,AbstractMatrix{<:Integer}}=nothing,
 )
-    if size(col_space, 2) <= k
-        if isnothing(precomputed_basis)
-            basis = _extract_independent_cols(col_space)
-        else
-            basis = precomputed_basis
-        end
+    if isnothing(pre_basis) && size(col_space, 2) <= k
+        # Every collection of `k` or less vectors is `k`-orthogonal
+        basis = _extract_independent_cols(col_space)
+    #! format: off
+    #= `MatrixBandwidth.jl` uses zero-based indexing for bandwidth, not one-based, so we use
+    `k - 1` instead of `k`. =#
+    #! format: on
+    elseif !isnothing(pre_basis) && bandwidth(pre_basis'pre_basis) <= k - 1
+        basis = pre_basis
     else
         prop = classify_k_orthogonality(k)
         basis = _find_basis_with_property(col_space, col_rank, prop)
@@ -71,7 +73,7 @@ function _find_basis_with_property(
         basis_idxs = _find_basis_idxs_with_prop([root], prop, col_space, col_rank, 1)
 
         if !(isnothing(basis_idxs))
-            return column_space[:, basis_idxs]
+            return col_space[:, basis_idxs]
         end
     end
 
@@ -81,18 +83,20 @@ end
 function _find_basis_with_property(
     col_space::AbstractMatrix{<:Integer}, col_rank::Integer, prop::QuasiOrthogonality
 )
-    #= The current vertex degree and connected component of any root node (each `root[1]` in
-    the following loop) will always be 0 and 1, respectively, before the DFS begins. =#
-    nodes = [_QOBasisSearchNodeData(1, 0)]
-    union_find = Dict{UInt16,Vector{UInt16}}(1 => [1])
+    #= We can restrict each `root` to end no later than `size(col_space, 2) - col_rank + 2`,
+    since we must fill `col_rank - 2` positions afterwards. =#
+    for root in combinations(1:(size(col_space, 2) - col_rank + 2), 2)
+        #= The current vertex degree and connected component of `root[1]` will always be 0
+        and 1, respectively, before the DFS begins. =#
+        nodes = [_QOBasisSearchNode(1, 0)]
+        union_find = Dict{UInt16,Vector{UInt16}}(1 => [1])
 
-    for root in combinations(1:size(col_space, 2), 2)
         basis_idxs = _find_basis_idxs_with_prop(
             root, prop, col_space, col_rank, 2, nodes, union_find
         )
 
         if !(isnothing(basis_idxs))
-            return column_space[:, basis_idxs]
+            return col_space[:, basis_idxs]
         end
     end
 
@@ -105,14 +109,16 @@ function _find_basis_with_property(
     k = prop.k
     num_columns = size(col_space, 2)
 
-    gram_matrix = falses(num_columns, num_columns)
+    gram_matrix = falses(col_rank, col_rank)
 
     #= Every collection of `k` or less vectors is `k`-orthogonal, so we could start
     searching from `k`-combinations of the columns. However, we start from 2-combinations to
-    allow for more aggressive pruning of linearly dependent subsets. =#
-    for root in combinations(1:num_columns, 2)
+    allow for more aggressive pruning of linearly dependent subsets. We can restrict each
+    `root` to end no later than `num_columns - col_rank + 2`, since we must fill
+    `col_rank - 2` positions afterwards. =#
+    for root in combinations(1:(num_columns - col_rank + 2), 2)
         partial_basis = view(col_space, :, root)
-        gram_submatrix = (!iszero).(partial_basis' * partial_basis)
+        gram_submatrix = (!iszero).(partial_basis'partial_basis)
         gram_matrix[1:2, 1:2] .= gram_submatrix
 
         basis_idxs = _find_basis_idxs_with_prop(
@@ -120,7 +126,7 @@ function _find_basis_with_property(
         )
 
         if !(isnothing(basis_idxs))
-            return column_space[:, basis_idxs]
+            return col_space[:, basis_idxs]
         end
     end
 
@@ -157,7 +163,7 @@ function _find_basis_idxs_with_prop(
     parent_partial_basis = view(col_space, :, 1:(depth - 1))
     curr_column = view(col_space, :, depth)
 
-    if !(iszero(parent_partial_basis' * curr_column))
+    if !(iszero(parent_partial_basis'curr_column))
         return nothing
     end
 
@@ -212,7 +218,7 @@ function _find_basis_idxs_with_prop(
 
     parent_partial_basis = view(partial_basis, :, 1:(depth - 1))
     curr_column = view(partial_basis, :, depth)
-    neighbors = findall(!iszero, parent_partial_basis' * curr_column)
+    neighbors = findall(!iszero, parent_partial_basis'curr_column)
     degree = length(neighbors)
 
     if degree == 0
@@ -253,7 +259,7 @@ function _find_basis_idxs_with_prop(
         return nothing
     end
 
-    node = _QOBasisSearchNodeData(component, degree)
+    node = _QOBasisSearchNode(component, degree)
     push!(nodes, node)
     push!(union_find[component], depth)
 
@@ -265,11 +271,11 @@ function _find_basis_idxs_with_prop(
 
     for i in (curr_idxs[depth] + 1):(num_columns - remaining_levels + 1)
         push!(curr_idxs, i)
-        nodes = deepcopy(nodes)
-        union_find = deepcopy(union_find)
+        nodes_new = deepcopy(nodes)
+        union_find_new = deepcopy(union_find)
 
         basis_idxs = _find_basis_idxs_with_prop(
-            curr_idxs, prop, col_space, col_rank, depth + 1, nodes, union_find
+            curr_idxs, prop, col_space, col_rank, depth + 1, nodes_new, union_find_new
         )
 
         pop!(curr_idxs)
@@ -302,24 +308,21 @@ function _find_basis_idxs_with_prop(
 
     parent_partial_basis = view(partial_basis, :, 1:(depth - 1))
     curr_column = view(partial_basis, :, depth)
-    neighbors = findall(!iszero, parent_partial_basis' * curr_column)
+    neighbors = findall(!iszero, parent_partial_basis'curr_column)
 
     if length(neighbors) > 2k - 2
         return nothing
     end
 
-    # Reset to avoid shared memory issues
-    gram_matrix[:, neighbors] .= false
-    gram_matrix[neighbors, :] .= false
-
-    gram_matrix[depth, neighbors] .= true
-    gram_matrix[neighbors, depth] .= true
+    gram_matrix[:, depth] .= gram_matrix[depth, :] .= false # Reset due to shared mutability
+    gram_matrix[depth, neighbors] .= gram_matrix[neighbors, depth] .= true
 
     gram_submatrix = view(gram_matrix, 1:depth, 1:depth)
-    # `MatrixBandwidth.jl` uses zero-based indexing for bandwidth, not one-based
-    res = has_bandwidth_k_ordering(gram_matrix, k - 1, Recognition.DelCorsoManzini())
+    #= `MatrixBandwidth.jl` uses zero-based indexing for bandwidth, not one-based, so we use
+    `k - 1` instead of `k`. =#
+    res = has_bandwidth_k_ordering(gram_submatrix, k - 1, Recognition.DelCorsoManzini())
 
-    if !res.has_bandwidth_k_ordering
+    if !res.has_ordering
         return nothing
     end
 

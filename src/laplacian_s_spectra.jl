@@ -301,7 +301,7 @@ end
 
 function _classified_laplacian_01neg_spectra(CL::ArbitraryGraphLaplacian)
     # The logic for arbitrary graphs is identical for both `{-1, 0, 1}` and `{-1, 1}`
-    return _classified_laplacian_s_spectra(CL.matrix, (-1, 1))
+    return _classified_laplacian_s_spectra(CL, (-1, 0, 1))
 end
 
 """
@@ -384,7 +384,7 @@ end
 
 function _classified_laplacian_1neg_spectra(CL::ArbitraryGraphLaplacian)
     # The logic for arbitrary graphs is identical for both `{-1, 0, 1}` and `{-1, 1}`
-    return _classified_laplacian_s_spectra(CL.matrix, (-1, 1))
+    return _classified_laplacian_s_spectra(CL, (-1, 1))
 end
 
 """
