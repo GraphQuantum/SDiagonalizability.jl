@@ -72,8 +72,8 @@ struct SSpectra{
     A<:AbstractMatrix{<:Integer},
     B<:Tuple{Vararg{Integer}},
     C<:Union{Nothing,OrderedDict{Int,Int}},
-    D<:Union{Nothing,OrderedDict{Int,AbstractMatrix{Int}}},
-    E<:Union{Nothing,OrderedDict{Int,Matrix{Int}}},
+    D<:Union{Nothing,OrderedDict{Int,<:AbstractMatrix{<:Integer}}},
+    E<:Union{Nothing,OrderedDict{Int,<:Union{Nothing,AbstractMatrix{<:Integer}}}},
 }
     matrix::A
     S::B
