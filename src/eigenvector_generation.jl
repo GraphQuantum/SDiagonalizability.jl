@@ -21,7 +21,7 @@
 # Examples
 [TODO: Write here]
 """
-function pot_kernel_s_eigvecs(n::Integer, S::Tuple{Vararg{Int}})
+function pot_kernel_s_eigvecs(n::Integer, S::Tuple{Vararg{Integer}})
     if n < 0
         throw(DomainError(n, "Laplacian order must be non-negative"))
     end
@@ -54,7 +54,7 @@ end
 # Examples
 [TODO: Write here]
 """
-function pot_nonkernel_s_eigvecs(n::Integer, S::Tuple{Vararg{Int}})
+function pot_nonkernel_s_eigvecs(n::Integer, S::Tuple{Vararg{Integer}})
     if n < 0
         throw(DomainError(n, "Laplacian order must be non-negative"))
     end

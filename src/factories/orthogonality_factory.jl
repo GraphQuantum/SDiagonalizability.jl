@@ -25,7 +25,7 @@ different depth-first search for each family of values of ``k`` on our "tree" of
 
 # Interface
 Concrete subtypes of `KOrthogonality` **must** implement the following fields:
-- `k::Int`: the ``k``-orthogonality parameter.
+- `k::Int`: the ``k``-orthogonality parameter. Must be a positive integer.
 """
 abstract type KOrthogonality end
 
@@ -91,7 +91,7 @@ indices apart is orthogonal). This is equivalent to the vectors' Gram matrix hav
 bandwidth at most ``k``.
 
 # Fields
-- `k::Int`: the ``k``-orthogonality parameter; must be greater than ``2``.
+- `k::Int`: the ``k``-orthogonality parameter. Must be greater than ``2``.
 
 # Supertype Hierarchy
 `WeakOrthogonality` <: [`KOrthogonality`](@ref)
