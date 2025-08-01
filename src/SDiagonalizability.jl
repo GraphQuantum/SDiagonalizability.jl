@@ -19,6 +19,7 @@ using ElasticArrays
 using Graphs
 using LinearAlgebra
 using MatrixBandwidth
+using PrecompileTools: @setup_workload, @compile_workload
 
 include("utils.jl")
 include("types.jl")
@@ -31,6 +32,8 @@ include("laplacian_s_spectra.jl")
 include("basis_search.jl")
 
 include("core.jl")
+
+include("startup.jl")
 
 export s_bandwidth, has_s_bandwidth_at_most_k, is_s_diagonalizable
 

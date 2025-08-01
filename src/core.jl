@@ -169,8 +169,8 @@ function is_s_diagonalizable(g::AbstractGraph, S::Tuple{Vararg{Integer}})
 
     res = is_s_diagonalizable(laplacian_matrix(g), S)
 
-    return SBandRecognitionResult(
-        copy(g), res.S, res.s_diagonalization, nv(g), res.s_band_at_most_k
+    return SDiagonalizabilityResult(
+        copy(g), res.S, res.s_diagonalization, res.has_s_diagonalization
     )
 end
 
