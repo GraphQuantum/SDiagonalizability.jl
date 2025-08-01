@@ -32,6 +32,6 @@ include("basis_search.jl")
 
 include("core.jl")
 
-export minimize_s_bandwidth, has_s_bandwidth_at_most_k, is_s_diagonalizable
+export s_bandwidth, has_s_bandwidth_at_most_k, is_s_diagonalizable
 
 end
