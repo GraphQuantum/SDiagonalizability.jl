@@ -16,6 +16,6 @@ Private = false
 
 ## References
 
-<!-- ```@bibliography
+```@bibliography
 Pages = [@__FILE__]
-``` -->
+```

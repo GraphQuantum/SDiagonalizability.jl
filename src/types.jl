@@ -102,6 +102,9 @@ end
     SDiagonalizabilityResult{A,B,C} <: AbstractSDiagResult
 
 [TODO: Write here]
+
+# Supertype Hierarchy
+`SDiagonalizabilityResult` <: [`AbstractSDiagResult`](@ref)
 """
 struct SDiagonalizabilityResult{
     A<:Union{AbstractGraph,AbstractMatrix{<:Integer}},
