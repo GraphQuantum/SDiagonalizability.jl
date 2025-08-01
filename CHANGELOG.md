@@ -6,4 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-[unreleased]: https://github.com/GraphQuantum/SDiagonalizability.jl/compare/HEAD...HEAD
+## [0.1.0] - 2025-08-01
+
+### Added
+
+- Released the initial stable version of the package.
+
+[unreleased]: https://github.com/GraphQuantum/SDiagonalizability.jl/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/Luis-Varona/MatrixBandwidth.jl/releases/tag/v0.1.0
