@@ -3,6 +3,13 @@ CurrentModule = SDiagonalizability
 ```
 
 ```@raw html
+<figure style="text-align: left; margin-left: 0;">
+  <img src="https://github.com/GraphQuantum/SDiagonalizability.jl/raw/main/docs/src/assets/logo.jpg" alt="GraphQuantum logo by Madiha Waqar">
+  <figcaption>
+    <em style="font-style: normal;">GraphQuantum</em> logo by <a href="https://github.com/madihaahmed1">Madiha Waqar</a>
+  </figcaption>
+</figure>
+
 <table>
   <tr>
     <td>Metadata</td>
