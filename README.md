@@ -52,8 +52,6 @@ For specific choices of *S* (namely {-1, 1} and {-1, 0, 1}), the *S*-bandwidth o
 
 The only prerequisite is a working Julia installation (v1.10 or later). First, enter Pkg mode by typing `]` in the Julia REPL, then run the following command:
 
-Once *SDiagonalizability.jl* is added to Julia's General package registry, you will be able to install it more easily with:
-
 ```julia-repl
 pkg> add SDiagonalizability
 ```
