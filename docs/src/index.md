@@ -6,7 +6,7 @@ CurrentModule = SDiagonalizability
 <figure style="text-align: left; margin-left: 0;">
   <img src="https://github.com/GraphQuantum/SDiagonalizability.jl/raw/main/docs/src/assets/logo.jpg" alt="GraphQuantum logo by Madiha Waqar">
   <figcaption>
-    GraphQuantum <em style="font-style: normal;">logo by <a href="https://github.com/madihaahmed1">Madiha Waqar</em></a>
+    GraphQuantum<em style="font-style: normal;"> logo by <a href="https://github.com/madihaahmed1">Madiha Waqar</em></a>
   </figcaption>
 </figure>
 
