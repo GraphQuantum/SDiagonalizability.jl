@@ -65,7 +65,210 @@ pkg> add SDiagonalizability
 
 ## Basic use
 
-[TODO: Write here]
+*SDiagonalizability.jl* offers capabilities for ``S``-bandwidth minimization, ``S``-bandwidth recognition, and plain old ``S``-diagonalizability checking. To compute the ``S``-bandwidth of a graph, you can use the `s_bandwidth` function:
+
+```julia-repl
+julia> using Graphs
+
+julia> g = complete_graph(14)
+{14, 91} undirected simple Int64 graph
+
+julia> res_01neg = s_bandwidth(g, (-1, 0, 1))
+Results of S-Bandwidth Minimization
+ * S: (-1, 0, 1)
+ * S-Bandwidth: 2
+ * Graph Order: 14
+
+julia> res_01neg.s_diagonalization
+LinearAlgebra.Eigen{Int64, Int64, Matrix{Int64}, Vector{Int64}}
+values:
+14-element Vector{Int64}:
+  0
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+vectors:
+14×14 Matrix{Int64}:
+ 1   0   0   0   0   1   1   1   1   1   1   0   0   0
+ 1   0   0   0   0  -1   0  -1   1   1   1   0   0   0
+ 1   0   0   0   0   0  -1   1   0   1   1   0   0   0
+ 1   0   0   0   0   0   0  -1   0   1  -1   0   0   0
+ 1   0   0   0   0   0   0   0  -1  -1   1   1   1   1
+ 1   0   0   0   0   0   0   0  -1  -1   1  -1  -1  -1
+ 1   1   1   0   0   0   0   0   0  -1   0   0  -1   1
+ 1  -1  -1   0   0   0   0   0   0  -1   0   0   0  -1
+ 1   0  -1   1   1   0   0   0   0   0  -1   0   0   0
+ 1   0   0  -1  -1   0   0   0   0   0  -1   0   0   0
+ 1   0   0   0  -1   0   0   0   0   0  -1   0   0   0
+ 1   0   1   0   1   0   0   0   0   0  -1   0   0   0
+ 1  -1  -1   0   0   0   0   0   0   0   0   0   0   1
+ 1   1   1   0   0   0   0   0   0   0   0   0   1  -1
+
+julia> res_1neg = s_bandwidth(g, (-1, 1))
+Results of S-Bandwidth Minimization
+ * S: (-1, 1)
+ * S-Bandwidth: 13
+ * Graph Order: 14
+
+julia> res_1neg.s_diagonalization
+LinearAlgebra.Eigen{Int64, Int64, Matrix{Int64}, Vector{Int64}}
+values:
+14-element Vector{Int64}:
+  0
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+vectors:
+14×14 Matrix{Int64}:
+ 1   1   1   1   1   1   1   1   1   1   1   1   1   1
+ 1  -1  -1  -1  -1  -1  -1   1   1   1   1   1   1   1
+ 1  -1  -1  -1   1   1   1  -1  -1  -1   1   1   1   1
+ 1  -1  -1  -1   1   1   1   1   1   1  -1  -1  -1   1
+ 1  -1  -1  -1   1   1   1   1   1   1   1   1   1  -1
+ 1  -1   1   1  -1  -1   1  -1  -1   1  -1  -1   1  -1
+ 1  -1   1   1  -1   1  -1  -1   1  -1  -1   1  -1  -1
+ 1  -1   1   1   1  -1  -1   1  -1  -1   1  -1  -1   1
+ 1   1  -1   1  -1  -1   1  -1   1  -1   1  -1  -1   1
+ 1   1  -1   1  -1   1  -1   1  -1  -1  -1  -1   1  -1
+ 1   1  -1   1   1  -1  -1  -1  -1   1  -1   1  -1  -1
+ 1   1   1  -1  -1  -1   1   1  -1  -1  -1   1  -1  -1
+ 1   1   1  -1  -1   1  -1  -1  -1   1   1  -1  -1   1
+ 1   1   1  -1   1  -1  -1  -1   1  -1  -1  -1   1  -1
+```
+
+Alternatively, to determine whether a graph has ``S``-bandwidth less than or equal to some fixed integer ``k \ge 1`` without
+necessarily caring about the true (minimum) value, you can take advantage of `has_s_bandwidth_at_most_k`:
+
+```julia-repl
+julia> using Graphs
+
+julia> g = PetersenGraph()
+{10, 15} undirected simple Int64 graph
+
+julia> res_01neg = has_s_bandwidth_at_most_k(g, (-1, 0, 1), 4)
+Results of S-Bandwidth Recognition
+ * S: (-1, 0, 1)
+ * S-Bandwidth Threshold k: 4
+ * Has S-Bandwidth ≤ k: true
+ * Graph Order: 10
+
+julia> res_01neg.s_diagonalization
+LinearAlgebra.Eigen{Int64, Int64, Matrix{Int64}, Vector{Int64}}
+values:
+10-element Vector{Int64}:
+ 0
+ 5
+ 5
+ 5
+ 5
+ 2
+ 2
+ 2
+ 2
+ 2
+vectors:
+10×10 Matrix{Int64}:
+ 1   1   1   0   0   1   1   1   1   1
+ 1  -1  -1   1   1   0   0   0   0   1
+ 1   0   1  -1  -1   0  -1   0  -1  -1
+ 1   0   0   0   1   0   0   0  -1  -1
+ 1   0  -1   0  -1   1   1   0   0   0
+ 1  -1   0  -1   0   0   0   1   1   0
+ 1   1   0  -1  -1  -1   0  -1   0   1
+ 1   1  -1   1   0   0  -1   0   0  -1
+ 1   0   0   1   0  -1   0   0   0   0
+ 1  -1   1   0   1   0   0  -1   0   0
+
+julia> res_1neg = has_s_bandwidth_at_most_k(g, (-1, 1), 10)
+Results of S-Bandwidth Recognition
+ * S: (-1, 1)
+ * S-Bandwidth Threshold k: 10
+ * Has S-Bandwidth ≤ k: false
+ * Graph Order: 10
+
+julia> isnothing(res_1neg.s_diagonalization)
+true
+```
+
+Lastly, the `is_s_diagonalizable` function can be used to simply determine whether a graph is ``S``-diagonalizable:
+
+```julia-repl
+julia> using Graphs
+
+julia> L = laplacian_matrix(complete_multipartite_graph([1, 1, 2, 2, 3]))
+9×9 SparseArrays.SparseMatrixCSC{Int64, Int64} with 71 stored entries:
+  8  -1  -1  -1  -1  -1  -1  -1  -1
+ -1   8  -1  -1  -1  -1  -1  -1  -1
+ -1  -1   7   ⋅  -1  -1  -1  -1  -1
+ -1  -1   ⋅   7  -1  -1  -1  -1  -1
+ -1  -1  -1  -1   7   ⋅  -1  -1  -1
+ -1  -1  -1  -1   ⋅   7  -1  -1  -1
+ -1  -1  -1  -1  -1  -1   6   ⋅   ⋅
+ -1  -1  -1  -1  -1  -1   ⋅   6   ⋅
+ -1  -1  -1  -1  -1  -1   ⋅   ⋅   6
+
+julia> res_01neg = is_s_diagonalizable(L, (-1, 0, 1))
+Results of S-Diagonalizability Check
+ * S: (-1, 0, 1)
+ * S-Diagonalizable: true
+ * Graph Order: 9
+
+julia> res_01neg.s_diagonalization
+LinearAlgebra.Eigen{Int64, Int64, Matrix{Int64}, Vector{Int64}}
+values:
+9-element Vector{Int64}:
+ 0
+ 6
+ 6
+ 7
+ 7
+ 9
+ 9
+ 9
+ 9
+vectors:
+9×9 Matrix{Int64}:
+ 1   0   0   0   0   1   1   1   1
+ 1   0   0   0   0   0  -1  -1   1
+ 1   0   0   1   1  -1  -1   1  -1
+ 1   0   0  -1  -1  -1  -1   1  -1
+ 1   0   0  -1   1  -1   1  -1   0
+ 1   0   0   1  -1  -1   1  -1   0
+ 1   1   1   0   0   1   0   0   0
+ 1  -1   0   0   0   1   0   0   0
+ 1   0  -1   0   0   1   0   0   0
+
+julia> res_1neg = is_s_diagonalizable(L, (-1, 1))
+Results of S-Diagonalizability Check
+ * S: (-1, 1)
+ * S-Diagonalizable: false
+ * Graph Order: 9
+
+julia> isnothing(res_1neg.s_diagonalization)
+true
+```
+
+(As demonstrated in this last example, you can supply the Laplacian matrix of a graph as an alternative to the `Graph` object itself from the *Graphs.jl* package.)
 
 ## Documentation
 

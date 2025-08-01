@@ -5,12 +5,12 @@
 # distributed except according to those terms.
 
 """
-    AbstractSBandResult
+    AbstractSDiagResult
 
-Abstract base type for all *S*-bandwidth problem results.
+Abstract base type for all *S*-diagonalizability and *S*-bandwidth problem results.
 
 # Interface
-Concrete subtypes of `AbstractSBandResult` *must* implement parametric types
+Concrete subtypes of `AbstractSDiagResult` *must* implement parametric types
 - `A<:Union{AbstractGraph,AbstractMatrix{<:Integer}}`;
 - `B<:Tuple{Vararg{Integer}}`; and
 - `C<:Union{Nothing,Eigen}`,
@@ -21,46 +21,114 @@ alongside the following fields:
 - `diagonalization::C`: an *S*-diagonalization of the matrix representation of the network,
     if it satisfies the specified *S*-bandwidth constraints; otherwise, `nothing`.
 """
-abstract type AbstractSBandResult end
+abstract type AbstractSDiagResult end
 
 """
-    SBandMinimizationResult{A,B,C,D} <: AbstractSBandResult
+    SBandMinimizationResult{A,B,C,D} <: AbstractSDiagResult
 
 [TODO: Write here]
 
 # Supertype Hierarchy
-`SBandMinimizationResult` <: [`AbstractSBandResult`](@ref)
+`SBandMinimizationResult` <: [`AbstractSDiagResult`](@ref)
 """
 struct SBandMinimizationResult{
     A<:Union{AbstractGraph,AbstractMatrix{<:Integer}},
     B<:Tuple{Vararg{Integer}},
     C<:Union{Nothing,Eigen},
     D<:Union{Int,Float64},
-} <: AbstractSBandResult
+} <: AbstractSDiagResult
     network::A
     S::B
-    diagonalization::C
-    band::D
+    s_diagonalization::C
+    s_bandwidth::D
+end
+
+#= The `Base.show` override here takes heavy inspiration from the `MatrixBandwidth.jl`
+package (written by myself), which in turn took inspiration from `Optim.jl`. =#
+function Base.show(io::IO, res::SBandMinimizationResult{A}) where {A}
+    if A<:AbstractGraph
+        n = nv(res.network)
+    else
+        n = size(res.network, 1)
+    end
+
+    println(io, "Results of S-Bandwidth Minimization")
+    println(io, " * S: $(Int.(res.S))")
+    println(io, " * S-Bandwidth: $(res.s_bandwidth)")
+    print(io, " * Graph Order: $n")
+
+    return nothing
 end
 
 """
-    SBandRecognitionResult{A,B,C} <: AbstractSBandResult
+    SBandRecognitionResult{A,B,C} <: AbstractSDiagResult
 
 [TODO: Write here]
 
 # Supertype Hierarchy
-`SBandRecognitionResult` <: [`AbstractSBandResult`](@ref)
+`SBandRecognitionResult` <: [`AbstractSDiagResult`](@ref)
 """
 struct SBandRecognitionResult{
     A<:Union{AbstractGraph,AbstractMatrix{<:Integer}},
     B<:Tuple{Vararg{Integer}},
     C<:Union{Nothing,Eigen},
-} <: AbstractSBandResult
+} <: AbstractSDiagResult
     network::A
     S::B
-    diagonalization::C
+    s_diagonalization::C
     k::Integer
-    has_band_k_diag::Bool
+    s_band_at_most_k::Bool
+end
+
+#= The `Base.show` override here takes heavy inspiration from the `MatrixBandwidth.jl`
+package (written by myself), which in turn took inspiration from `Optim.jl`. =#
+function Base.show(io::IO, res::SBandRecognitionResult{A}) where {A}
+    if A<:AbstractGraph
+        n = nv(res.network)
+    else
+        n = size(res.network, 1)
+    end
+
+    println(io, "Results of S-Bandwidth Recognition")
+    println(io, " * S: $(Int.(res.S))")
+    println(io, " * S-Bandwidth Threshold k: $(res.k)")
+    println(io, " * Has S-Bandwidth ≤ k: $(res.s_band_at_most_k)")
+    print(io, " * Graph Order: $n")
+
+    return nothing
+end
+
+"""
+    SDiagonalizabilityResult{A,B,C} <: AbstractSDiagResult
+
+[TODO: Write here]
+"""
+struct SDiagonalizabilityResult{
+    A<:Union{AbstractGraph,AbstractMatrix{<:Integer}},
+    B<:Tuple{Vararg{Integer}},
+    C<:Union{Nothing,Eigen},
+} <: AbstractSDiagResult
+    network::A
+    S::B
+    s_diagonalization::C
+    has_s_diagonalization::Bool
+end
+
+#= The `Base.show` override here takes heavy inspiration from the `MatrixBandwidth.jl`
+package (written by myself), which in turn took inspiration from `Optim.jl`. =#
+function Base.show(io::IO, res::SDiagonalizabilityResult{A}) where {A}
+    if A<:AbstractGraph
+        n = nv(res.network)
+    else
+        n = size(res.network, 1)
+    end
+
+    println(io, "Results of S-Diagonalizability Check")
+    println(io, " * S: $(Int.(res.S))")
+    println(io, " * S-Diagonalizable: $(res.has_s_diagonalization)")
+    print(io, " * Graph Order: $n")
+
+    return nothing
 end
 
 """

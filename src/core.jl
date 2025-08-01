@@ -5,18 +5,20 @@
 # distributed except according to those terms.
 
 """
-    minimize_s_bandwidth(g::AbstractGraph, S) -> SBandMinimizationResult
-    minimize_s_bandwidth(L::AbstractMatrix{<:Integer}, S) -> SBandMinimizationResult
+    s_bandwidth(g::AbstractGraph, S) -> SBandMinimizationResult
+    s_bandwidth(L::AbstractMatrix{<:Integer}, S) -> SBandMinimizationResult
 
-[TODO: Write here]
+[TODO: Write here. Also, comment inline and cite [JP25](@cite).]
 """
-function minimize_s_bandwidth(g::AbstractGraph, S::Tuple{Vararg{Integer}})
+function s_bandwidth(g::AbstractGraph, S::Tuple{Vararg{Integer}})
     _assert_graph_has_defined_s_bandwidth(g)
-    res = minimize_s_bandwidth(laplacian_matrix(g), S)
-    return SBandMinimizationResult(copy(g), res.S, res.diagonalization, res.band)
+
+    res = s_bandwidth(laplacian_matrix(g), S)
+
+    return SBandMinimizationResult(copy(g), res.S, res.s_diagonalization, res.s_bandwidth)
 end
 
-function minimize_s_bandwidth(L::AbstractMatrix{<:Integer}, S::Tuple{Vararg{Integer}})
+function s_bandwidth(L::AbstractMatrix{<:Integer}, S::Tuple{Vararg{Integer}})
     _assert_matrix_is_undirected_laplacian(L)
 
     spec = laplacian_s_spectra(L, S)
@@ -25,44 +27,62 @@ function minimize_s_bandwidth(L::AbstractMatrix{<:Integer}, S::Tuple{Vararg{Inte
         return SBandMinimizationResult(copy(L), S, nothing, Inf)
     end
 
-    pre_eigvecs = hcat(values(spec.s_eigenbases)...)
-    # `MatrixBandwidth.jl` uses zero-based indexing, not one-based, so we add 1 here
-    band_max = bandwidth(pre_eigvecs'pre_eigvecs) + 1
+    n = size(L, 1)
 
-    k_diag_found = false
-    band = 1
+    multiplicities = spec.multiplicities
+    s_eigenspaces = spec.s_eigenspaces
+    s_eigenbases = spec.s_eigenbases
 
-    while (!k_diag_found && band < band_max)
-        res_temp = _s_spectra_has_bandwidth_at_most_k(spec, band)
+    eigvals = vcat(fill.(keys(multiplicities), values(multiplicities))...)
+    eigvecs = Matrix{Int}(undef, n, n)
+    idx = 1
 
-        if res_temp.has_band_k_diag
-            k_diag_found = true
-            diagonalization = res_temp.diagonalization
-        else
-            band += 1
+    # Using results from Johnston and Plosker (2025, pp. 319–323)
+    if classify_laplacian(L) isa CompleteGraphLaplacian
+        if S == (-1, 0, 1)
+            if 2 < n <= 20 && n % 4 != 0 # Proven subcase of Conjecture 2 applies
+                k = 2
+            end
+        elseif n % 4 == 2 # And, of course, `S = (-1, 1)`; here Theorem 1 applies
+            k = n - 1
         end
+    else
+        k = 1
     end
 
-    if !k_diag_found
-        multiplicities = spec.multiplicities
-        eigvals = vcat(fill.(keys(multiplicities), values(multiplicities))...)
-        diagonalization = Eigen(eigvals, pre_eigvecs)
+    for (eigval, multi) in multiplicities
+        k_basis = find_k_orthogonal_basis(
+            s_eigenspaces[eigval], multi, k, s_eigenbases[eigval]
+        )
+
+        while isnothing(k_basis)
+            k += 1
+            k_basis = find_k_orthogonal_basis(
+                s_eigenspaces[eigval], multi, k, s_eigenbases[eigval]
+            )
+        end
+
+        eigvecs[:, idx:((idx += multi) - 1)] .= k_basis
     end
 
-    return SBandMinimizationResult(copy(L), S, diagonalization, band)
+    s_diagonalization = Eigen(eigvals, eigvecs)
+
+    return SBandMinimizationResult(copy(L), S, s_diagonalization, k)
 end
 
 """
     has_s_bandwidth_at_most_k(g::AbstractGraph, S, k) -> SBandRecognitionResult
     has_s_bandwidth_at_most_k(L::AbstractMatrix{<:Integer}, S, k) -> SBandRecognitionResult
 
-[TODO: Write here]
+[TODO: Write here. Also, comment inline and cite [JP25](@cite).]
 """
 function has_s_bandwidth_at_most_k(g::AbstractGraph, S::Tuple{Vararg{Integer}}, k::Integer)
     _assert_graph_has_defined_s_bandwidth(g)
+
     res = has_s_bandwidth_at_most_k(laplacian_matrix(g), S, k)
+
     return SBandRecognitionResult(
-        copy(g), res.S, res.diagonalization, k, res.has_band_k_diag
+        copy(g), res.S, res.s_diagonalization, k, res.s_band_at_most_k
     )
 end
 
@@ -70,59 +90,38 @@ function has_s_bandwidth_at_most_k(
     L::AbstractMatrix{<:Integer}, S::Tuple{Vararg{Integer}}, k::Integer
 )
     _assert_matrix_is_undirected_laplacian(L)
-    return _s_spectra_has_bandwidth_at_most_k(laplacian_s_spectra(L, S), k)
-end
 
-"""
-    is_s_diagonalizable(g::AbstractGraph, S) -> SBandRecognitionResult
-    is_s_diagonalizable(L::AbstractMatrix{<:Integer}, S) -> SBandRecognitionResult
-
-[TODO: Write here]
-"""
-function is_s_diagonalizable(g::AbstractGraph, S::Tuple{Vararg{Integer}})
-    _assert_graph_has_defined_s_bandwidth(g)
-    res = is_s_diagonalizable(laplacian_matrix(g), S)
-    return SBandRecognitionResult(
-        copy(g), res.S, res.diagonalization, nv(g), res.has_band_k_diag
-    )
-end
-
-function is_s_diagonalizable(L::AbstractMatrix{<:Integer}, S::Tuple{Vararg{Integer}})
-    _assert_matrix_is_undirected_laplacian(L)
-    return has_s_bandwidth_at_most_k(L, S, size(L, 1))
-end
-
-"""
-    _s_spectra_has_bandwidth_at_most_k(spec, k) -> SBandRecognitionResult
-
-[TODO: Write here. Also, comment inline and cite [JP25](@cite)]
-"""
-function _s_spectra_has_bandwidth_at_most_k(spec::SSpectra, k::Integer)
-    L = copy(spec.matrix)
-    S = spec.S
+    spec = laplacian_s_spectra(L, S)
+    L_copy = copy(spec.matrix)
 
     if !spec.s_diagonalizable
-        return SBandRecognitionResult(L, S, nothing, k, false)
+        return SBandRecognitionResult(L_copy, S, nothing, k, false)
     end
 
-    n = size(L, 1)
+    n = size(L_copy, 1)
 
     multiplicities = spec.multiplicities
     s_eigenbases = spec.s_eigenbases
 
     eigvals = vcat(fill.(keys(multiplicities), values(multiplicities))...)
 
-    # This follows from Johnston and Plosker (2025, p. 320)
-    if S == (-1, 1) && n % 4 == 2 && classify_laplacian(L) isa CompleteGraphLaplacian
-        if k < n - 1
-            res = SBandRecognitionResult(L, S, nothing, k, false)
-        else
-            eigvecs = hcat(values(s_eigenbases)...)
-            diagonalization = Eigen(eigvals, eigvecs)
-            res = SBandRecognitionResult(L, S, diagonalization, k, true)
-        end
+    # Using results from Johnston and Plosker (2025, pp. 319–323)
+    if classify_laplacian(L_copy) isa CompleteGraphLaplacian
+        if S == (-1, 0, 1)
+            if k == 1 && 2 < n <= 20 && n % 4 != 0 # Proven subcase of Conjecture 2 applies
+                return SBandRecognitionResult(L_copy, S, nothing, k, false)
+            end
+        elseif n % 4 == 2 # And, of course, `S = (-1, 1)`; here Theorem 1 applies
+            if k < n - 1
+                res = SBandRecognitionResult(L_copy, S, nothing, k, false)
+            else
+                eigvecs = hcat(values(s_eigenbases)...)
+                s_diagonalization = Eigen(eigvals, eigvecs)
+                res = SBandRecognitionResult(L_copy, S, s_diagonalization, k, true)
+            end
 
-        return res
+            return res
+        end
     end
 
     s_eigenspaces = spec.s_eigenspaces
@@ -149,12 +148,48 @@ function _s_spectra_has_bandwidth_at_most_k(spec::SSpectra, k::Integer)
     end
 
     if k_basis_found
-        diagonalization = Eigen(eigvals, eigvecs)
-        has_band_k_diag = true
+        s_diagonalization = Eigen(eigvals, eigvecs)
+        s_band_at_most_k = true
     else
-        diagonalization = nothing
-        has_band_k_diag = false
+        s_diagonalization = nothing
+        s_band_at_most_k = false
     end
 
-    return SBandRecognitionResult(L, S, diagonalization, k, has_band_k_diag)
+    return SBandRecognitionResult(L_copy, S, s_diagonalization, k, s_band_at_most_k)
+end
+
+"""
+    is_s_diagonalizable(g::AbstractGraph, S) -> SDiagonalizabilityResult
+    is_s_diagonalizable(L::AbstractMatrix{<:Integer}, S) -> SDiagonalizabilityResult
+
+[TODO: Write here]
+"""
+function is_s_diagonalizable(g::AbstractGraph, S::Tuple{Vararg{Integer}})
+    _assert_graph_has_defined_s_bandwidth(g)
+
+    res = is_s_diagonalizable(laplacian_matrix(g), S)
+
+    return SBandRecognitionResult(
+        copy(g), res.S, res.s_diagonalization, nv(g), res.s_band_at_most_k
+    )
+end
+
+function is_s_diagonalizable(L::AbstractMatrix{<:Integer}, S::Tuple{Vararg{Integer}})
+    _assert_matrix_is_undirected_laplacian(L)
+
+    spec = laplacian_s_spectra(L, S)
+    L_copy = copy(spec.matrix)
+
+    if spec.s_diagonalizable
+        multiplicities = spec.multiplicities
+        eigvals = vcat(fill.(keys(multiplicities), values(multiplicities))...)
+        eigvecs = hcat(values(spec.s_eigenbases)...)
+        s_diagonalization = Eigen(eigvals, eigvecs)
+        has_s_diagonalization = true
+    else
+        s_diagonalization = nothing
+        has_s_diagonalization = false
+    end
+
+    return SDiagonalizabilityResult(L_copy, S, s_diagonalization, has_s_diagonalization)
 end
