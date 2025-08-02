@@ -12,6 +12,8 @@
 function laplacian_s_spectra(L::AbstractMatrix{<:Integer}, S::Tuple{Vararg{Integer}})
     _assert_matrix_is_undirected_laplacian(L)
 
+    S = _sort_tuple(S)
+
     if S == (-1, 0, 1)
         spec = _laplacian_01neg_spectra(L)
     elseif S == (-1, 1)
@@ -409,6 +411,7 @@ function _classified_laplacian_s_spectra(
     CL::ArbitraryGraphLaplacian, S::Tuple{Vararg{Integer}}
 )
     L = CL.matrix
+    S = _sort_tuple(S)
     res = check_spectrum_integrality(L)
 
     if !res.spectrum_integral
