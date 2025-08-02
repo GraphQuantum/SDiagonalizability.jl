@@ -21,6 +21,7 @@ end
 function s_bandwidth(L::AbstractMatrix{<:Integer}, S::Tuple{Vararg{Integer}})
     _assert_matrix_is_undirected_laplacian(L)
 
+    S = _sort_tuple(S)
     spec = laplacian_s_spectra(L, S)
 
     if !spec.s_diagonalizable
@@ -39,12 +40,12 @@ function s_bandwidth(L::AbstractMatrix{<:Integer}, S::Tuple{Vararg{Integer}})
 
     # Using results from Johnston and Plosker (2025, pp. 319–323)
     if classify_laplacian(L) isa CompleteGraphLaplacian
-        if S == (-1, 0, 1)
-            if 2 < n <= 20 && n % 4 != 0 # Proven subcase of Conjecture 2 applies
-                k = 2
-            end
-        elseif n % 4 == 2 # And, of course, `S = (-1, 1)`; here Theorem 1 applies
+        if S == (-1, 0, 1) && 2 < n <= 20 && n % 4 != 0 # Subcase of Conjecture 2
+            k = 2
+        elseif S == (-1, 1) && n % 4 == 2 # Theorem 1
             k = n - 1
+        else # Back to the general case
+            k = 1
         end
     else
         k = 1
@@ -91,6 +92,7 @@ function has_s_bandwidth_at_most_k(
 )
     _assert_matrix_is_undirected_laplacian(L)
 
+    S = _sort_tuple(S)
     spec = laplacian_s_spectra(L, S)
     L_copy = copy(spec.matrix)
 
@@ -107,11 +109,9 @@ function has_s_bandwidth_at_most_k(
 
     # Using results from Johnston and Plosker (2025, pp. 319–323)
     if classify_laplacian(L_copy) isa CompleteGraphLaplacian
-        if S == (-1, 0, 1)
-            if k == 1 && 2 < n <= 20 && n % 4 != 0 # Proven subcase of Conjecture 2 applies
-                return SBandRecognitionResult(L_copy, S, nothing, k, false)
-            end
-        elseif n % 4 == 2 # And, of course, `S = (-1, 1)`; here Theorem 1 applies
+        if S == (-1, 0, 1) && k == 1 && 2 < n <= 20 && n % 4 != 0 # Subcase of Conjecture 2
+            return SBandRecognitionResult(L_copy, S, nothing, k, false)
+        elseif S == (-1, 1) && n % 4 == 2 # Theorem 1
             if k < n - 1
                 res = SBandRecognitionResult(L_copy, S, nothing, k, false)
             else
@@ -177,6 +177,7 @@ end
 function is_s_diagonalizable(L::AbstractMatrix{<:Integer}, S::Tuple{Vararg{Integer}})
     _assert_matrix_is_undirected_laplacian(L)
 
+    S = _sort_tuple(S)
     spec = laplacian_s_spectra(L, S)
     L_copy = copy(spec.matrix)
 

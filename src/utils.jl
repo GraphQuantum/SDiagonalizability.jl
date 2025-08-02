@@ -5,6 +5,30 @@
 # distributed except according to those terms.
 
 """
+    _sort_tuple(S::T) where {T<:Tuple{Vararg{Integer}}} -> T
+
+Return a sorted version of the input tuple.
+
+# Arguments
+- `S::T<:Tuple{Vararg{Integer}}`: the tuple to sort.
+
+# Returns
+- `::T`: a sorted version of `S`.
+
+# Examples
+```jldoctest
+julia> S = (-1, 1, 0)
+(-1, 1, 0)
+
+julia> SDiagonalizability._sort_tuple(S)
+(-1, 0, 1)
+```
+"""
+function _sort_tuple(S::Tuple{Vararg{Integer}})
+    return Tuple(sort(collect(S)))
+end
+
+"""
     _extract_independent_cols(A) -> Matrix{Int}
 
 Return a (not necessarily unique) independent spanning subset of the columns of `A`.

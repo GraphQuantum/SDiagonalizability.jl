@@ -26,6 +26,8 @@ function pot_kernel_s_eigvecs(n::Integer, S::Tuple{Vararg{Integer}})
         throw(DomainError(n, "Laplacian order must be non-negative"))
     end
 
+    S = _sort_tuple(S)
+
     if S == (-1, 0, 1)
         gen = _pot_kernel_01neg_eigvecs(n)
     elseif S == (-1, 1)
@@ -58,6 +60,8 @@ function pot_nonkernel_s_eigvecs(n::Integer, S::Tuple{Vararg{Integer}})
     if n < 0
         throw(DomainError(n, "Laplacian order must be non-negative"))
     end
+
+    S = _sort_tuple(S)
 
     if S == (-1, 0, 1)
         gen = _pot_nonkernel_01neg_eigvecs(n)
