@@ -102,7 +102,7 @@ function _find_basis_with_property(
 
     return nothing
 end
-
+#lalalala
 function _find_basis_with_property(
     col_space::AbstractMatrix{<:Integer}, col_rank::Integer, prop::WeakOrthogonality
 )
