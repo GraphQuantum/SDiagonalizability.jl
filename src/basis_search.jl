@@ -198,6 +198,8 @@ mutable struct _QOBasisSearchNode
     degree::UInt16
 end
 
+#= TODO: Might we be able to replace the `deepcopy` calls with `copy` instead (maybe further
+copying some internal elements but not all, like the struct references)? =#
 function _find_basis_idxs_with_prop(
     curr_idxs::AbstractVector{Int},
     prop::QuasiOrthogonality,
