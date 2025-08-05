@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- Remove the unnecessary and redundant `_laplacian_1neg_spectra(spec::SSpectra)` method from `src/laplacian_s_spectra.jl` (this method literally did nothing whatsoever; I left it in from a previous design approach) (#38).
 - Changed `check_spectrum_integrality` to compute the real integer eigenvalues lazily (comparison was already lazy, but taking the real part and rounding was not) (#37).
 
 ## [0.1.0] - 2025-08-01
