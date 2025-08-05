@@ -121,10 +121,22 @@ useful screening step in this package's principal *S*-bandwidth minimization alg
 """
 function check_spectrum_integrality(A::AbstractMatrix{<:Integer})
     A_copy = Matrix{Int}(A) # Avoid shared mutability and cast to `Matrix{Int}`
+    n = size(A_copy, 1)
 
     eigvals_float = eigvals(A_copy)
-    eigvals_int = Int.(round.(real.(eigvals_float)))
-    spectrum_integral = isapprox(eigvals_float, eigvals_int)
+    eigvals_int = Vector{Int}(undef, n)
+    spectrum_integral = true
+    i = 0
+
+    while (spectrum_integral && i < n)
+        eigval_float = eigvals_float[i += 1]
+        eigval_int = round(Int, real(eigval_float))
+        eigvals_int[i] = eigval_int
+
+        if !isapprox(eigval_float, eigval_int; atol=1e-8, rtol=1e-5)
+            spectrum_integral = false
+        end
+    end
 
     # Sort first by ascending multiplicity then by ascending eigenvalue
     if spectrum_integral
