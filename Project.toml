@@ -21,7 +21,7 @@ PrecompileTools = "aea7be01-6a6a-4083-8856-8a6e6704d82a"
 
 [compat]
 Combinatorics = "1.0"
-DataStructures = "0.18.15, 0.19"
+DataStructures = "0.18.15 - 0.19"
 ElasticArrays = "1.2"
 Graphs = "1.10"
 LinearAlgebra = "1.10"
