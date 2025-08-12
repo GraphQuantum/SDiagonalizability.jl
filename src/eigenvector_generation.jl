@@ -109,6 +109,10 @@ noting that eigenvector generation is one of two major bottlenecks in the overal
 *S*-bandwidth minimization algorithm. Given how much potential there is for optimization in
 this piece of code, we thus prioritize performance over readability in this particular case,
 making every effort to include inline comments wherever clarification may be needed.
+
+# References
+
+[^Slo25]: N. J. Sloane, *a(n) = (3^n - 1)/2*. Entry A003462 (2025). Accessed: 2025-05-22. https://oeis.org/A003462.
 """
 function _pot_kernel_01neg_eigvecs(n::Integer)
     # Cache to avoid redundant recomputations of the `leading` vector
@@ -204,6 +208,10 @@ noting that eigenvector generation is one of two major bottlenecks in the overal
 *S*-bandwidth minimization algorithm. Given how much potential there is for optimization in
 this piece of code, we thus prioritize performance over readability in this particular case,
 making every effort to include inline comments wherever clarification may be needed.
+
+# References
+
+[^Deu25]: E. Deutsch. *Number of humps in all Motzkin paths of length n*. Entry A097861 (2025). Accessed: 2025-05-22. https://oeis.org/A097861.
 """
 function _pot_nonkernel_01neg_eigvecs(n::Integer)
     # Caches to avoid redundant recomputations of the `leading` and `entries` vectors
