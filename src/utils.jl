@@ -39,7 +39,7 @@ an SVD), while the pivots are used to extract a spanning set of independent colu
 
 The rank-revealing Businger–Golub QR algorithm is used for the pivoting strategy, appending
 the "most independent" column with respect to the current set of pivots at each step via
-Householder transformations [BG65; pp. 269--70](@cite).
+Householder transformations [BG65; pp. 269--70].
 
 # Arguments
 - `A::AbstractMatrix{T<:Integer}`: the matrix whose independent columns to extract.
@@ -87,13 +87,18 @@ tall-and-skinny and short-and-fat matrices (precisely the type we expect to enco
 dealing with all ``\\{-1, 0, 1\\}``-eigenvectors of a Laplacian matrix, which is the
 intended use case of this helper function in this package). Our replacement tolerance, on
 the other hand, is a widely accepted standard in numerical analysis which uses the maximum
-dimension instead [PTVF07; p. 795](@cite).
+dimension instead [PTVF07; p. 795].
 
 # References
 
-[^BG65]: P. Businger and G. H. Golub. *Linear Least Squares Solutions by Householder Transformations*. *Numerische Mathematik* **7**, 269–76 (1965). https://doi.org/10.1007/BF01436084.
+- [BG65](@cite): P. Businger and G. H. Golub. *Linear Least Squares Solutions by Householder
+    Transformations*. *Numerische Mathematik* **7**, 269–76 (1965).
+    https://doi.org/10.1007/BF01436084.
 
-[^PTVF07]: W. H. Press, S. A. Teukolsky, W. T. Vetterling and B. P. Flannery. *Numerical Recipes: The Art of Scientific Computing*. 3rd Edition (Cambridge University Press, Cambridge, UK, 2007). ISBN: 978-0-521-88068-8. https://dl.acm.org/doi/10.5555/1403886.
+- [PTVF07](@cite): W. H. Press, S. A. Teukolsky, W. T. Vetterling and B. P. Flannery.
+    *Numerical Recipes: The Art of Scientific Computing*. 3rd Edition (Cambridge University
+    Press, Cambridge, UK, 2007). ISBN: 978-0-521-88068-8.
+    https://dl.acm.org/doi/10.5555/1403886.
 """
 function _extract_independent_cols(A::AbstractMatrix{<:Integer})
     F = qr(A, ColumnNorm())
@@ -162,7 +167,7 @@ Matrix has nonzero row sums; cannot be an (undirected) Laplacian
 
 Both the in-degree and out-degree Laplacian matrices of this random tournament digraph have
 zero row sums but are not symmetric, so they fail the check. (These are the two standard
-ways of extending the concept of the Laplacian to directed graphs [VL20; p. 196](@cite).)
+ways of extending the concept of the Laplacian to directed graphs [VL20; p. 196].)
 ```jldoctest
 julia> using Graphs
 
@@ -213,7 +218,9 @@ publicly exposed on its own.
 
 # References
 
-[^VL20]: J. J. Veerman and R. Lyons. *A Primer on Laplacian Dynamics in Directed Graphs*. *Nonlinear Phenomena in Complex Systems* **23**, 196–206 (2020). https://doi.org/10.33581/1561-4085-2020-23-2-196-206.
+- [VL20](@cite): J. J. Veerman and R. Lyons. *A Primer on Laplacian Dynamics in Directed
+    Graphs*. *Nonlinear Phenomena in Complex Systems* **23**, 196–206 (2020).
+    https://doi.org/10.33581/1561-4085-2020-23-2-196-206.
 """
 function _assert_matrix_is_undirected_laplacian(L::AbstractMatrix{<:Integer})
     if !issymmetric(L)
@@ -276,21 +283,26 @@ type of `A` when `eltype(A)` is not an `AbstractFloat`.
 `LinearAlgebra.rank`'s default `rtol` of `min(m,n) * ϵ` for computing the rank of an
 ``m×n`` matrix may result in overestimating rank when ``|m - n| ≫ 0``, since condition
 number (which determines how numerically stable SVD and QRD are) grows with both dimensions
-[CD05; p. 603](@cite). Given that we often deal with short-and-fat matrices in this package
+[CD05; p. 603]. Given that we often deal with short-and-fat matrices in this package
 (particularly when processing all ``\\{-1, 0, 1\\}``-eigenvectors of a Laplacian matrix), we
 turn instead to the same relative tolerance used by NumPy's and MATLAB's rank
-functions—`max(m,n) * ϵ` [Num25, MAT25](@cite). (Indeed, this is a widely adopted standard
-across the field of numerical analysis [PTVF07; p. 795](@cite).)
+functions—`max(m,n) * ϵ` [Num25, MAT25]. (Indeed, this is a widely adopted standard across
+the field of numerical analysis [PTVF07; p. 795].)
 
 # References
 
-[^CD05]: Z. Chen and J. Dongarra. *Condition Numbers of Gaussian Random Matrices*. *SIAM Journal on Matrix Analysis and Applications* **27**, 603–20 (2005). https://doi.org/10.1137/040616413.
-
-[^MAT25]: MATLAB Developers, *rank*. MATLAB reference documentation – R2025a (2025). Accessed: 2025-05-29. https://www.mathworks.com/help/matlab/ref/rank.html.
-
-[^Num25]: NumPy Developers, *numpy.linalg.matrix_rank*. NumPy reference documentation – v2.2 (2025). Accessed: 2025-05-22. https://numpy.org/doc/stable/reference/generated/numpy.linalg.matrix_rank.html.
-
-[^PTVF07]: W. H. Press, S. A. Teukolsky, W. T. Vetterling and B. P. Flannery. *Numerical Recipes: The Art of Scientific Computing*. 3rd Edition (Cambridge University Press, Cambridge, UK, 2007). ISBN: 978-0-521-88068-8. https://dl.acm.org/doi/10.5555/1403886.
+- [CD05](@cite): Z. Chen and J. Dongarra. *Condition Numbers of Gaussian Random Matrices*.
+    *SIAM Journal on Matrix Analysis and Applications* **27**, 603–20 (2005).
+    https://doi.org/10.1137/040616413.
+- [MAT25](@cite): MATLAB Developers, *rank*. MATLAB reference documentation – R2025a (2025).
+    Accessed: 2025-05-29. https://www.mathworks.com/help/matlab/ref/rank.html.
+- [Num25](@cite): NumPy Developers, *numpy.linalg.matrix_rank*. NumPy reference
+    documentation – v2.2 (2025). Accessed: 2025-05-22.
+    https://numpy.org/doc/stable/reference/generated/numpy.linalg.matrix_rank.html.
+- [PTVF07](@cite): W. H. Press, S. A. Teukolsky, W. T. Vetterling and B. P. Flannery.
+    *Numerical Recipes: The Art of Scientific Computing*. 3rd Edition (Cambridge University
+    Press, Cambridge, UK, 2007). ISBN: 978-0-521-88068-8.
+    https://dl.acm.org/doi/10.5555/1403886.
 """
 function _rank_rtol(A::AbstractMatrix{T}) where {T}
     return maximum(size(A)) * eps(LinearAlgebra.eigtype(T))

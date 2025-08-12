@@ -8,11 +8,13 @@
     s_bandwidth(g::AbstractGraph, S) -> SBandMinimizationResult
     s_bandwidth(L::AbstractMatrix{<:Integer}, S) -> SBandMinimizationResult
 
-[TODO: Write here. Also, comment inline and cite [JP25](@cite).]
+[TODO: Write here. Also, comment inline and cite [JP25].]
 
 # References
 
-[^JP25]: N. Johnston and S. Plosker. *Laplacian {−1,0,1}- and {−1,1}-diagonalizable graphs*. *Linear Algebra and its Applications* **704**, 309–39 (2025). https://doi.org/10.1016/j.laa.2024.10.016.
+- [JP25](@cite): N. Johnston and S. Plosker. *Laplacian {−1,0,1}- and {−1,1}-diagonalizable
+    graphs*. *Linear Algebra and its Applications* **704**, 309–39 (2025).
+    https://doi.org/10.1016/j.laa.2024.10.016.
 """
 function s_bandwidth(g::AbstractGraph, S::Tuple{Vararg{Integer}})
     _assert_graph_has_defined_s_bandwidth(g)
@@ -79,11 +81,13 @@ end
     has_s_bandwidth_at_most_k(g::AbstractGraph, S, k) -> SBandRecognitionResult
     has_s_bandwidth_at_most_k(L::AbstractMatrix{<:Integer}, S, k) -> SBandRecognitionResult
 
-[TODO: Write here. Also, comment inline and cite [JP25](@cite).]
+[TODO: Write here. Also, comment inline and cite [JP25].]
 
 # References
 
-[^JP25]: N. Johnston and S. Plosker. *Laplacian {−1,0,1}- and {−1,1}-diagonalizable graphs*. *Linear Algebra and its Applications* **704**, 309–39 (2025). https://doi.org/10.1016/j.laa.2024.10.016.
+- [JP25](@cite): N. Johnston and S. Plosker. *Laplacian {−1,0,1}- and {−1,1}-diagonalizable
+    graphs*. *Linear Algebra and its Applications* **704**, 309–39 (2025).
+    https://doi.org/10.1016/j.laa.2024.10.016.
 """
 function has_s_bandwidth_at_most_k(g::AbstractGraph, S::Tuple{Vararg{Integer}}, k::Integer)
     _assert_graph_has_defined_s_bandwidth(g)
