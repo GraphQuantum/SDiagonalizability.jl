@@ -102,7 +102,7 @@ julia> hcat(SDiagonalizability._pot_kernel_01neg_eigvecs(3)...)
 
 # Notes
 The number of potential kernel eigenvectors (unique up to span) for an order ``n`` Laplacian
-matrix is given by ``(3ⁿ - 1) / 2``. See also the relevant OEIS sequence [Slo25](@cite).
+matrix is given by ``(3ⁿ - 1) / 2``. See also the relevant OEIS sequence [Slo25].
 
 Regrettably, the implementation here is rather clunky and unidiomatic, but it is worth
 noting that eigenvector generation is one of two major bottlenecks in the overall
@@ -112,7 +112,8 @@ making every effort to include inline comments wherever clarification may be nee
 
 # References
 
-[^Slo25]: N. J. Sloane, *a(n) = (3^n - 1)/2*. Entry A003462 (2025). Accessed: 2025-05-22. https://oeis.org/A003462.
+- [Slo25](@cite): N. J. Sloane, *a(n) = (3^n - 1)/2*. Entry A003462 (2025). Accessed:
+    2025-05-22. https://oeis.org/A003462.
 """
 function _pot_kernel_01neg_eigvecs(n::Integer)
     # Cache to avoid redundant recomputations of the `leading` vector
@@ -201,7 +202,7 @@ julia> hcat(SDiagonalizability._pot_nonkernel_01neg_eigvecs(4)...)
 # Notes
 The number of potential non-kernel eigenvectors (unique up to span) for an order ``n``
 Laplacian matrix is, by non-trivial combinatorial arguments, equal to the number of humps in
-all Motzkin paths of length ``n``. See also the relevant OEIS sequence [Deu25](@cite).
+all Motzkin paths of length ``n``. See also the relevant OEIS sequence [Deu25].
 
 Regrettably, the implementation here is rather clunky and unidiomatic, but it is worth
 noting that eigenvector generation is one of two major bottlenecks in the overall
@@ -211,7 +212,8 @@ making every effort to include inline comments wherever clarification may be nee
 
 # References
 
-[^Deu25]: E. Deutsch. *Number of humps in all Motzkin paths of length n*. Entry A097861 (2025). Accessed: 2025-05-22. https://oeis.org/A097861.
+- [Deu25](@cite): E. Deutsch. *Number of humps in all Motzkin paths of length n*. Entry
+    A097861 (2025). Accessed: 2025-05-22. https://oeis.org/A097861.
 """
 function _pot_nonkernel_01neg_eigvecs(n::Integer)
     # Caches to avoid redundant recomputations of the `leading` and `entries` vectors

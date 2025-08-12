@@ -14,9 +14,9 @@ Recall that an (ordered) collection of vectors ``v₁, v₂, ..., vₙ`` is said
 (i.e., if every pair of vectors at least ``k`` indices apart is orthogonal). This is
 equivalent to the vectors' Gram matrix having bandwidth at most `k`, where we define the
 bandwidth of a matrix ``A`` to be the minimum integer ``k ∈ \\{1, 2, …, n\\}`` such that
-``Aᵢⱼ = 0`` whenever ``|i - j| ≥ k`` [JP25; p. 313](@cite). (Note that many texts instead
-define matrix bandwidth using zero-based indexing—that is, with the condition
-``|i - j| > k`` [Maf14; p. 186](@cite).)
+``Aᵢⱼ = 0`` whenever ``|i - j| ≥ k`` [JP25; p. 313]. (Note that many texts instead define
+matrix bandwidth using zero-based indexing—that is, with the condition ``|i - j| > k``
+[Maf14; p. 186].)
 
 This type is used as a template for concretely defined properties corresponding to specific
 values of ``k``. In the context of the overarching *S*-bandwidth algorithm, we perform a
@@ -29,9 +29,12 @@ Concrete subtypes of `KOrthogonality` **must** implement the following fields:
 
 # References
 
-[^JP25]: N. Johnston and S. Plosker. *Laplacian {−1,0,1}- and {−1,1}-diagonalizable graphs*. *Linear Algebra and its Applications* **704**, 309–39 (2025). https://doi.org/10.1016/j.laa.2024.10.016.
-
-[^Maf14]: L. O. Mafteiu-Scai. *The Bandwidths of a Matrix. A Survey of Algorithms*. *Annals of West University of Timisoara - Mathematics and Computer Science* **52**, 183–223 (2014). https://doi.org/10.2478/awutm-2014-0019.
+- [JP25](@cite): N. Johnston and S. Plosker. *Laplacian {−1,0,1}- and {−1,1}-diagonalizable
+    graphs*. *Linear Algebra and its Applications* **704**, 309–39 (2025).
+    https://doi.org/10.1016/j.laa.2024.10.016.
+- [Maf14](@cite): L. O. Mafteiu-Scai. *The Bandwidths of a Matrix. A Survey of Algorithms*.
+    *Annals of West University of Timisoara - Mathematics and Computer Science* **52**,
+    183–223 (2014). https://doi.org/10.2478/awutm-2014-0019.
 """
 abstract type KOrthogonality end
 
@@ -67,7 +70,7 @@ The property of quasi-orthogonality for a collection of vectors.
 Recall that an (ordered) collection of vectors ``v₁, v₂, ..., vₙ`` is said to be
 *quasi-orthogonal* if we have the inner product ``⟨vᵢ, vⱼ⟩ = 0`` whenever ``|i - j| ≥ 2``
 (i.e., if every pair of vectors at least ``2`` indices apart is orthogonal). This is
-equivalent to the vectors' Gram matrix being tridiagonal [JP25; p. 313](@cite).
+equivalent to the vectors' Gram matrix being tridiagonal [JP25; p. 313].
 
 # Fields
 - `k::Int`: the ``k``-orthogonality parameter; always necessarily ``2``.
@@ -80,7 +83,9 @@ equivalent to the vectors' Gram matrix being tridiagonal [JP25; p. 313](@cite).
 
 # References
 
-[^JP25]: N. Johnston and S. Plosker. *Laplacian {−1,0,1}- and {−1,1}-diagonalizable graphs*. *Linear Algebra and its Applications* **704**, 309–39 (2025). https://doi.org/10.1016/j.laa.2024.10.016.
+- [JP25](@cite): N. Johnston and S. Plosker. *Laplacian {−1,0,1}- and {−1,1}-diagonalizable
+    graphs*. *Linear Algebra and its Applications* **704**, 309–39 (2025).
+    https://doi.org/10.1016/j.laa.2024.10.016.
 """
 struct QuasiOrthogonality <: KOrthogonality
     k::Int
