@@ -39,7 +39,7 @@ an SVD), while the pivots are used to extract a spanning set of independent colu
 
 The rank-revealing Businger–Golub QR algorithm is used for the pivoting strategy, appending
 the "most independent" column with respect to the current set of pivots at each step via
-Householder transformations [BG65; pp. 269--70].
+Householder transformations [BG65, pp. 269--70].
 
 # Arguments
 - `A::AbstractMatrix{T<:Integer}`: the matrix whose independent columns to extract.
@@ -87,7 +87,7 @@ tall-and-skinny and short-and-fat matrices (precisely the type we expect to enco
 dealing with all ``\\{-1, 0, 1\\}``-eigenvectors of a Laplacian matrix, which is the
 intended use case of this helper function in this package). Our replacement tolerance, on
 the other hand, is a widely accepted standard in numerical analysis which uses the maximum
-dimension instead [PTVF07; p. 795].
+dimension instead [PTVF07, p. 795].
 
 # References
 
@@ -167,7 +167,7 @@ Matrix has nonzero row sums; cannot be an (undirected) Laplacian
 
 Both the in-degree and out-degree Laplacian matrices of this random tournament digraph have
 zero row sums but are not symmetric, so they fail the check. (These are the two standard
-ways of extending the concept of the Laplacian to directed graphs [VL20; p. 196].)
+ways of extending the concept of the Laplacian to directed graphs [VL20, p. 196].)
 ```jldoctest
 julia> using Graphs
 
@@ -283,11 +283,11 @@ type of `A` when `eltype(A)` is not an `AbstractFloat`.
 `LinearAlgebra.rank`'s default `rtol` of `min(m,n) * ϵ` for computing the rank of an
 ``m×n`` matrix may result in overestimating rank when ``|m - n| ≫ 0``, since condition
 number (which determines how numerically stable SVD and QRD are) grows with both dimensions
-[CD05; p. 603]. Given that we often deal with short-and-fat matrices in this package
+[CD05, p. 603]. Given that we often deal with short-and-fat matrices in this package
 (particularly when processing all ``\\{-1, 0, 1\\}``-eigenvectors of a Laplacian matrix), we
-turn instead to the same relative tolerance used by NumPy's and MATLAB's rank
-functions—`max(m,n) * ϵ` [Num25, MAT25]. (Indeed, this is a widely adopted standard across
-the field of numerical analysis [PTVF07; p. 795].)
+turn instead to the same relative tolerance used by MATLAB's and NumPy's rank
+functions—`max(m,n) * ϵ` [MAT25; Num25]. (Indeed, this is a widely adopted standard across
+the field of numerical analysis [PTVF07, p. 795].)
 
 # References
 

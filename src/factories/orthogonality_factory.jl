@@ -14,9 +14,9 @@ Recall that an (ordered) collection of vectors ``v₁, v₂, ..., vₙ`` is said
 (i.e., if every pair of vectors at least ``k`` indices apart is orthogonal). This is
 equivalent to the vectors' Gram matrix having bandwidth at most `k`, where we define the
 bandwidth of a matrix ``A`` to be the minimum integer ``k ∈ \\{1, 2, …, n\\}`` such that
-``Aᵢⱼ = 0`` whenever ``|i - j| ≥ k`` [JP25; p. 313]. (Note that many texts instead define
+``Aᵢⱼ = 0`` whenever ``|i - j| ≥ k`` [JP25, p. 313]. (Note that many texts instead define
 matrix bandwidth using zero-based indexing—that is, with the condition ``|i - j| > k``
-[Maf14; p. 186].)
+[Maf14, p. 186].)
 
 This type is used as a template for concretely defined properties corresponding to specific
 values of ``k``. In the context of the overarching *S*-bandwidth algorithm, we perform a
@@ -70,7 +70,7 @@ The property of quasi-orthogonality for a collection of vectors.
 Recall that an (ordered) collection of vectors ``v₁, v₂, ..., vₙ`` is said to be
 *quasi-orthogonal* if we have the inner product ``⟨vᵢ, vⱼ⟩ = 0`` whenever ``|i - j| ≥ 2``
 (i.e., if every pair of vectors at least ``2`` indices apart is orthogonal). This is
-equivalent to the vectors' Gram matrix being tridiagonal [JP25; p. 313].
+equivalent to the vectors' Gram matrix being tridiagonal [JP25, p. 313].
 
 # Fields
 - `k::Int`: the ``k``-orthogonality parameter; always necessarily ``2``.
