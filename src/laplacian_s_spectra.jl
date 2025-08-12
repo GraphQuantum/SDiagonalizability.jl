@@ -46,7 +46,7 @@ constructed as well.
 
 # Examples
 Confirm that the rotation matrix by ``π/2`` radians counterclockwise is not spectrum
-integral (rather, it has eigenvalues ``±i`` [Joy15; p. 1]):
+integral (rather, it has eigenvalues ``±i`` [Joy15, p. 1]):
 ```jldoctest
 julia> R = Int8.([0 -1; 1 0])
 2×2 Matrix{Int8}:
@@ -68,7 +68,7 @@ true
 ```
 
 Confirm that the adjacency matrix of the Petersen graph is spectrum integral, with correct
-eigenvalues and multiplicities of ``\\{3: 1, -2: 4, 1: 5\\}`` [Fox09; p. 2]:
+eigenvalues and multiplicities of ``\\{3: 1, -2: 4, 1: 5\\}`` [Fox09, p. 2]:
 ```jldoctest
 julia> using Graphs
 
@@ -116,7 +116,7 @@ OrderedCollections.OrderedDict{Int64, Int64} with 3 entries:
 # Notes
 If an undirected graph with integer edge weights is ``\\{-1, 0, 1\\}``-diagonalizable (or,
 more restrictively, ``\\{-1, 1\\}``-diagonalizable), then its Laplacian matrix has integer
-eigenvalues [JP25; p. 312]. Hence, validating Laplacian integrality serves as a useful
+eigenvalues [JP25, p. 312]. Hence, validating Laplacian integrality serves as a useful
 screening step in this package's principal *S*-bandwidth minimization algorithm.
 
 # References

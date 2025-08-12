@@ -173,7 +173,7 @@ eigenvalues are indeed all integers. (Otherwise, the associated field is simply 
 # Notes
 If an undirected graph with integer edge weights is ``\\{-1, 0, 1\\}``-diagonalizable (or,
 more restrictively, ``\\{-1, 1\\}``-diagonalizable), then its Laplacian matrix has integer
-eigenvalues [JP25; p. 312]. Hence, validating Laplacian integrality serves as a useful
+eigenvalues [JP25, p. 312]. Hence, validating Laplacian integrality serves as a useful
 screening step in this package's principal *S*-bandwidth minimization algorithm.
 
 # References
