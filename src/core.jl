@@ -13,7 +13,7 @@
 # References
 
 - [JP25](@cite): N. Johnston and S. Plosker. *Laplacian {−1,0,1}- and {−1,1}-diagonalizable
-    graphs*. *Linear Algebra and its Applications* **704**, 309–39 (2025).
+    graphs*. Linear Algebra and its Applications **704**, 309–39 (2025).
     https://doi.org/10.1016/j.laa.2024.10.016.
 """
 function s_bandwidth(g::AbstractGraph, S::Tuple{Vararg{Integer}})
@@ -86,7 +86,7 @@ end
 # References
 
 - [JP25](@cite): N. Johnston and S. Plosker. *Laplacian {−1,0,1}- and {−1,1}-diagonalizable
-    graphs*. *Linear Algebra and its Applications* **704**, 309–39 (2025).
+    graphs*. Linear Algebra and its Applications **704**, 309–39 (2025).
     https://doi.org/10.1016/j.laa.2024.10.016.
 """
 function has_s_bandwidth_at_most_k(g::AbstractGraph, S::Tuple{Vararg{Integer}}, k::Integer)

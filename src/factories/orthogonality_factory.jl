@@ -30,10 +30,10 @@ Concrete subtypes of `KOrthogonality` **must** implement the following fields:
 # References
 
 - [JP25](@cite): N. Johnston and S. Plosker. *Laplacian {−1,0,1}- and {−1,1}-diagonalizable
-    graphs*. *Linear Algebra and its Applications* **704**, 309–39 (2025).
+    graphs*. Linear Algebra and its Applications **704**, 309–39 (2025).
     https://doi.org/10.1016/j.laa.2024.10.016.
 - [Maf14](@cite): L. O. Mafteiu-Scai. *The Bandwidths of a Matrix. A Survey of Algorithms*.
-    *Annals of West University of Timisoara - Mathematics and Computer Science* **52**,
+    Annals of West University of Timisoara - Mathematics and Computer Science **52**,
     183–223 (2014). https://doi.org/10.2478/awutm-2014-0019.
 """
 abstract type KOrthogonality end
@@ -84,7 +84,7 @@ equivalent to the vectors' Gram matrix being tridiagonal [JP25, p. 313].
 # References
 
 - [JP25](@cite): N. Johnston and S. Plosker. *Laplacian {−1,0,1}- and {−1,1}-diagonalizable
-    graphs*. *Linear Algebra and its Applications* **704**, 309–39 (2025).
+    graphs*. Linear Algebra and its Applications **704**, 309–39 (2025).
     https://doi.org/10.1016/j.laa.2024.10.016.
 """
 struct QuasiOrthogonality <: KOrthogonality

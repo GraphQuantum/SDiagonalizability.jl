@@ -127,7 +127,7 @@ screening step in this package's principal *S*-bandwidth minimization algorithm.
 - [Joy15](@cite): D. Joyce. *Rotations and complex eigenvalues*. Lecture notes, Math 130:
     Linear Algebra (2015). http://aleph0.clarku.edu/~ma130/complexeigen.pdf.
 - [JP25](@cite): N. Johnston and S. Plosker. *Laplacian {−1,0,1}- and {−1,1}-diagonalizable
-    graphs*. *Linear Algebra and its Applications* **704**, 309–39 (2025).
+    graphs*. Linear Algebra and its Applications **704**, 309–39 (2025).
     https://doi.org/10.1016/j.laa.2024.10.016.
 """
 function check_spectrum_integrality(A::AbstractMatrix{<:Integer})
