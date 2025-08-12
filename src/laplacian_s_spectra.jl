@@ -118,6 +118,14 @@ If an undirected graph with integer edge weights is ``\\{-1, 0, 1\\}``-diagonali
 more restrictively, ``\\{-1, 1\\}``-diagonalizable), then its Laplacian matrix has integer
 eigenvalues [JP25; p. 312](@cite). Hence, validating Laplacian integrality serves as a
 useful screening step in this package's principal *S*-bandwidth minimization algorithm.
+
+# References
+
+[^Fox09]: J. Fox. *Lecture 19: The Petersen graph and Moore graphs*. Lecture notes, MAT 307: Combinatorics (2009). Accessed: 2025-07-25. https://math.mit.edu/~fox/MAT307.html.
+
+[^Joy15]: D. Joyce. *Rotations and complex eigenvalues*. Lecture notes, Math 130: Linear Algebra (2015). http://aleph0.clarku.edu/~ma130/complexeigen.pdf.
+
+[^JP25]: N. Johnston and S. Plosker. *Laplacian {−1,0,1}- and {−1,1}-diagonalizable graphs*. *Linear Algebra and its Applications* **704**, 309–39 (2025). https://doi.org/10.1016/j.laa.2024.10.016.
 """
 function check_spectrum_integrality(A::AbstractMatrix{<:Integer})
     A_copy = Matrix{Int}(A) # Avoid shared mutability and cast to `Matrix{Int}`

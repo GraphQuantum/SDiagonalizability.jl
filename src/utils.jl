@@ -75,9 +75,9 @@ julia> SDiagonalizability._extract_independent_cols(A)
 Since we already need a pivoted QR decomposition to identify independent columns of `A` (or,
 rather, to order the columns in such a way that the first `rank(A)` ones are guaranteed to
 be independent), it makes sense to use data from the resulting factorization object to
-compute the rank of `A` rather than compute a separate SVD. We thus count the nonzero scaling
-coefficients—that is, the diagonal entries of the `R` matrix in `A = QR`—to determine the
-rank, similarly to how we count the nonzero singular values in an SVD.
+compute the rank of `A` rather than compute a separate SVD. We thus count the nonzero
+scaling coefficients—that is, the diagonal entries of the `R` matrix in `A = QR`—to
+determine the rank, similarly to how we count the nonzero singular values in an SVD.
 
 It is worth noting that we manually specify a higher relative tolerance for this rank
 computation. Further discussion can be found in the [`_rank_rtol`](@ref) documentation, but
@@ -88,6 +88,12 @@ dealing with all ``\\{-1, 0, 1\\}``-eigenvectors of a Laplacian matrix, which is
 intended use case of this helper function in this package). Our replacement tolerance, on
 the other hand, is a widely accepted standard in numerical analysis which uses the maximum
 dimension instead [PTVF07; p. 795](@cite).
+
+# References
+
+[^BG65]: P. Businger and G. H. Golub. *Linear Least Squares Solutions by Householder Transformations*. *Numerische Mathematik* **7**, 269–76 (1965). https://doi.org/10.1007/BF01436084.
+
+[^PTVF07]: W. H. Press, S. A. Teukolsky, W. T. Vetterling and B. P. Flannery. *Numerical Recipes: The Art of Scientific Computing*. 3rd Edition (Cambridge University Press, Cambridge, UK, 2007). ISBN: 978-0-521-88068-8. https://dl.acm.org/doi/10.5555/1403886.
 """
 function _extract_independent_cols(A::AbstractMatrix{<:Integer})
     F = qr(A, ColumnNorm())
@@ -204,6 +210,10 @@ At first blush, it may seem as though the choice of `DomainError` over something
 this is informed by the simple *ad hoc* use of this function to validate inputs for other
 functions requiring Laplacian matrices. Certainly, this function is never meant to be
 publicly exposed on its own.
+
+# References
+
+[^VL20]: J. J. Veerman and R. Lyons. *A Primer on Laplacian Dynamics in Directed Graphs*. *Nonlinear Phenomena in Complex Systems* **23**, 196–206 (2020). https://doi.org/10.33581/1561-4085-2020-23-2-196-206.
 """
 function _assert_matrix_is_undirected_laplacian(L::AbstractMatrix{<:Integer})
     if !issymmetric(L)
@@ -271,6 +281,16 @@ number (which determines how numerically stable SVD and QRD are) grows with both
 turn instead to the same relative tolerance used by NumPy's and MATLAB's rank
 functions—`max(m,n) * ϵ` [Num25, MAT25](@cite). (Indeed, this is a widely adopted standard
 across the field of numerical analysis [PTVF07; p. 795](@cite).)
+
+# References
+
+[^CD05]: Z. Chen and J. Dongarra. *Condition Numbers of Gaussian Random Matrices*. *SIAM Journal on Matrix Analysis and Applications* **27**, 603–20 (2005). https://doi.org/10.1137/040616413.
+
+[^MAT25]: MATLAB Developers, *rank*. MATLAB reference documentation – R2025a (2025). Accessed: 2025-05-29. https://www.mathworks.com/help/matlab/ref/rank.html.
+
+[^Num25]: NumPy Developers, *numpy.linalg.matrix_rank*. NumPy reference documentation – v2.2 (2025). Accessed: 2025-05-22. https://numpy.org/doc/stable/reference/generated/numpy.linalg.matrix_rank.html.
+
+[^PTVF07]: W. H. Press, S. A. Teukolsky, W. T. Vetterling and B. P. Flannery. *Numerical Recipes: The Art of Scientific Computing*. 3rd Edition (Cambridge University Press, Cambridge, UK, 2007). ISBN: 978-0-521-88068-8. https://dl.acm.org/doi/10.5555/1403886.
 """
 function _rank_rtol(A::AbstractMatrix{T}) where {T}
     return maximum(size(A)) * eps(LinearAlgebra.eigtype(T))

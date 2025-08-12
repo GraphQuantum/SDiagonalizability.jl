@@ -175,6 +175,10 @@ If an undirected graph with integer edge weights is ``\\{-1, 0, 1\\}``-diagonali
 more restrictively, ``\\{-1, 1\\}``-diagonalizable), then its Laplacian matrix has integer
 eigenvalues [JP25; p. 312](@cite). Hence, validating Laplacian integrality serves as a
 useful screening step in this package's principal *S*-bandwidth minimization algorithm.
+
+# References
+
+[^JP25]: N. Johnston and S. Plosker. *Laplacian {−1,0,1}- and {−1,1}-diagonalizable graphs*. *Linear Algebra and its Applications* **704**, 309–39 (2025). https://doi.org/10.1016/j.laa.2024.10.016.
 """
 struct SpectrumIntegralResult{T<:Union{Nothing,OrderedDict{Int,Int}}}
     matrix::AbstractMatrix{<:Integer}
