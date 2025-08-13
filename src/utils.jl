@@ -257,7 +257,45 @@ graphs without self-loops, so this function checks that `g` satisfies these cond
 - `DomainError`: if `g` is directed or has self-loops.
 
 # Examples
-[TODO: Write here]
+The Petersen graph passes the check:
+```jldoctest
+julia> using Graphs
+
+julia> g = PetersenGraph()
+{10, 15} undirected simple Int64 graph
+
+julia> isnothing(SDiagonalizability._assert_graph_has_defined_s_bandwidth(g))
+true
+```
+
+This random tournament digraph fails the check:
+```jldoctest
+julia> using Graphs
+
+julia> g = random_tournament_digraph(3; seed=13)
+{3, 3} directed simple Int64 graph
+
+julia> SDiagonalizability._assert_graph_has_defined_s_bandwidth(g)
+ERROR: DomainError with SimpleDiGraph{Int64}(3, [[2, 3], [3], Int64[]], [Int64[], [1], [1, 2]]):
+S-bandwidth is not defined for directed graphs
+[...]
+```
+
+This multigraph with self-loops fails the check:
+```jldoctest
+julia> using Graphs
+
+julia> g = SimpleGraph(3)
+{3, 0} undirected simple Int64 graph
+
+julia> add_edge!(g, 1, 1)
+true
+
+julia> SDiagonalizability._assert_graph_has_defined_s_bandwidth(g)
+ERROR: DomainError with SimpleGraph{Int64}(1, [[1], Int64[], Int64[]]):
+S-bandwidth is not defined for multigraphs; got a graph with self-loops
+[...]
+```
 
 # Notes
 At first blush, it may seem as though the choice of `DomainError` over something like
@@ -279,8 +317,7 @@ function _assert_graph_has_defined_s_bandwidth(g::AbstractGraph)
     if has_self_loops(g)
         throw(
             DomainError(
-                graph,
-                "S-bandwidth is not defined for multigraphs; got a graph with self-loops",
+                g, "S-bandwidth is not defined for multigraphs; got a graph with self-loops"
             ),
         )
     end

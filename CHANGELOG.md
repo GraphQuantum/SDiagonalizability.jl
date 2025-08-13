@@ -12,8 +12,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- Finished the docstring for `_assert_graph_has_defined_s_bandwidth` function (#55).
 - Made the return type of the `_pot_kernel_1neg_eigvecs` and `_pot_nonkernel_1neg_eigvecs` functions consistent regardless of the `n` parameter passed (#51).
 - Finished the docstrings for `src/eigenvector_generation.jl`, fixing some minor inaccuracies along the way (#51).
+
+### Fixed
+
+- Fixed an `UndefVarError` in the `_assert_graph_has_defined_s_bandwidth` function (#55).
 
 ## [0.1.1] - 2025-08-05
 
