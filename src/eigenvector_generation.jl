@@ -62,7 +62,6 @@ ERROR: ArgumentError: Unsupported entry set S: (1, 2)
 ```
 
 # References
-
 - [JP25](@cite): N. Johnston and S. Plosker. *Laplacian {−1,0,1}- and {−1,1}-diagonalizable
     graphs*. Linear Algebra and its Applications **704**, 309–39 (2025).
     https://doi.org/10.1016/j.laa.2024.10.016.
@@ -144,7 +143,6 @@ ERROR: ArgumentError: Unsupported entry set S: (0, 3)
 ```
 
 # References
-
 - [JP25](@cite): N. Johnston and S. Plosker. *Laplacian {−1,0,1}- and {−1,1}-diagonalizable
     graphs*. Linear Algebra and its Applications **704**, 309–39 (2025).
     https://doi.org/10.1016/j.laa.2024.10.016.
@@ -205,7 +203,6 @@ this piece of code, we thus prioritize performance over readability in this part
 making every effort to include inline comments wherever clarification may be needed.
 
 # References
-
 - [Slo10](@cite): N. J. Sloane, *a(n) = (3^n - 1)/2*. Entry A003462 (2010). Accessed:
     2025-05-22. https://oeis.org/A003462.
 """
@@ -275,7 +272,6 @@ The number of potential kernel ``\\{-1, 1\\}``-eigenvectors (unique up to span) 
 the relevant OEIS sequence [Slo14] for the ``n > 0`` case.
 
 # References
-
 - [Slo14](@cite): N. J. Sloane, *Powers of 2: a(n) = 2^n*. Entry A000079 (2014). Accessed:
     2025-08-13. https://oeis.org/A000079.
 """
@@ -338,7 +334,6 @@ this piece of code, we thus prioritize performance over readability in this part
 making every effort to include inline comments wherever clarification may be needed.
 
 # References
-
 - [Deu21](@cite): E. Deutsch. *Number of humps in all Motzkin paths of length n*. Entry
     A097861 (2021). Accessed: 2025-05-22. https://oeis.org/A097861.
 """
@@ -420,7 +415,6 @@ arguments, the number of Motzkin ``(n + 1)``-paths with exactly one flat step fo
 See also the relevant OEIS sequence [Sut14] for the ``n > 1`` case.
 
 # References
-
 - [Sut14](@cite): A. V. Sutherland. *The number of Motzkin n-paths with exactly one flat
     step*. Entry A138364 (2014). Accessed: 2025-08-13.
 """
