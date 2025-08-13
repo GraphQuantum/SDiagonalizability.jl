@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.1.2] - 2025-08-13
+
 ### Added
 
 - Added **References** sections to docstrings for immediate readability in the REPL and in the source code without needing to open the Documenter-generated website (#47, #48).
@@ -37,6 +39,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Released the initial stable version of the package.
 
-[unreleased]: https://github.com/GraphQuantum/SDiagonalizability.jl/compare/v0.1.1...HEAD
+[unreleased]: https://github.com/GraphQuantum/SDiagonalizability.jl/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/Luis-Varona/MatrixBandwidth.jl/releases/tag/v0.1.2
 [0.1.1]: https://github.com/Luis-Varona/MatrixBandwidth.jl/releases/tag/v0.1.1
 [0.1.0]: https://github.com/Luis-Varona/MatrixBandwidth.jl/releases/tag/v0.1.0
