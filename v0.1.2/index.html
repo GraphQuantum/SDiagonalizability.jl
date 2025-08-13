@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Home · SDiagonalizability.jl</title><meta name="title" content="Home · SDiagonalizability.jl"/><meta property="og:title" content="Home · SDiagonalizability.jl"/><meta property="twitter:title" content="Home · SDiagonalizability.jl"/><meta name="description" content="Documentation for SDiagonalizability.jl."/><meta property="og:description" content="Documentation for SDiagonalizability.jl."/><meta property="twitter:description" content="Documentation for SDiagonalizability.jl."/><meta property="og:url" content="https://GraphQuantum.github.io/SDiagonalizability.jl/"/><meta property="twitter:url" content="https://GraphQuantum.github.io/SDiagonalizability.jl/"/><link rel="canonical" href="https://GraphQuantum.github.io/SDiagonalizability.jl/"/><script data-outdated-warner src="assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="assets/documenter.js"></script><script src="search_index.js"></script><script src="siteinfo.js"></script><script src="../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="assets/themeswap.js"></script><link href="assets/styles.css" rel="stylesheet" type="text/css"/></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href><img src="assets/logo.jpg" alt="SDiagonalizability.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href>SDiagonalizability.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li class="is-active"><a class="tocitem" href>Home</a><ul class="internal"><li><a class="tocitem" href="#Overview"><span>Overview</span></a></li><li><a class="tocitem" href="#Installation"><span>Installation</span></a></li><li><a class="tocitem" href="#Basic-use"><span>Basic use</span></a></li><li><a class="tocitem" href="#Documentation"><span>Documentation</span></a></li><li><a class="tocitem" href="#Citing"><span>Citing</span></a></li><li><a class="tocitem" href="#Project-status"><span>Project status</span></a></li><li><a class="tocitem" href="#Credits"><span>Credits</span></a></li><li><a class="tocitem" href="#Index"><span>Index</span></a></li></ul></li><li><a class="tocitem" href="public_api/">Public API</a></li><li><a class="tocitem" href="private_api/">Private API</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Home</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Home</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/GraphQuantum/SDiagonalizability.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/GraphQuantum/SDiagonalizability.jl/blob/main/docs/src/index.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><figure style="text-align: left; margin-left: 0;">
+  <img src="https://github.com/GraphQuantum/SDiagonalizability.jl/raw/main/docs/src/assets/logo.jpg" alt="GraphQuantum logo by Madiha Waqar">
+  <figcaption>
+    GraphQuantum<em style="font-style: normal;"> logo by <a href="https://github.com/madihaahmed1">Madiha Waqar</em></a>
+  </figcaption>
+</figure>
+
+<table>
+  <tr>
+    <td>Metadata</td>
+    <td>
+      <img src="https://img.shields.io/badge/version-v0.1.2-pink.svg" alt="Version">
+      <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-A31F34.svg" alt="License: MIT"></a>
+      <a href="https://github.com/JuliaDiff/BlueStyle"><img src="https://img.shields.io/badge/code%20style-blue-4495d1.svg" alt="Code Style: Blue"></a>
+    </td>
+  </tr>
+  <tr>
+    <td>Documentation</td>
+    <td>
+      <a href="https://graphquantum.github.io/SDiagonalizability.jl/stable/"><img src="https://img.shields.io/badge/docs-stable-darkgreen.svg" alt="Documentation of latest stable version"></a>
+      <a href="https://graphquantum.github.io/SDiagonalizability.jl/dev/"><img src="https://img.shields.io/badge/docs-dev-rebeccapurple.svg" alt="Documentation of dev version"></a>
+    </td>
+  </tr>
+  <tr>
+    <td>Continuous integration</td>
+    <td>
+      <a href="https://github.com/GraphQuantum/SDiagonalizability.jl/actions?query=workflow%3ACI+branch%3Amain"><img src="https://github.com/GraphQuantum/SDiagonalizability.jl/actions/workflows/CI.yml/badge.svg" alt="GitHub Workflow Status"></a>
+    </td>
+  </tr>
+  <tr>
+    <td>Code coverage</td>
+    <td>
+      <a href="https://codecov.io/gh/GraphQuantum/SDiagonalizability.jl"><img src="https://codecov.io/gh/GraphQuantum/SDiagonalizability.jl/branch/main/graph/badge.svg" alt="Test coverage from codecov"></a>
+    </td>
+    </tr>
+    <tr>
+      <td>Static analysis with</td>
+      <td>
+        <a href="https://github.com/JuliaTesting/Aqua.jl"><img src="https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg" alt="Aqua QA"></a>
+        <a href="https://github.com/aviatesk/JET.jl"><img src="https://img.shields.io/badge/%E2%9C%88%20tested%20with-JET.jl%EF%B8%8F-9cf.svg" alt="JET static analysis"></a>
+      </td>
+    </tr>
+</table><h2 id="Overview"><a class="docs-heading-anchor" href="#Overview">Overview</a><a id="Overview-1"></a><a class="docs-heading-anchor-permalink" href="#Overview" title="Permalink"></a></h2><p><em>SDiagonalizability.jl</em> implements the first non-naïve deterministic algorithm to minimize the <span>$S$</span>-bandwidth of an undirected graph with integer edge weights. Capabilities also exist for determining whether a graph has <span>$S$</span>-bandwidth less than or equal to a fixed integer <span>$k \ge 1$</span> without necessarily caring about the true minimum value.</p><p>Given an undirected, possibly weighted graph <span>$G$</span> and finite set of integers <span>$S \subset \mathbb{Z}$</span>, <span>$G$</span> is said to be &quot;<span>$S$</span>-diagonalizable&quot; if there exists some diagonal matrix <span>$D$</span> and matrix <span>$P$</span> with all entries from <span>$S$</span> such that <span>$G$</span>&#39;s Laplacian matrix <span>$L(G) = PDP^{-1}$</span>. If <span>$G$</span> is <span>$S$</span>-diagonalizable, then its &quot;<span>$S$</span>-bandwidth&quot; is the minimum integer <span>$k \in \{1, 2, \ldots, |V(G)|\}$</span> such that there exists some diagonal matrix <span>$D$</span> and matrix <span>$P$</span> with all entries from <span>$S$</span> such that <span>$L(G) = PDP^{-1}$</span> and <span>$[P^\mathsf{T}P]_{i,j} = 0$</span> whenever <span>$|i - j| \geq k$</span>; otherwise, its <span>$S$</span>-bandwidth is simply <span>$\infty$</span>.</p><p>For specific choices of <span>$S$</span> (namely <span>$\{-1, 1\}$</span> and <span>$\{-1, 0, 1\}$</span>), the <span>$S$</span>-bandwidth of a quantum network has been shown to be an indicator of high state transfer fidelity due to automorphic properties of the graph. As such, the nascent study of <span>$S$</span>-diagonalizability and <span>$S$</span>-bandwidth is of interest in the broader context of quantum information theory.</p><h2 id="Installation"><a class="docs-heading-anchor" href="#Installation">Installation</a><a id="Installation-1"></a><a class="docs-heading-anchor-permalink" href="#Installation" title="Permalink"></a></h2><p>The only prerequisite is a working Julia installation (v1.10 or later). First, enter Pkg mode by typing <code>]</code> in the Julia REPL, then run the following command:</p><pre><code class="language-julia-repl hljs">pkg&gt; add SDiagonalizability</code></pre><h2 id="Basic-use"><a class="docs-heading-anchor" href="#Basic-use">Basic use</a><a id="Basic-use-1"></a><a class="docs-heading-anchor-permalink" href="#Basic-use" title="Permalink"></a></h2><p><em>SDiagonalizability.jl</em> offers capabilities for <span>$S$</span>-bandwidth minimization, <span>$S$</span>-bandwidth recognition, and plain old <span>$S$</span>-diagonalizability checking. To compute the <span>$S$</span>-bandwidth of a graph, you can use the <code>s_bandwidth</code> function:</p><pre><code class="language-julia-repl hljs">julia&gt; using Graphs
+
+julia&gt; g = complete_graph(14)
+{14, 91} undirected simple Int64 graph
+
+julia&gt; res_01neg = s_bandwidth(g, (-1, 0, 1))
+Results of S-Bandwidth Minimization
+ * S: (-1, 0, 1)
+ * S-Bandwidth: 2
+ * Graph Order: 14
+
+julia&gt; res_01neg.s_diagonalization
+LinearAlgebra.Eigen{Int64, Int64, Matrix{Int64}, Vector{Int64}}
+values:
+14-element Vector{Int64}:
+  0
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+vectors:
+14×14 Matrix{Int64}:
+ 1   0   0   0   0   1   1   1   1   1   1   0   0   0
+ 1   0   0   0   0  -1   0  -1   1   1   1   0   0   0
+ 1   0   0   0   0   0  -1   1   0   1   1   0   0   0
+ 1   0   0   0   0   0   0  -1   0   1  -1   0   0   0
+ 1   0   0   0   0   0   0   0  -1  -1   1   1   1   1
+ 1   0   0   0   0   0   0   0  -1  -1   1  -1  -1  -1
+ 1   1   1   0   0   0   0   0   0  -1   0   0  -1   1
+ 1  -1  -1   0   0   0   0   0   0  -1   0   0   0  -1
+ 1   0  -1   1   1   0   0   0   0   0  -1   0   0   0
+ 1   0   0  -1  -1   0   0   0   0   0  -1   0   0   0
+ 1   0   0   0  -1   0   0   0   0   0  -1   0   0   0
+ 1   0   1   0   1   0   0   0   0   0  -1   0   0   0
+ 1  -1  -1   0   0   0   0   0   0   0   0   0   0   1
+ 1   1   1   0   0   0   0   0   0   0   0   0   1  -1
+
+julia&gt; res_1neg = s_bandwidth(g, (-1, 1))
+Results of S-Bandwidth Minimization
+ * S: (-1, 1)
+ * S-Bandwidth: 13
+ * Graph Order: 14
+
+julia&gt; res_1neg.s_diagonalization
+LinearAlgebra.Eigen{Int64, Int64, Matrix{Int64}, Vector{Int64}}
+values:
+14-element Vector{Int64}:
+  0
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+ 14
+vectors:
+14×14 Matrix{Int64}:
+ 1   1   1   1   1   1   1   1   1   1   1   1   1   1
+ 1  -1  -1  -1  -1  -1  -1   1   1   1   1   1   1   1
+ 1  -1  -1  -1   1   1   1  -1  -1  -1   1   1   1   1
+ 1  -1  -1  -1   1   1   1   1   1   1  -1  -1  -1   1
+ 1  -1  -1  -1   1   1   1   1   1   1   1   1   1  -1
+ 1  -1   1   1  -1  -1   1  -1  -1   1  -1  -1   1  -1
+ 1  -1   1   1  -1   1  -1  -1   1  -1  -1   1  -1  -1
+ 1  -1   1   1   1  -1  -1   1  -1  -1   1  -1  -1   1
+ 1   1  -1   1  -1  -1   1  -1   1  -1   1  -1  -1   1
+ 1   1  -1   1  -1   1  -1   1  -1  -1  -1  -1   1  -1
+ 1   1  -1   1   1  -1  -1  -1  -1   1  -1   1  -1  -1
+ 1   1   1  -1  -1  -1   1   1  -1  -1  -1   1  -1  -1
+ 1   1   1  -1  -1   1  -1  -1  -1   1   1  -1  -1   1
+ 1   1   1  -1   1  -1  -1  -1   1  -1  -1  -1   1  -1</code></pre><p>Alternatively, to determine whether a graph has <span>$S$</span>-bandwidth less than or equal to some fixed integer <span>$k \ge 1$</span> without necessarily caring about the true (minimum) value, you can take advantage of <code>has_s_bandwidth_at_most_k</code>:</p><pre><code class="language-julia-repl hljs">julia&gt; using Graphs
+
+julia&gt; g = PetersenGraph()
+{10, 15} undirected simple Int64 graph
+
+julia&gt; res_01neg = has_s_bandwidth_at_most_k(g, (-1, 0, 1), 4)
+Results of S-Bandwidth Recognition
+ * S: (-1, 0, 1)
+ * S-Bandwidth Threshold k: 4
+ * Has S-Bandwidth ≤ k: true
+ * Graph Order: 10
+
+julia&gt; res_01neg.s_diagonalization
+LinearAlgebra.Eigen{Int64, Int64, Matrix{Int64}, Vector{Int64}}
+values:
+10-element Vector{Int64}:
+ 0
+ 5
+ 5
+ 5
+ 5
+ 2
+ 2
+ 2
+ 2
+ 2
+vectors:
+10×10 Matrix{Int64}:
+ 1   1   1   0   0   1   1   1   1   1
+ 1  -1  -1   1   1   0   0   0   0   1
+ 1   0   1  -1  -1   0  -1   0  -1  -1
+ 1   0   0   0   1   0   0   0  -1  -1
+ 1   0  -1   0  -1   1   1   0   0   0
+ 1  -1   0  -1   0   0   0   1   1   0
+ 1   1   0  -1  -1  -1   0  -1   0   1
+ 1   1  -1   1   0   0  -1   0   0  -1
+ 1   0   0   1   0  -1   0   0   0   0
+ 1  -1   1   0   1   0   0  -1   0   0
+
+julia&gt; res_1neg = has_s_bandwidth_at_most_k(g, (-1, 1), 10)
+Results of S-Bandwidth Recognition
+ * S: (-1, 1)
+ * S-Bandwidth Threshold k: 10
+ * Has S-Bandwidth ≤ k: false
+ * Graph Order: 10
+
+julia&gt; isnothing(res_1neg.s_diagonalization)
+true</code></pre><p>Lastly, the <code>is_s_diagonalizable</code> function can be used to simply determine whether a graph is <span>$S$</span>-diagonalizable:</p><pre><code class="language-julia-repl hljs">julia&gt; using Graphs
+
+julia&gt; L = laplacian_matrix(complete_multipartite_graph([1, 1, 2, 2, 3]))
+9×9 SparseArrays.SparseMatrixCSC{Int64, Int64} with 71 stored entries:
+  8  -1  -1  -1  -1  -1  -1  -1  -1
+ -1   8  -1  -1  -1  -1  -1  -1  -1
+ -1  -1   7   ⋅  -1  -1  -1  -1  -1
+ -1  -1   ⋅   7  -1  -1  -1  -1  -1
+ -1  -1  -1  -1   7   ⋅  -1  -1  -1
+ -1  -1  -1  -1   ⋅   7  -1  -1  -1
+ -1  -1  -1  -1  -1  -1   6   ⋅   ⋅
+ -1  -1  -1  -1  -1  -1   ⋅   6   ⋅
+ -1  -1  -1  -1  -1  -1   ⋅   ⋅   6
+
+julia&gt; res_01neg = is_s_diagonalizable(L, (-1, 0, 1))
+Results of S-Diagonalizability Check
+ * S: (-1, 0, 1)
+ * S-Diagonalizable: true
+ * Graph Order: 9
+
+julia&gt; res_01neg.s_diagonalization
+LinearAlgebra.Eigen{Int64, Int64, Matrix{Int64}, Vector{Int64}}
+values:
+9-element Vector{Int64}:
+ 0
+ 6
+ 6
+ 7
+ 7
+ 9
+ 9
+ 9
+ 9
+vectors:
+9×9 Matrix{Int64}:
+ 1   0   0   0   0   1   1   1   1
+ 1   0   0   0   0   0  -1  -1   1
+ 1   0   0   1   1  -1  -1   1  -1
+ 1   0   0  -1  -1  -1  -1   1  -1
+ 1   0   0  -1   1  -1   1  -1   0
+ 1   0   0   1  -1  -1   1  -1   0
+ 1   1   1   0   0   1   0   0   0
+ 1  -1   0   0   0   1   0   0   0
+ 1   0  -1   0   0   1   0   0   0
+
+julia&gt; res_1neg = is_s_diagonalizable(L, (-1, 1))
+Results of S-Diagonalizability Check
+ * S: (-1, 1)
+ * S-Diagonalizable: false
+ * Graph Order: 9
+
+julia&gt; isnothing(res_1neg.s_diagonalization)
+true</code></pre><p>(As demonstrated in this last example, you can supply the Laplacian matrix of a graph as an alternative to the <code>Graph</code> object itself from the <em>Graphs.jl</em> package.)</p><h2 id="Documentation"><a class="docs-heading-anchor" href="#Documentation">Documentation</a><a id="Documentation-1"></a><a class="docs-heading-anchor-permalink" href="#Documentation" title="Permalink"></a></h2><p>The full documentation is available at <a href="https://graphquantum.github.io/SDiagonalizability.jl/">GitHub Pages</a>. Documentation for methods and types is also available via the Julia REPL. (Note that as we have just completed development of the core API, many symbols lack complete documentation at this time—we aim to rectify this by the release of v0.2.0.)</p><h2 id="Citing"><a class="docs-heading-anchor" href="#Citing">Citing</a><a id="Citing-1"></a><a class="docs-heading-anchor-permalink" href="#Citing" title="Permalink"></a></h2><p>We encourage you to cite our work if you have used our algorithm in your research. Starring the <em>SDiagonalizability.jl</em> repository on GitHub is also appreciated.</p><p>The latest citation information may be found in the <a href="https://raw.githubusercontent.com/GraphQuantum/SDiagonalizability.jl/main/CITATION.bib">CITATION.bib</a> file within the repository.</p><h2 id="Project-status"><a class="docs-heading-anchor" href="#Project-status">Project status</a><a id="Project-status-1"></a><a class="docs-heading-anchor-permalink" href="#Project-status" title="Permalink"></a></h2><p>The latest stable release of <em>SDiagonalizability.jl</em> is v0.1.2. Although a good chunk of documentation and tests is still missing, the core API is fully functional and the package is ready for use. We are currently working on filling in the gaps and aim to release a more polished update (v0.2.0) in the near future.</p><h2 id="Credits"><a class="docs-heading-anchor" href="#Credits">Credits</a><a id="Credits-1"></a><a class="docs-heading-anchor-permalink" href="#Credits" title="Permalink"></a></h2><p>Created by <a href="https://github.com/Luis-Varona">Luis M. B. Varona</a>, <a href="https://github.com/nathanieljohnston">Dr. Nathaniel Johnston</a>, and Dr. Sarah Plosker.</p><p>Insights from <a href="https://github.com/Benjamin-Talbot">Benjamin Talbot</a>, <a href="https://github.com/logan-pipes">Logan Pipes</a>, and <a href="https://github.com/lkeliher">Dr. Liam Keliher</a> are gratefully acknowledged.</p><p>Additional thanks to <a href="https://github.com/madihaahmed1">Madiha Waqar</a> for the <em>GraphQuantum</em> logo and <a href="https://github.com/Luc-Campbell">Luc Campbell</a> for code review.</p><h2 id="Index"><a class="docs-heading-anchor" href="#Index">Index</a><a id="Index-1"></a><a class="docs-heading-anchor-permalink" href="#Index" title="Permalink"></a></h2><ul><li><a href="public_api/#SDiagonalizability.SDiagonalizability"><code>SDiagonalizability.SDiagonalizability</code></a></li><li><a href="private_api/#SDiagonalizability.AbstractSDiagResult"><code>SDiagonalizability.AbstractSDiagResult</code></a></li><li><a href="private_api/#SDiagonalizability.ArbitraryGraphLaplacian"><code>SDiagonalizability.ArbitraryGraphLaplacian</code></a></li><li><a href="private_api/#SDiagonalizability.ClassifiedLaplacian"><code>SDiagonalizability.ClassifiedLaplacian</code></a></li><li><a href="private_api/#SDiagonalizability.CompleteGraphLaplacian"><code>SDiagonalizability.CompleteGraphLaplacian</code></a></li><li><a href="private_api/#SDiagonalizability.EfficiencyWarning"><code>SDiagonalizability.EfficiencyWarning</code></a></li><li><a href="private_api/#SDiagonalizability.EmptyGraphLaplacian"><code>SDiagonalizability.EmptyGraphLaplacian</code></a></li><li><a href="private_api/#SDiagonalizability.KOrthogonality"><code>SDiagonalizability.KOrthogonality</code></a></li><li><a href="private_api/#SDiagonalizability.NotImplementedError"><code>SDiagonalizability.NotImplementedError</code></a></li><li><a href="private_api/#SDiagonalizability.NullGraphLaplacian"><code>SDiagonalizability.NullGraphLaplacian</code></a></li><li><a href="private_api/#SDiagonalizability.Orthogonality"><code>SDiagonalizability.Orthogonality</code></a></li><li><a href="private_api/#SDiagonalizability.QuasiOrthogonality"><code>SDiagonalizability.QuasiOrthogonality</code></a></li><li><a href="private_api/#SDiagonalizability.SBandMinimizationResult"><code>SDiagonalizability.SBandMinimizationResult</code></a></li><li><a href="private_api/#SDiagonalizability.SBandRecognitionResult"><code>SDiagonalizability.SBandRecognitionResult</code></a></li><li><a href="private_api/#SDiagonalizability.SDiagonalizabilityResult"><code>SDiagonalizability.SDiagonalizabilityResult</code></a></li><li><a href="private_api/#SDiagonalizability.SSpectra"><code>SDiagonalizability.SSpectra</code></a></li><li><a href="private_api/#SDiagonalizability.SpectrumIntegralResult"><code>SDiagonalizability.SpectrumIntegralResult</code></a></li><li><a href="private_api/#SDiagonalizability.WeakOrthogonality"><code>SDiagonalizability.WeakOrthogonality</code></a></li><li><a href="private_api/#SDiagonalizability._QOBasisSearchNode"><code>SDiagonalizability._QOBasisSearchNode</code></a></li><li><a href="private_api/#LinearAlgebra.rank"><code>LinearAlgebra.rank</code></a></li><li><a href="private_api/#SDiagonalizability._assert_graph_has_defined_s_bandwidth-Tuple{Graphs.AbstractGraph}"><code>SDiagonalizability._assert_graph_has_defined_s_bandwidth</code></a></li><li><a href="private_api/#SDiagonalizability._assert_matrix_is_undirected_laplacian-Tuple{AbstractMatrix{&lt;:Integer}}"><code>SDiagonalizability._assert_matrix_is_undirected_laplacian</code></a></li><li><a href="private_api/#SDiagonalizability._classified_laplacian_01neg_spectra-Tuple{T} where T&lt;:SDiagonalizability.ClassifiedLaplacian"><code>SDiagonalizability._classified_laplacian_01neg_spectra</code></a></li><li><a href="private_api/#SDiagonalizability._classified_laplacian_1neg_spectra-Tuple{T} where T&lt;:SDiagonalizability.ClassifiedLaplacian"><code>SDiagonalizability._classified_laplacian_1neg_spectra</code></a></li><li><a href="private_api/#SDiagonalizability._classified_laplacian_s_spectra-Tuple{SDiagonalizability.ArbitraryGraphLaplacian, Tuple{Vararg{Integer}}}"><code>SDiagonalizability._classified_laplacian_s_spectra</code></a></li><li><a href="private_api/#SDiagonalizability._extract_independent_cols-Tuple{AbstractMatrix{&lt;:Integer}}"><code>SDiagonalizability._extract_independent_cols</code></a></li><li><a href="private_api/#SDiagonalizability._find_basis_idxs_with_prop-Union{Tuple{K}, Tuple{AbstractVector{Int64}, K, AbstractMatrix{Int64}, Integer, Int64, Vararg{Any}}} where K&lt;:SDiagonalizability.KOrthogonality"><code>SDiagonalizability._find_basis_idxs_with_prop</code></a></li><li><a href="private_api/#SDiagonalizability._find_basis_with_property-Union{Tuple{K}, Tuple{AbstractMatrix{&lt;:Integer}, Integer, K}} where K&lt;:SDiagonalizability.KOrthogonality"><code>SDiagonalizability._find_basis_with_property</code></a></li><li><a href="private_api/#SDiagonalizability._laplacian_01neg_spectra-Tuple{AbstractMatrix{&lt;:Integer}}"><code>SDiagonalizability._laplacian_01neg_spectra</code></a></li><li><a href="private_api/#SDiagonalizability._laplacian_1neg_spectra-Tuple{AbstractMatrix{&lt;:Integer}}"><code>SDiagonalizability._laplacian_1neg_spectra</code></a></li><li><a href="private_api/#SDiagonalizability._pot_kernel_01neg_eigvecs-Tuple{Integer}"><code>SDiagonalizability._pot_kernel_01neg_eigvecs</code></a></li><li><a href="private_api/#SDiagonalizability._pot_kernel_1neg_eigvecs-Tuple{Integer}"><code>SDiagonalizability._pot_kernel_1neg_eigvecs</code></a></li><li><a href="private_api/#SDiagonalizability._pot_nonkernel_01neg_eigvecs-Tuple{Integer}"><code>SDiagonalizability._pot_nonkernel_01neg_eigvecs</code></a></li><li><a href="private_api/#SDiagonalizability._pot_nonkernel_1neg_eigvecs-Tuple{Integer}"><code>SDiagonalizability._pot_nonkernel_1neg_eigvecs</code></a></li><li><a href="private_api/#SDiagonalizability._rank_rtol-Union{Tuple{AbstractMatrix{T}}, Tuple{T}} where T"><code>SDiagonalizability._rank_rtol</code></a></li><li><a href="private_api/#SDiagonalizability._sort_tuple-Tuple{Tuple{Vararg{Integer}}}"><code>SDiagonalizability._sort_tuple</code></a></li><li><a href="private_api/#SDiagonalizability.check_spectrum_integrality-Tuple{AbstractMatrix{&lt;:Integer}}"><code>SDiagonalizability.check_spectrum_integrality</code></a></li><li><a href="private_api/#SDiagonalizability.classify_k_orthogonality-Tuple{Integer}"><code>SDiagonalizability.classify_k_orthogonality</code></a></li><li><a href="private_api/#SDiagonalizability.classify_laplacian-Tuple{AbstractMatrix{&lt;:Integer}}"><code>SDiagonalizability.classify_laplacian</code></a></li><li><a href="private_api/#SDiagonalizability.find_k_orthogonal_basis"><code>SDiagonalizability.find_k_orthogonal_basis</code></a></li><li><a href="public_api/#SDiagonalizability.has_s_bandwidth_at_most_k-Tuple{Graphs.AbstractGraph, Tuple{Vararg{Integer}}, Integer}"><code>SDiagonalizability.has_s_bandwidth_at_most_k</code></a></li><li><a href="public_api/#SDiagonalizability.is_s_diagonalizable-Tuple{Graphs.AbstractGraph, Tuple{Vararg{Integer}}}"><code>SDiagonalizability.is_s_diagonalizable</code></a></li><li><a href="private_api/#SDiagonalizability.laplacian_s_spectra-Tuple{AbstractMatrix{&lt;:Integer}, Tuple{Vararg{Integer}}}"><code>SDiagonalizability.laplacian_s_spectra</code></a></li><li><a href="private_api/#SDiagonalizability.pot_kernel_s_eigvecs-Tuple{Integer, Tuple{Vararg{Integer}}}"><code>SDiagonalizability.pot_kernel_s_eigvecs</code></a></li><li><a href="private_api/#SDiagonalizability.pot_nonkernel_s_eigvecs-Tuple{Integer, Tuple{Vararg{Integer}}}"><code>SDiagonalizability.pot_nonkernel_s_eigvecs</code></a></li><li><a href="public_api/#SDiagonalizability.s_bandwidth-Tuple{Graphs.AbstractGraph, Tuple{Vararg{Integer}}}"><code>SDiagonalizability.s_bandwidth</code></a></li></ul></article><nav class="docs-footer"><a class="docs-footer-nextpage" href="public_api/">Public API »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.14.1 on <span class="colophon-date" title="Wednesday 13 August 2025 18:06">Wednesday 13 August 2025</span>. Using Julia version 1.11.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
