@@ -7,7 +7,7 @@
 """
     SDiagonalizability
 
-A dynamic algorithm to minimize or recognize the S-bandwidth of an undirected graph.
+A dynamic algorithm to minimize or recognize the ``S``-bandwidth of an undirected graph.
 
 Given an undirected, possibly weighted graph ``G`` and finite set of integers ``S`` ⊂ ``ℤ``,
 ``G`` is said to be "``S``-diagonalizable" if there exists some diagonal matrix ``D`` and
