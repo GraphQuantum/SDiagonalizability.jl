@@ -14,7 +14,7 @@ CurrentModule = SDiagonalizability
   <tr>
     <td>Metadata</td>
     <td>
-      <img src="https://img.shields.io/badge/version-v0.1.1-pink.svg" alt="Version">
+      <img src="https://img.shields.io/badge/version-v0.1.2-pink.svg" alt="Version">
       <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-A31F34.svg" alt="License: MIT"></a>
       <a href="https://github.com/JuliaDiff/BlueStyle"><img src="https://img.shields.io/badge/code%20style-blue-4495d1.svg" alt="Code Style: Blue"></a>
     </td>
@@ -283,7 +283,7 @@ The latest citation information may be found in the [CITATION.bib](https://raw.g
 
 ## Project status
 
-The latest stable release of *SDiagonalizability.jl* is v0.1.1. Although a good chunk of documentation and tests is still missing, the core API is fully functional and the package is ready for use. We are currently working on filling in the gaps and aim to release a more polished update (v0.2.0) in the near future.
+The latest stable release of *SDiagonalizability.jl* is v0.1.2. Although a good chunk of documentation and tests is still missing, the core API is fully functional and the package is ready for use. We are currently working on filling in the gaps and aim to release a more polished update (v0.2.0) in the near future.
 
 ## Credits
 
