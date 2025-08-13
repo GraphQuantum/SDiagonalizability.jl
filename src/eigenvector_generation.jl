@@ -198,9 +198,9 @@ The number of potential kernel ``\\{-1, 0, 1\\}``-eigenvectors (unique up to spa
 
 Regrettably, the implementation here is rather clunky and unidiomatic, but it is worth
 noting that eigenvector generation is one of two major bottlenecks in the overall
-*S*-bandwidth minimization algorithm. Given how much potential there is for optimization in
-this piece of code, we thus prioritize performance over readability in this particular case,
-making every effort to include inline comments wherever clarification may be needed.
+``S``-bandwidth minimization algorithm. Given how much potential there is for optimization
+in this piece of code, we thus prioritize performance over readability in this particular
+case, making every effort to include inline comments wherever clarification may be needed.
 
 # References
 - [Slo10](@cite): N. J. Sloane, *a(n) = (3^n - 1)/2*. Entry A003462 (2010). Accessed:
@@ -329,9 +329,9 @@ humps in all Motzkin paths of length ``n``. See also the relevant OEIS sequence 
 
 Regrettably, the implementation here is rather clunky and unidiomatic, but it is worth
 noting that eigenvector generation is one of two major bottlenecks in the overall
-*S*-bandwidth minimization algorithm. Given how much potential there is for optimization in
-this piece of code, we thus prioritize performance over readability in this particular case,
-making every effort to include inline comments wherever clarification may be needed.
+``S``-bandwidth minimization algorithm. Given how much potential there is for optimization
+in this piece of code, we thus prioritize performance over readability in this particular
+case, making every effort to include inline comments wherever clarification may be needed.
 
 # References
 - [Deu21](@cite): E. Deutsch. *Number of humps in all Motzkin paths of length n*. Entry

@@ -19,9 +19,9 @@ matrix bandwidth using zero-based indexing—that is, with the condition ``|i - 
 [Maf14, p. 186].)
 
 This type is used as a template for concretely defined properties corresponding to specific
-values of ``k``. In the context of the overarching *S*-bandwidth algorithm, we perform a
+values of ``k``. In the context of the overarching ``S``-bandwidth algorithm, we perform a
 different depth-first search for each family of values of ``k`` on our "tree" of
-*S*-eigenvectors to determine whether there exists a ``k``-orthogonal collection of them.
+``S``-eigenvectors to determine whether there exists a ``k``-orthogonal collection of them.
 
 # Interface
 Concrete subtypes of `KOrthogonality` **must** implement the following fields:
@@ -132,8 +132,8 @@ end
 
 Classifies the `k`-orthogonality property based on the given `k` parameter.
 
-When searching for a ``k``-orthogonal *S*-basis of a given Laplacian eigenspace, the family
-of values to which our ``k`` parameter belongs informs our choice of algorithm.
+When searching for a ``k``-orthogonal ``S``-basis of a given Laplacian eigenspace, the
+family of values to which our ``k`` parameter belongs informs our choice of algorithm.
 
 # Arguments
 - `k::Integer`: the `k`-orthogonality parameter to classify. Must be a positive integer.

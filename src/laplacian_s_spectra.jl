@@ -117,7 +117,7 @@ OrderedCollections.OrderedDict{Int64, Int64} with 3 entries:
 If an undirected graph with integer edge weights is ``\\{-1, 0, 1\\}``-diagonalizable (or,
 more restrictively, ``\\{-1, 1\\}``-diagonalizable), then its Laplacian matrix has integer
 eigenvalues [JP25, p. 312]. Hence, validating Laplacian integrality serves as a useful
-screening step in this package's principal *S*-bandwidth minimization algorithm.
+screening step in this package's principal ``S``*-bandwidth minimization algorithm.
 
 # References
 - [Fox09](@cite): J. Fox. *Lecture 19: The Petersen graph and Moore graphs*. Lecture notes,

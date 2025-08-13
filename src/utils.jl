@@ -242,18 +242,45 @@ end
 """
     _assert_graph_has_defined_s_bandwidth(g) -> Nothing
 
+Validate that `g` is an undirected graph with no self-loops.
+
+The property of ``S``-bandwidth is only defined, by [JP25]'s conventions, for undirected
+graphs without self-loops, so this function checks that `g` satisfies these conditions.
+
+# Arguments
+- `g::AbstractGraph`: the graph of interest.
+
+# Returns
+- `nothing`: if the check is passed, no output is produced.
+
+# Throws
+- `DomainError`: if `g` is directed or has self-loops.
+
+# Examples
 [TODO: Write here]
+
+# Notes
+At first blush, it may seem as though the choice of `DomainError` over something like
+`ArgumentError` (or even simply the return of a boolean) constitutes poor design. However,
+this is informed by the simple *ad hoc* use of this function to validate inputs for other
+functions requiring Laplacian matrices. Certainly, this function is never meant to be
+publicly exposed on its own.
+
+# References
+- [JP25](@cite): N. Johnston and S. Plosker. *Laplacian {−1,0,1}- and {−1,1}-diagonalizable
+    graphs*. Linear Algebra and its Applications **704**, 309–39 (2025).
+    https://doi.org/10.1016/j.laa.2024.10.016.
 """
 function _assert_graph_has_defined_s_bandwidth(g::AbstractGraph)
     if is_directed(g)
-        throw(DomainError(g, "*S*-bandwidth is not defined for directed graphs"))
+        throw(DomainError(g, "S-bandwidth is not defined for directed graphs"))
     end
 
     if has_self_loops(g)
         throw(
             DomainError(
                 graph,
-                "*S*-bandwidth is not defined for multigraphs; got a graph with self-loops",
+                "S-bandwidth is not defined for multigraphs; got a graph with self-loops",
             ),
         )
     end
