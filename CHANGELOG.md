@@ -10,6 +10,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Added **References** sections to docstrings for immediate readability in the REPL and in the source code without needing to open the Documenter-generated website (#47, #48).
 
+### Changed
+
+- Made the return type of the `_pot_kernel_1neg_eigvecs` and `_pot_nonkernel_1neg_eigvecs` functions consistent regardless of the `n` parameter passed (#51).
+- Finished the docstrings for `src/eigenvector_generation.jl`, fixing some minor inaccuracies along the way (#51).
+
 ## [0.1.1] - 2025-08-05
 
 ### Changed
