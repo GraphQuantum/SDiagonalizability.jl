@@ -120,7 +120,6 @@ eigenvalues [JP25, p. 312]. Hence, validating Laplacian integrality serves as a 
 screening step in this package's principal *S*-bandwidth minimization algorithm.
 
 # References
-
 - [Fox09](@cite): J. Fox. *Lecture 19: The Petersen graph and Moore graphs*. Lecture notes,
     MAT 307: Combinatorics (2009). Accessed: 2025-07-25.
     https://math.mit.edu/~fox/MAT307.html.

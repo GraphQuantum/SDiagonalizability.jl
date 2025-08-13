@@ -90,7 +90,6 @@ the other hand, is a widely accepted standard in numerical analysis which uses t
 dimension instead [PTVF07, p. 795].
 
 # References
-
 - [BG65](@cite): P. Businger and G. H. Golub. *Linear Least Squares Solutions by Householder
     Transformations*. Numerische Mathematik **7**, 269–76 (1965).
     https://doi.org/10.1007/BF01436084.
@@ -217,7 +216,6 @@ functions requiring Laplacian matrices. Certainly, this function is never meant 
 publicly exposed on its own.
 
 # References
-
 - [VL20](@cite): J. J. Veerman and R. Lyons. *A Primer on Laplacian Dynamics in Directed
     Graphs*. Nonlinear Phenomena in Complex Systems **23**, 196–206 (2020).
     https://doi.org/10.33581/1561-4085-2020-23-2-196-206.
@@ -290,7 +288,6 @@ functions—`max(m,n) * ϵ` [MAT25; Num25]. (Indeed, this is a widely adopted st
 the field of numerical analysis [PTVF07, p. 795].)
 
 # References
-
 - [CD05](@cite): Z. Chen and J. Dongarra. *Condition Numbers of Gaussian Random Matrices*.
     SIAM Journal on Matrix Analysis and Applications **27**, 603–20 (2005).
     https://doi.org/10.1137/040616413.

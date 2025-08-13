@@ -11,7 +11,6 @@
 [TODO: Write here. Also, comment inline and cite [JP25].]
 
 # References
-
 - [JP25](@cite): N. Johnston and S. Plosker. *Laplacian {−1,0,1}- and {−1,1}-diagonalizable
     graphs*. Linear Algebra and its Applications **704**, 309–39 (2025).
     https://doi.org/10.1016/j.laa.2024.10.016.
@@ -84,7 +83,6 @@ end
 [TODO: Write here. Also, comment inline and cite [JP25].]
 
 # References
-
 - [JP25](@cite): N. Johnston and S. Plosker. *Laplacian {−1,0,1}- and {−1,1}-diagonalizable
     graphs*. Linear Algebra and its Applications **704**, 309–39 (2025).
     https://doi.org/10.1016/j.laa.2024.10.016.
