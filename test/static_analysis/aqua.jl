@@ -26,8 +26,8 @@ using Aqua
         piracies=(; treat_as_own=[SDiagonalizability.LinearAlgebra.rank]),
         persistent_tasks=false, # Account for our manual definition of `LinearAlgebra.rank`
     )
-    #= We manually define the `LinearAlgebra.rank(::QRPivoted)` method, as it is not
-    available in Julua 1.11 and earlier. =#
+    #= We manually define the `LinearAlgebra.rank(::QRPivoted)` method when using a Julia
+    version below v1.12. =#
     @test length(Aqua.Piracy.hunt(SDiagonalizability)) <= 2
 end
 
