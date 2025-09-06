@@ -1,7 +1,7 @@
 <img src="https://github.com/GraphQuantum/SDiagonalizability.jl/raw/main/docs/src/assets/logo.jpg" alt="GraphQuantum logo by Madiha Waqar" height="200"/>
 <sup><em>GraphQuantum</em> logo by <a href="https://github.com/madihaahmed1">Madiha Waqar</a></sup>
 
-# SDiagonalizability
+# SDiagonalizability.jl
 
 <table>
   <tr>
