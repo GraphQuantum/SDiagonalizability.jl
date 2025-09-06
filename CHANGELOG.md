@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- Changed the main header in `README.md` from 'SDiagonalizability' to the more idiomatic 'SDiagonalizability.jl' (#61).
+
 ### Fixed
 
 - Fixed a typo in some comments in the *Aqua.jl* static analysis tests (#60).
