@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-05-09
+
+### Changed
+
+- Changed the `MatrixBandwidth` bandwidth recognition solver from `DelCorsoManzini` to `CapraraSalazarGonzalez` (the default for `MatrixBandwidth` v0.3.0) (#66)
+- Restricted compat to Julia v1.12+, eliminating compatibility shims and also upgrading compat for various other packages (#66)
+
+### Fixed
+
+- Fixed a few minor docstring/doctest errors (#66)
+
 ## [0.1.3] - 2025-09-20
 
 ### Changed
@@ -50,7 +61,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Released the initial stable version of the package.
 
-[unreleased]: https://github.com/GraphQuantum/SDiagonalizability.jl/compare/v0.1.3...HEAD
+[unreleased]: https://github.com/GraphQuantum/SDiagonalizability.jl/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/Luis-Varona/MatrixBandwidth.jl/releases/tag/v0.2.0
 [0.1.3]: https://github.com/Luis-Varona/MatrixBandwidth.jl/releases/tag/v0.1.3
 [0.1.2]: https://github.com/Luis-Varona/MatrixBandwidth.jl/releases/tag/v0.1.2
 [0.1.1]: https://github.com/Luis-Varona/MatrixBandwidth.jl/releases/tag/v0.1.1
