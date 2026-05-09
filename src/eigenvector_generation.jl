@@ -268,8 +268,8 @@ julia> stack(SDiagonalizability._pot_kernel_1neg_eigvecs(5))
 
 # Notes
 The number of potential kernel ``\\{-1, 1\\}``-eigenvectors (unique up to span) of an
-``n×n`` Laplacian matrix is equal to ``0`` for ``n = 0`` and ``2ⁿ`` for ``n > 0``. See also
-the relevant OEIS sequence [Slo14] for the ``n > 0`` case.
+``n×n`` Laplacian matrix is equal to ``0`` for ``n = 0`` and ``2ⁿ⁻¹`` for ``n > 0``. See
+also the relevant OEIS sequence [Slo14] for the ``n > 0`` case.
 
 # References
 - [Slo14](@cite): N. J. Sloane, *Powers of 2: a(n) = 2^n*. Entry A000079 (2014). Accessed:
@@ -381,7 +381,7 @@ Lazily compute all potential non-kernel ``\\{-1, 1\\}``-eigenvectors of an `n×n
 Each vector is normalized so that its first entry is ``1``, enforcing pairwise linear
 independence between all generated vectors. Since all Laplacian matrices have pairwise
 orthogonal eigenspaces and the all-ones vector is always in the kernel, every non-kernel
-``\\{-1, 1\\}``-eigenvector must half exactly `n / 2` ``-1``'s and `n / 2` ``1``'s. (As a
+``\\{-1, 1\\}``-eigenvector must have exactly `n / 2` ``-1``'s and `n / 2` ``1``'s. (As a
 direct corollary, if `n` is odd, an empty iterator is returned.)
 
 # Arguments
@@ -389,9 +389,8 @@ direct corollary, if `n` is odd, an empty iterator is returned.)
     potential non-kernel ``\\{-1, 1\\}``-eigenvectors.
 
 # Returns
-- `::Base.Generator``: a lazily evaluated iterator over all ``\\{-1, 1\\}``-vectors in
-    ``ℝⁿ`` orthogonal to the all-ones kernel vector, unique up to span. Eltype is
-    `Vector{Int}`.
+- `::Base.Generator`: a lazily evaluated iterator over all ``\\{-1, 1\\}``-vectors in ``ℝⁿ``
+    orthogonal to the all-ones kernel vector, unique up to span. Eltype is `Vector{Int}`.
 
 # Examples
 Generate all potential non-kernel ``\\{-1, 1\\}``-eigenvectors of a ``6×6`` Laplacian
