@@ -321,8 +321,9 @@ function _find_basis_idxs_with_prop(
 
     gram_submatrix = view(gram_matrix, 1:depth, 1:depth)
     #= `MatrixBandwidth.jl` uses zero-based indexing for bandwidth, not one-based, so we use
-    `k - 1` instead of `k`. =#
-    res = has_bandwidth_k_ordering(gram_submatrix, k - 1, Recognition.DelCorsoManzini())
+    `k - 1` instead of `k`. As of MatrixBandwidth v0.3.0, this defaults to the 2005
+    Caprara–Salazar-González algorithm. =#
+    res = has_bandwidth_k_ordering(gram_submatrix, k - 1)
 
     if !res.has_ordering
         return nothing

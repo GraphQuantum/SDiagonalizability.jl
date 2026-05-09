@@ -103,9 +103,6 @@ function _extract_independent_cols(A::AbstractMatrix{<:Integer})
     F = qr(A, ColumnNorm())
     rtol = _rank_rtol(A) # Use a higher tolerance (NumPy's/MATLAB's) than Julia's default
 
-    #= In Julia 1.12+, `LinearAlgebra.rank` dispatches to a method that re-uses an existing
-    QR decomposition. For compatibility with v1.10–1.11, we manually define it ourselves in
-    `src/utils.jl`. =#
     r = rank(F; rtol=rtol)
     pivots = F.p[1:r] # The first `rank(A)` pivots correspond to independent columns of `A`
 
@@ -367,42 +364,4 @@ the field of numerical analysis [PTVF07, p. 795].)
 """
 function _rank_rtol(A::AbstractMatrix{T}) where {T}
     return maximum(size(A)) * eps(LinearAlgebra.eigtype(T))
-end
-
-#= In Julia 1.12+, `LinearAlgebra.rank` dispatches to a method that re-uses an existing QR
-decomposition. For compatibility with v1.10–1.11, we manually define it ourselves here. =#
-@static if VERSION < v"1.12"
-    #! format: off
-    function LinearAlgebra.rank(A::QRPivoted; atol::Real=0, rtol::Real=min(size(A)...) * eps(real(float(eltype(A)))) * iszero(atol))
-        m = min(size(A)...)
-        m == 0 && return 0
-        tol = max(atol, rtol*abs(A.factors[1,1]))
-        return something(findfirst(i -> abs(A.factors[i,i]) <= tol, 1:m), m+1) - 1
-    end
-    #! format: on
-
-    @doc """
-        rank(A::QRPivoted{<:Any, T}; atol::Real=0, rtol::Real=min(n,m)*ϵ) where {T}
-
-    Compute the numerical rank of the QR factorization `A` by counting how many diagonal entries of
-    `A.factors` are greater than `max(atol, rtol*Δ₁)` where `Δ₁` is the largest calculated such entry.
-    This is similar to the `rank(::AbstractMatrix)` method insofar as it counts the number of
-    (numerically) nonzero coefficients from a matrix factorization, although the default method uses an
-    SVD instead of a QR factorization. Like `rank(::SVD)`, this method also re-uses an existing
-    matrix factorization.
-
-    Computing rank via QR factorization should almost always produce the same results as via SVD,
-    although this method may be more prone to overestimating the rank in pathological cases where the
-    matrix is ill-conditioned. It is also worth noting that it is generally faster to compute a QR
-    factorization than an SVD, so this method may be preferred when performance is a concern.
-
-    `atol` and `rtol` are the absolute and relative tolerances, respectively.
-    The default relative tolerance is `n*ϵ`, where `n` is the size of the smallest dimension of `A`
-    and `ϵ` is the `eps` of the element type of `A`.
-
-    !!! note
-        When accessed directly via `LinearAlgebra`, the `rank(::QRPivoted)` method requires at least
-        Julia 1.12, so `SDiagonalizability` defines this method manually for compatibility with
-        v1.10–1.11.
-    """ -> rank
 end

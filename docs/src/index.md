@@ -58,7 +58,7 @@ For specific choices of ``S`` (namely ``\{-1, 1\}`` and ``\{-1, 0, 1\}``), the `
 
 ## Installation
 
-The only prerequisite is a working Julia installation (v1.10 or later). First, enter Pkg mode by typing `]` in the Julia REPL, then run the following command:
+The only prerequisite is a working Julia installation (v1.12 or later). First, enter Pkg mode by typing `]` in the Julia REPL, then run the following command:
 
 ```julia-repl
 pkg> add SDiagonalizability
@@ -273,7 +273,7 @@ true
 
 ## Documentation
 
-The full documentation is available at [GitHub Pages](https://graphquantum.github.io/SDiagonalizability.jl/). Documentation for methods and types is also available via the Julia REPL. (Note that as we have just completed development of the core API, many symbols lack complete documentation at this time—we aim to rectify this by the release of v0.2.0.)
+The full documentation is available at [GitHub Pages](https://graphquantum.github.io/SDiagonalizability.jl/). Documentation for methods and types is also available via the Julia REPL. (Note that as we have just completed development of the core API, many symbols lack complete documentation at this time—we aim to rectify this by the release of v0.3.0.)
 
 ## Citing
 
@@ -283,7 +283,7 @@ The latest citation information may be found in the [CITATION.bib](https://raw.g
 
 ## Project status
 
-The latest stable release of *SDiagonalizability.jl* is v0.1.3. Although a good chunk of documentation and tests is still missing, the core API is fully functional and the package is ready for use. We are currently working on filling in the gaps and aim to release a more polished update (v0.2.0) in the near future.
+The latest stable release of *SDiagonalizability.jl* is v0.1.3. Although a good chunk of documentation and tests is still missing, the core API is fully functional and the package is ready for use. We are currently working on filling in the gaps and aim to release a more polished update (v0.3.0) in the near future.
 
 ## Credits
 
